@@ -1,0 +1,2 @@
+to generate py file from ui
+pyuic5 -x form.ui -o form.py
