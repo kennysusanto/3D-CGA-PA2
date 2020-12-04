@@ -258,6 +258,24 @@ class Ui_MainWindow(object):
         P = [x, y, z]
         return P
 
+    def backfaceCulling(self, p1, p2, p3):
+        V = ([0, 0, 1])
+
+        p1 = ([p1[0], p1[1], p1[2]])
+        p2 = ([p2[0], p2[1], p2[2]])
+        p3 = ([p3[0], p3[1], p3[2]])
+        N = np.cross(np.subtract(p2, p1), np.subtract(p3, p2))
+
+        if(np.dot(V, N) < 0):
+            # front surface, draw
+            self.drawPoly(p1, p2, p3)
+        elif(np.dot(V, N) > 0):
+            # back surface, don't draw
+            pass
+        elif(np.dot(V, N) == 0):
+            # side surface, draw
+            self.drawPoly(p1, p2, p3)
+
     def drawPoly(self, p1, p2, p3):
         x1 = p1[0]
         y1 = p1[1]
@@ -300,7 +318,7 @@ class Ui_MainWindow(object):
         ks = float(self.lineEdit_ks.text())
         n = int(self.lineEdit_n.text())
 
-        nLat = 5
+        nLat = 4
         nLong = 16
         r = 100
 
@@ -328,7 +346,7 @@ class Ui_MainWindow(object):
         # top hemisphere
         P = []
         for j in range(nLat - 1):
-            for i in range(nLong - 2):
+            for i in range(nLong - 1):
                 k = j * nLong + i
                 P.append([k, 1 + k, k + nLong + 1])
                 P.append([k, k + nLong + 1, k + nLong])
@@ -343,7 +361,7 @@ class Ui_MainWindow(object):
         # bottom hemisphere
         P1 = []
         for j in range(nLat - 1):
-            for i in range(nLong - 2):
+            for i in range(nLong - 1):
                 k = j * nLong + i
                 P1.append([k, 1 + k, k + nLong + 1])
                 P1.append([k, k + nLong + 1, k + nLong])
@@ -357,26 +375,30 @@ class Ui_MainWindow(object):
         P1.append([(nLat - 1) * nLong - 1, (nLat - 1) * nLong, nLat * nLong])  
 
         # drawing the sphere
+        bc = True # do backface culling?
         
         for p in P:
             p1 = V[p[0]]
             p2 = V[p[1]]
             p3 = V[p[2]]
 
-            self.drawPoly(p1, p2, p3)
+            if(bc):
+                self.backfaceCulling(p1, p2, p3)
+            else:
+                self.drawPoly(p1, p2, p3)
 
         for p in P1:
             p1 = V1[p[0]]
             p2 = V1[p[1]]
             p3 = V1[p[2]]
 
-            self.drawPoly(p1, p2, p3)
+            if(bc):
+                self.backfaceCulling(p1, p2, p3)
+            else:
+                self.drawPoly(p1, p2, p3)
             
             
         # comment
-        for v in V1:
-            loc = [v[0] + 200, v[1] + 200]
-            self.drawDot(loc)
 
 if __name__ == "__main__":
     import sys
