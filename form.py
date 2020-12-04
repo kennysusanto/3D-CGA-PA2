@@ -392,7 +392,7 @@ class Ui_MainWindow(object):
 
         for i in range(nLong-1):
             P.append([i + (nLat - 1) * nLong, i + (nLat - 1) * nLong + 1, nLat * nLong])
-        P.append([(nLat - 1) * nLong - 1, (nLat - 1) * nLong, nLat * nLong])      
+        P.append([(nLat - 1) * nLong + nLong - 1, (nLat - 1) * nLong, nLat * nLong])      
 
         # bottom hemisphere
         P1 = []
@@ -408,7 +408,7 @@ class Ui_MainWindow(object):
         
         for i in range(nLong-1):
             P1.append([i + (nLat - 1) * nLong, i + (nLat - 1) * nLong + 1, nLat * nLong])
-        P1.append([(nLat - 1) * nLong - 1, (nLat - 1) * nLong, nLat * nLong])  
+        P1.append([(nLat - 1) * nLong + nLong - 1, (nLat - 1) * nLong, nLat * nLong])  
 
         # saving the sphere
         
@@ -442,7 +442,7 @@ class Ui_MainWindow(object):
         kd = float(self.lineEdit_kd.text())
         ks = float(self.lineEdit_ks.text())
         n = int(self.lineEdit_n.text())
-        Ia = 0.5
+        Ia = 0.3
         IL = 0.5
 
         for p in P:
@@ -472,9 +472,11 @@ class Ui_MainWindow(object):
 
                 Itot = Iamb + Idiff + Ispec
 
-                red = ([0, 0, 255])
-                if(Itot < 0): Itot = 0
-                res = np.dot(red, Itot)
+                c = 255 * Itot
+                if(c < 0): c = 0
+                elif(c > 255): c = 255
+                
+                res = [0, 0, c]
                 self.fillTriangle((p[0], p[1], p[2]), (res[0], res[1], res[2]))
         
         self.fillCircle((ls_x, ls_y), (0, 255, 255))
