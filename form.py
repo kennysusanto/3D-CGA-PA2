@@ -10,7 +10,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import numpy as np
-
+import math
 
 class PainterWidget(QtWidgets.QWidget):
     def __init__(self, *args, **kwargs):
@@ -187,9 +187,13 @@ class Ui_MainWindow(object):
         self.pushButton_reset.clicked.connect(self.reset)
         self.pushButton_update_3.clicked.connect(self.updateAll)
 
+        # variable to store sphere polygons
+        self.P = []
+
         # on form load
         self.reset()
         self.statusbar.showMessage("Ready")
+        self.generateSphere()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -230,6 +234,7 @@ class Ui_MainWindow(object):
         canvas.fill(QtGui.QColor("white"))
         self.painter.setPixmap(canvas)
         self.painter.update()
+        self.P = []
 
     def drawDot(self, loc):
         x = loc[0]
@@ -239,6 +244,27 @@ class Ui_MainWindow(object):
         canvas.drawPoint(x, y)
         canvas.end()
         self.painter.update()
+
+    def fillCircle(self, loc, color):
+        x = loc[0]
+        y = loc[1]
+        canvas = QtGui.QPainter(self.painter.pixmap())
+        canvas.setBrush(QtGui.QColor(color[0], color[1], color[2]))
+        canvas.setPen(QtGui.QPen(QtGui.QColor(color[0], color[1], color[2])))
+        canvas.drawEllipse(QtCore.QPoint(x, y), 5, 5)
+    
+    def fillTriangle(self, points, color):
+        p1 = points[0]
+        p2 = points[1]
+        p3 = points[2]
+        canvas = QtGui.QPainter(self.painter.pixmap())
+        path = QtGui.QPainterPath()
+        canvas.setBrush(QtGui.QColor(color[0], color[1], color[2]))
+        path.moveTo(p1[0], p1[1])
+        path.lineTo(p2[0], p2[1])
+        path.lineTo(p3[0], p3[1])
+        canvas.setPen(QtGui.QPen(QtGui.QColor(color[0], color[1], color[2])))
+        canvas.drawPath(path)
     
     def drawLine(self, points):
         x1 = points[0]
@@ -268,13 +294,13 @@ class Ui_MainWindow(object):
 
         if(np.dot(V, N) < 0):
             # front surface, draw
-            self.drawPoly(p1, p2, p3)
+            return [p1, p2, p3]
         elif(np.dot(V, N) > 0):
             # back surface, don't draw
-            pass
+            return None
         elif(np.dot(V, N) == 0):
             # side surface, draw
-            self.drawPoly(p1, p2, p3)
+            return [p1, p2, p3]
 
     def drawPoly(self, p1, p2, p3):
         x1 = p1[0]
@@ -298,9 +324,28 @@ class Ui_MainWindow(object):
         points = [x1, y1, x2, y2]
         self.drawLine(points)
 
+    def drawHandler(self):
+        framework = True # draw framework?
+        bc = True # enable backface culling?
+
+        P = self.P
+        for p in P:
+            p1 = p[0]
+            p2 = p[1]
+            p3 = p[2]
+            if(framework):
+                if(bc):
+                    res = self.backfaceCulling(p1, p2, p3)
+                    if(res):
+                        self.drawPoly(res[0], res[1], res[2])
+                else:
+                    self.drawPoly(p1, p2, p3)
+
     def updateAll(self):
         self.clearScreen()
         self.generateSphere()
+        # self.drawHandler()
+        self.flatShading()
     
     def generateSphere(self):
         x = int(self.lineEdit_x_sphere.text())
@@ -308,15 +353,6 @@ class Ui_MainWindow(object):
         z = int(self.lineEdit_z_sphere.text())
 
         pos = [x, y, z]
-
-        ls_x = int(self.lineEdit_x_ls.text())
-        ls_y = int(self.lineEdit_y_ls.text())
-        ls_z = int(self.lineEdit_z_ls.text())
-
-        ka = float(self.lineEdit_ka.text())
-        kd = float(self.lineEdit_kd.text())
-        ks = float(self.lineEdit_ks.text())
-        n = int(self.lineEdit_n.text())
 
         nLat = 4
         nLong = 16
@@ -354,7 +390,7 @@ class Ui_MainWindow(object):
             P.append([k + nLong - 1, k, k + nLong])
             P.append([k + nLong - 1, k + nLong, k + 2 * nLong - 1])
 
-        for i in range(nLong - 2):
+        for i in range(nLong-1):
             P.append([i + (nLat - 1) * nLong, i + (nLat - 1) * nLong + 1, nLat * nLong])
         P.append([(nLat - 1) * nLong - 1, (nLat - 1) * nLong, nLat * nLong])      
 
@@ -370,35 +406,80 @@ class Ui_MainWindow(object):
             P1.append([k + nLong - 1, k + nLong, k + 2 * nLong - 1])
 
         
-        for i in range(nLong - 2):
+        for i in range(nLong-1):
             P1.append([i + (nLat - 1) * nLong, i + (nLat - 1) * nLong + 1, nLat * nLong])
         P1.append([(nLat - 1) * nLong - 1, (nLat - 1) * nLong, nLat * nLong])  
 
-        # drawing the sphere
-        bc = True # do backface culling?
+        # saving the sphere
         
         for p in P:
             p1 = V[p[0]]
             p2 = V[p[1]]
             p3 = V[p[2]]
-
-            if(bc):
-                self.backfaceCulling(p1, p2, p3)
-            else:
-                self.drawPoly(p1, p2, p3)
+            self.P.append([p1, p2, p3])
 
         for p in P1:
             p1 = V1[p[0]]
             p2 = V1[p[1]]
             p3 = V1[p[2]]
-
-            if(bc):
-                self.backfaceCulling(p1, p2, p3)
-            else:
-                self.drawPoly(p1, p2, p3)
+            self.P.append([p1, p2, p3])
             
             
         # comment
+
+    def flatShading(self):
+        P = self.P
+
+        ls_x = int(self.lineEdit_x_ls.text()) + 200
+        ls_y = int(self.lineEdit_y_ls.text()) + 200
+        ls_z = int(self.lineEdit_z_ls.text()) + 200
+
+        ls_V = ([ls_x, ls_y, ls_z])
+
+        viewer = [0, 0, 10]
+
+        ka = float(self.lineEdit_ka.text())
+        kd = float(self.lineEdit_kd.text())
+        ks = float(self.lineEdit_ks.text())
+        n = int(self.lineEdit_n.text())
+        Ia = 0.5
+        IL = 0.5
+
+        for p in P:
+            p = self.backfaceCulling(p[0], p[1], p[2])
+            if(p):
+                fv = p[0] # first vertex of polygon
+                p_V = ([fv[0], fv[1], fv[2]])
+                L = np.subtract(ls_V, p_V)
+                N = np.cross(np.subtract(p[1], p[0]), np.subtract(p[2], p[1]))
+                viewer_V = ([viewer[0], viewer[1], viewer[2]])
+                V = np.subtract(viewer_V, p_V)
+
+                L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
+                L_uv = np.divide(L, L_mag)
+
+                N_mag = math.sqrt(math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
+                N_uv = np.divide(N, N_mag)
+
+                V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
+                V_uv = np.divide(V, V_mag)
+
+                R_uv = np.subtract(np.dot(np.dot(2, np.dot(L_uv, N_uv)), N_uv), L_uv)
+
+                Iamb = ka * Ia
+                Idiff = np.dot((kd * IL), np.dot(L_uv, N_uv))
+                Ispec = np.dot((ks * IL), math.pow(np.dot(V_uv, R_uv), n))
+
+                Itot = Iamb + Idiff + Ispec
+
+                red = ([0, 0, 255])
+                if(Itot < 0): Itot = 0
+                res = np.dot(red, Itot)
+                self.fillTriangle((p[0], p[1], p[2]), (res[0], res[1], res[2]))
+        
+        self.fillCircle((ls_x, ls_y), (0, 255, 255))
+            
+
 
 if __name__ == "__main__":
     import sys
