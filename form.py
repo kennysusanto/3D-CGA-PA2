@@ -186,6 +186,16 @@ class Ui_MainWindow(object):
         # button connections
         self.pushButton_reset.clicked.connect(self.reset)
         self.pushButton_update_3.clicked.connect(self.updateAll)
+        self.lineEdit_ka.returnPressed.connect(self.updateAll)
+        self.lineEdit_kd.returnPressed.connect(self.updateAll)
+        self.lineEdit_ks.returnPressed.connect(self.updateAll)
+        self.lineEdit_n.returnPressed.connect(self.updateAll)
+        self.lineEdit_x_ls.returnPressed.connect(self.updateAll)
+        self.lineEdit_x_sphere.returnPressed.connect(self.updateAll)
+        self.lineEdit_y_ls.returnPressed.connect(self.updateAll)
+        self.lineEdit_y_sphere.returnPressed.connect(self.updateAll)
+        self.lineEdit_z_ls.returnPressed.connect(self.updateAll)
+        self.lineEdit_z_sphere.returnPressed.connect(self.updateAll)
 
         # variable to store sphere polygons
         self.P = []
@@ -219,12 +229,12 @@ class Ui_MainWindow(object):
         self.lineEdit_z_sphere.setText("0")
 
         self.lineEdit_x_ls.setText("0")
-        self.lineEdit_y_ls.setText("100")
-        self.lineEdit_z_ls.setText("100")
+        self.lineEdit_y_ls.setText("0")
+        self.lineEdit_z_ls.setText("200")
 
         self.lineEdit_ka.setText("0.3")
-        self.lineEdit_ks.setText("0.3")
-        self.lineEdit_kd.setText("0.3")
+        self.lineEdit_kd.setText("0.5")
+        self.lineEdit_ks.setText("0.7")
         self.lineEdit_n.setText("10")
         
         self.clearScreen()
@@ -253,17 +263,17 @@ class Ui_MainWindow(object):
         canvas.setPen(QtGui.QPen(QtGui.QColor(color[0], color[1], color[2])))
         canvas.drawEllipse(QtCore.QPoint(x, y), 5, 5)
     
-    def fillTriangle(self, points, color):
+    def fillTriangle(self, points, color, alpha=255):
         p1 = points[0]
         p2 = points[1]
         p3 = points[2]
         canvas = QtGui.QPainter(self.painter.pixmap())
         path = QtGui.QPainterPath()
-        canvas.setBrush(QtGui.QColor(color[0], color[1], color[2]))
+        canvas.setBrush(QtGui.QColor(color[0], color[1], color[2], alpha))
         path.moveTo(p1[0], p1[1])
         path.lineTo(p2[0], p2[1])
         path.lineTo(p3[0], p3[1])
-        canvas.setPen(QtGui.QPen(QtGui.QColor(color[0], color[1], color[2])))
+        canvas.setPen(QtGui.QPen(QtGui.QColor(color[0], color[1], color[2], alpha)))
         canvas.drawPath(path)
     
     def drawLine(self, points):
@@ -280,7 +290,7 @@ class Ui_MainWindow(object):
     def F(self, r, d, e, pos):
         x = r * np.cos(np.deg2rad(e)) * np.sin(np.deg2rad(d)) + pos[0] + 200
         y = r * np.sin(np.deg2rad(e)) + pos[1] + 200
-        z = r * np.cos(np.deg2rad(d)) * np.cos(np.deg2rad(d)) + pos[2] + 200
+        z = r * np.cos(np.deg2rad(d)) * np.cos(np.deg2rad(d)) + pos[2]
         P = [x, y, z]
         return P
 
@@ -432,11 +442,11 @@ class Ui_MainWindow(object):
 
         ls_x = int(self.lineEdit_x_ls.text()) + 200
         ls_y = int(self.lineEdit_y_ls.text()) + 200
-        ls_z = int(self.lineEdit_z_ls.text()) + 200
+        ls_z = int(self.lineEdit_z_ls.text())
 
         ls_V = ([ls_x, ls_y, ls_z])
 
-        viewer = [0, 0, 10]
+        viewer = [0, 0, 200]
 
         ka = float(self.lineEdit_ka.text())
         kd = float(self.lineEdit_kd.text())
@@ -451,7 +461,7 @@ class Ui_MainWindow(object):
                 fv = p[0] # first vertex of polygon
                 p_V = ([fv[0], fv[1], fv[2]])
                 L = np.subtract(ls_V, p_V)
-                N = np.cross(np.subtract(p[1], p[0]), np.subtract(p[2], p[1]))
+                N = np.cross(np.subtract(p[2], p[0]), np.subtract(p[0], p[1]))
                 viewer_V = ([viewer[0], viewer[1], viewer[2]])
                 V = np.subtract(viewer_V, p_V)
 
@@ -472,12 +482,18 @@ class Ui_MainWindow(object):
 
                 Itot = Iamb + Idiff + Ispec
 
-                c = 255 * Itot
+                c = 255 * (Iamb + Idiff)
                 if(c < 0): c = 0
                 elif(c > 255): c = 255
-                
+                c = 255 - c - 128
                 res = [0, 0, c]
                 self.fillTriangle((p[0], p[1], p[2]), (res[0], res[1], res[2]))
+
+                # c = 255 * Ispec
+                # if(c < 0): c = 0
+                # elif(c > 255): c = 255
+                # res = [0, c, 0]
+                # self.fillTriangle((p[0], p[1], p[2]), (res[0], res[1], res[2]))
         
         self.fillCircle((ls_x, ls_y), (0, 255, 255))
             
