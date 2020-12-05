@@ -232,9 +232,9 @@ class Ui_MainWindow(object):
         self.lineEdit_y_ls.setText("0")
         self.lineEdit_z_ls.setText("200")
 
-        self.lineEdit_ka.setText("0.3")
-        self.lineEdit_kd.setText("0.5")
-        self.lineEdit_ks.setText("0.7")
+        self.lineEdit_ka.setText("0.6")
+        self.lineEdit_kd.setText("0.4")
+        self.lineEdit_ks.setText("0.5")
         self.lineEdit_n.setText("10")
         
         self.clearScreen()
@@ -295,7 +295,7 @@ class Ui_MainWindow(object):
         return P
 
     def backfaceCulling(self, p1, p2, p3):
-        V = ([0, 0, 1])
+        V = ([0, 0, 200])
 
         p1 = ([p1[0], p1[1], p1[2]])
         p2 = ([p2[0], p2[1], p2[2]])
@@ -452,47 +452,92 @@ class Ui_MainWindow(object):
         kd = float(self.lineEdit_kd.text())
         ks = float(self.lineEdit_ks.text())
         n = int(self.lineEdit_n.text())
-        Ia = 0.3
+        Ia = 0.5
         IL = 0.5
+
+        aL = ([0, 0, 255])
+        Ia = np.dot(Ia, aL)
+
+        iL = ([255, 255, 255])
+        IL = np.dot(IL, iL)
 
         for p in P:
             p = self.backfaceCulling(p[0], p[1], p[2])
             if(p):
-                fv = p[0] # first vertex of polygon
-                p_V = ([fv[0], fv[1], fv[2]])
-                L = np.subtract(ls_V, p_V)
-                N = np.cross(np.subtract(p[2], p[0]), np.subtract(p[0], p[1]))
-                viewer_V = ([viewer[0], viewer[1], viewer[2]])
-                V = np.subtract(viewer_V, p_V)
+                Isum = []
+                for v in p:
+                    p_V = ([v[0], v[1], v[2]])
+                    L = np.subtract(ls_V, p_V)
+                    N = np.cross(np.subtract(p[2], p[0]), np.subtract(p[0], p[1]))
+                    viewer_V = ([viewer[0], viewer[1], viewer[2]])
+                    V = np.subtract(viewer_V, p_V)
 
-                L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
-                L_uv = np.divide(L, L_mag)
+                    L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
+                    L_uv = np.divide(L, L_mag)
 
-                N_mag = math.sqrt(math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
-                N_uv = np.divide(N, N_mag)
+                    N_mag = math.sqrt(math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
+                    N_uv = np.divide(N, N_mag)
 
-                V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
-                V_uv = np.divide(V, V_mag)
+                    V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
+                    V_uv = np.divide(V, V_mag)
 
-                R_uv = np.subtract(np.dot(np.dot(2, np.dot(L_uv, N_uv)), N_uv), L_uv)
+                    R_uv = np.subtract(np.dot(np.dot(2, np.dot(L_uv, N_uv)), N_uv), L_uv)
 
-                Iamb = ka * Ia
-                Idiff = np.dot((kd * IL), np.dot(L_uv, N_uv))
-                Ispec = np.dot((ks * IL), math.pow(np.dot(V_uv, R_uv), n))
+                    Iamb = np.dot(ka, Ia)
+                    Iamb = np.round(Iamb)
+                    Idiff = np.dot(np.dot(kd, IL), np.dot(L_uv, N_uv))
+                    Idiff = np.round(Idiff)
+                    Ispec = np.dot(np.dot(ks, IL), math.pow(np.dot(V_uv, R_uv), n))
+                    Ispec = np.round(Ispec)
+                    # print((ks*IL), math.pow(np.dot(V_uv, R_uv), n), Ispec)
+                    
+                    Ispec2 = []
+                    for idx, k in enumerate(Idiff):
+                        if(k < 0):
+                            Ispec2.append(0)
+                        else:
+                            Ispec2.append(Ispec[idx])
 
-                Itot = Iamb + Idiff + Ispec
+                    Itot = np.add(Iamb, Idiff)
+                    Itot = np.add(Itot, Ispec2)
+                    
+                    res = []
+                    for k in Itot:
+                        if(k < 0):
+                            res.append(0)
+                        else:
+                            res.append(k)
 
-                c = 255 * (Iamb + Idiff)
-                if(c < 0): c = 0
-                elif(c > 255): c = 255
-                c = 255 - c - 128
-                res = [0, 0, c]
+                    Isum.append(res)
+
+                r = []
+                g = []
+                b = []
+                for v in Isum:
+                    r.append(v[0])
+                    g.append(v[1])
+                    b.append(v[2])
+                
+                r_avg = np.average(r) - 128
+                g_avg = np.average(g) - 128
+                b_avg = 128 - np.average(b)
+
+                if(r_avg < 0):
+                    r_avg = 0
+                if(g_avg < 0):
+                    g_avg = 0
+                if(b_avg < 0):
+                    b_avg = 0
+
+                res = [r_avg, g_avg, b_avg]
+
                 self.fillTriangle((p[0], p[1], p[2]), (res[0], res[1], res[2]))
 
                 # c = 255 * Ispec
                 # if(c < 0): c = 0
                 # elif(c > 255): c = 255
-                # res = [0, c, 0]
+                # c = 255 - c - 128
+                # res = [c, c, c]
                 # self.fillTriangle((p[0], p[1], p[2]), (res[0], res[1], res[2]))
         
         self.fillCircle((ls_x, ls_y), (0, 255, 255))
