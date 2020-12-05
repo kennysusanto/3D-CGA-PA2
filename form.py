@@ -235,7 +235,7 @@ class Ui_MainWindow(object):
         self.lineEdit_ka.setText("0.6")
         self.lineEdit_kd.setText("0.4")
         self.lineEdit_ks.setText("0.5")
-        self.lineEdit_n.setText("10")
+        self.lineEdit_n.setText("1")
         
         self.clearScreen()
 
@@ -246,11 +246,11 @@ class Ui_MainWindow(object):
         self.painter.update()
         self.P = []
 
-    def drawDot(self, loc):
+    def drawDot(self, loc, color):
         x = loc[0]
         y = loc[1]
         canvas = QtGui.QPainter(self.painter.pixmap())
-        canvas.setPen(QtGui.QColor("black"))
+        canvas.setPen(QtGui.QColor(color[0], color[1], color[2]))
         canvas.drawPoint(x, y)
         canvas.end()
         self.painter.update()
@@ -356,6 +356,7 @@ class Ui_MainWindow(object):
         self.generateSphere()
         # self.drawHandler()
         self.flatShading()
+        # self.gouraudShading()
     
     def generateSphere(self):
         x = int(self.lineEdit_x_sphere.text())
@@ -440,6 +441,12 @@ class Ui_MainWindow(object):
     def flatShading(self):
         P = self.P
 
+        x = int(self.lineEdit_x_sphere.text()) + 200
+        y = int(self.lineEdit_y_sphere.text()) + 200
+        z = int(self.lineEdit_z_sphere.text())
+
+        c_V = ([x, y, z])
+
         ls_x = int(self.lineEdit_x_ls.text()) + 200
         ls_y = int(self.lineEdit_y_ls.text()) + 200
         ls_z = int(self.lineEdit_z_ls.text())
@@ -453,7 +460,7 @@ class Ui_MainWindow(object):
         ks = float(self.lineEdit_ks.text())
         n = int(self.lineEdit_n.text())
         Ia = 0.5
-        IL = 0.5
+        IL = 0.7
 
         aL = ([0, 0, 255])
         Ia = np.dot(Ia, aL)
@@ -468,7 +475,8 @@ class Ui_MainWindow(object):
                 for v in p:
                     p_V = ([v[0], v[1], v[2]])
                     L = np.subtract(ls_V, p_V)
-                    N = np.cross(np.subtract(p[2], p[0]), np.subtract(p[0], p[1]))
+                    # N = np.cross(np.subtract(p[2], p[0]), np.subtract(p[0], p[1]))
+                    N = np.subtract(p_V, c_V)
                     viewer_V = ([viewer[0], viewer[1], viewer[2]])
                     V = np.subtract(viewer_V, p_V)
 
@@ -518,9 +526,13 @@ class Ui_MainWindow(object):
                     g.append(v[1])
                     b.append(v[2])
                 
-                r_avg = np.average(r) - 128
-                g_avg = np.average(g) - 128
-                b_avg = 128 - np.average(b)
+                # r_avg = np.average(r) - 128
+                # g_avg = np.average(g) - 128
+                # b_avg = 128 - np.average(b)
+
+                r_avg = np.average(r)
+                g_avg = np.average(g)
+                b_avg = np.average(b)
 
                 if(r_avg < 0):
                     r_avg = 0
@@ -532,17 +544,494 @@ class Ui_MainWindow(object):
                 res = [r_avg, g_avg, b_avg]
 
                 self.fillTriangle((p[0], p[1], p[2]), (res[0], res[1], res[2]))
-
-                # c = 255 * Ispec
-                # if(c < 0): c = 0
-                # elif(c > 255): c = 255
-                # c = 255 - c - 128
-                # res = [c, c, c]
-                # self.fillTriangle((p[0], p[1], p[2]), (res[0], res[1], res[2]))
         
         self.fillCircle((ls_x, ls_y), (0, 255, 255))
             
+    def gouraudShading(self):
+        P = self.P
 
+        ls_x = int(self.lineEdit_x_ls.text()) + 200
+        ls_y = int(self.lineEdit_y_ls.text()) + 200
+        ls_z = int(self.lineEdit_z_ls.text())
+
+        ls_V = ([ls_x, ls_y, ls_z])
+
+        viewer = [0, 0, 200]
+
+        ka = float(self.lineEdit_ka.text())
+        kd = float(self.lineEdit_kd.text())
+        ks = float(self.lineEdit_ks.text())
+        n = int(self.lineEdit_n.text())
+        Ia = 0.5
+        IL = 0.5
+
+        aL = ([0, 0, 255])
+        Ia = np.dot(Ia, aL)
+
+        iL = ([255, 255, 255])
+        IL = np.dot(IL, iL)
+
+        Iamb = np.dot(ka, Ia)
+        Iamb = np.round(Iamb)
+
+        bfccounter = 0
+        for p in P:
+            if(self.backfaceCulling(p[0], p[1], p[2])):
+                bfccounter += 1
+
+        # print(len(P), bfccounter)
+
+        counter0 = 0
+        counter1 = 0
+
+        for p in P:
+            p = self.backfaceCulling(p[0], p[1], p[2])
+            if(p):
+                Isum = []
+                for v in p:
+                    p_V = ([v[0], v[1], v[2]])
+                    L = np.subtract(ls_V, p_V)
+                    N = np.cross(np.subtract(p[2], p[0]), np.subtract(p[0], p[1]))
+                    viewer_V = ([viewer[0], viewer[1], viewer[2]])
+                    V = np.subtract(viewer_V, p_V)
+
+                    L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
+                    L_uv = np.divide(L, L_mag)
+
+                    N_mag = math.sqrt(math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
+                    N_uv = np.divide(N, N_mag)
+
+                    V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
+                    V_uv = np.divide(V, V_mag)
+
+                    R_uv = np.subtract(np.dot(np.dot(2, np.dot(L_uv, N_uv)), N_uv), L_uv)
+
+                    Idiff = np.dot(np.dot(kd, IL), np.dot(L_uv, N_uv))
+                    Idiff = np.round(Idiff)
+                    Ispec = np.dot(np.dot(ks, IL), math.pow(np.dot(V_uv, R_uv), n))
+                    Ispec = np.round(Ispec)
+                    # print((ks*IL), math.pow(np.dot(V_uv, R_uv), n), Ispec)
+                    
+                    Ispec2 = []
+                    for idx, k in enumerate(Idiff):
+                        if(k < 0):
+                            Ispec2.append(0)
+                        else:
+                            Ispec2.append(Ispec[idx])
+
+                    Itot = np.add(Iamb, Idiff)
+                    Itot = np.add(Itot, Ispec2)
+                    
+                    res = []
+                    for k in Itot:
+                        if(k < 0):
+                            res.append(0)
+                        else:
+                            res.append(k)
+
+                    Isum.append(res)
+
+                I1 = Isum[0]
+                I2 = Isum[1]
+                I3 = Isum[2]
+
+                p1 = p[0]
+                p2 = p[1]
+                p3 = p[2]
+
+                ydiff = [abs(p1[1]-p2[1]), abs(p1[1]-p3[1]), abs(p2[1]-p3[1])]
+                ydmax = np.max(ydiff)
+                
+                idx = ydiff.index(ydmax)
+
+                if(idx == 0):
+                    counter0 += 1
+                    # garis paling panjang antara p1 dan p2
+                    yA = p1[1]
+                    yB = p1[1]
+                    y1 = p1[1]
+                    y2 = p2[1]
+                    y3 = p3[1]
+                    x1 = p1[0]
+                    x2 = p2[0]
+                    x3 = p3[0]
+                    if(yA < y2):
+                        # add
+                        while(yA < y3):
+                            # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
+                            # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
+                            IA = np.add(I1, np.dot(((yA-y1)/(y3-y1)), np.subtract(I3, I1)))
+                            IB = np.add(I1, np.dot(((yB-y1)/(y2-y1)), np.subtract(I2, I1)))
+                            
+                            tA = ((yA-y1)/(y3-y1))
+                            tB = ((yA-y1)/(y2-y1))
+
+                            xA = x1 + tA * (x3 - x1)
+                            xB = x1 + tB * (x2 - x1)
+                            
+                            xP = xA
+                            # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
+                            k = 0
+                            if((xB-xA) == 0):
+                                k = 0
+                            else:
+                                k = ((xP-xA)/(xB-xA))
+                            IP = np.add(IA, np.dot(k, np.subtract(IB, IA)))
+                            dIx = ([0, 0, 0])
+                            if((xB-xA) <= 0):
+                                dIx = ([0, 0, 0])
+                            else:
+                                dIx = np.divide(np.subtract(IB, IA), (xB-xA))
+
+                            if(xP < xB):
+                                while(xP < xB):
+                                    IP = np.add(IP, dIx)
+                                    self.drawDot((xP, yA), IP)
+                                    xP += 1
+                            elif(xP > xB):
+                                while(xP > xB):
+                                    IP = np.add(IP, dIx)
+                                    self.drawDot((xP, yA), IP)
+                                    xP -= 1
+                                    
+                            yA += 1
+                            yB += 1
+
+                        while(yA < y2):
+                            # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
+                            # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
+                            IA = np.add(I1, np.dot(((yA-y1)/(y2-y3)), np.subtract(I2, I3)))
+                            IB = np.add(I1, np.dot(((yB-y1)/(y2-y1)), np.subtract(I2, I1)))
+                            
+                            tA = ((yA-y1)/(y2-y3))
+                            tB = ((yA-y1)/(y2-y1))
+
+                            xA = x1 + tA * (x2 - x3)
+                            xB = x1 + tB * (x2 - x1)
+                            
+                            xP = xA
+                            # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
+                            k = 0
+                            if((xB-xA) == 0):
+                                k = 0
+                            else:
+                                k = ((xP-xA)/(xB-xA))
+                            IP = np.add(IA, np.dot(k, np.subtract(IB, IA)))
+                            dIx = ([0, 0, 0])
+                            if((xB-xA) <= 0):
+                                dIx = ([0, 0, 0])
+                            else:
+                                dIx = np.divide(np.subtract(IB, IA), (xB-xA))
+
+                            if(xP < xB):
+                                while(xP < xB):
+                                    IP = np.add(IP, dIx)
+                                    self.drawDot((xP, yA), IP)
+                                    xP += 1
+                            elif(xP > xB):
+                                while(xP > xB):
+                                    IP = np.add(IP, dIx)
+                                    self.drawDot((xP, yA), IP)
+                                    xP -= 1
+                                    
+                            yA += 1
+                            yB += 1
+
+                    elif(yA > y2):
+                        # subtract
+                        # add
+                        while(yA > y3):
+                            # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
+                            # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
+                            IA = np.add(I1, np.dot(((yA-y1)/(y3-y1)), np.subtract(I3, I1)))
+                            IB = np.add(I1, np.dot(((yB-y1)/(y2-y1)), np.subtract(I2, I1)))
+                            
+                            tA = ((yA-y1)/(y3-y1))
+                            tB = ((yA-y1)/(y2-y1))
+
+                            xA = x1 + tA * (x3 - x1)
+                            xB = x1 + tB * (x2 - x1)
+
+                            xP = xA
+                            # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
+                            k = 0
+                            if((xB-xA) == 0):
+                                k = 0
+                            else:
+                                k = ((xP-xA)/(xB-xA))
+                            IP = np.add(IA, np.dot(k, np.subtract(IB, IA)))
+                            dIx = ([0, 0, 0])
+                            if((xB-xA) <= 0):
+                                dIx = ([0, 0, 0])
+                            else:
+                                dIx = np.divide(np.subtract(IB, IA), (xB-xA))
+
+                            if(xP < xB):
+                                while(xP < xB):
+                                    IP = np.add(IP, dIx)
+                                    self.drawDot((xP, yA), IP)
+                                    xP += 1
+                            elif(xP > xB):
+                                while(xP > xB):
+                                    IP = np.add(IP, dIx)
+                                    self.drawDot((xP, yA), IP)
+                                    xP -= 1
+                                    
+                            yA -= 1
+                            yB -= 1
+
+                        while(yA > y2):
+                            # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
+                            # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
+                            IA = np.add(I1, np.dot(((yA-y1)/(y2-y3)), np.subtract(I2, I3)))
+                            IB = np.add(I1, np.dot(((yB-y1)/(y2-y1)), np.subtract(I2, I1)))
+                            
+                            tA = ((yA-y1)/(y2-y3))
+                            tB = ((yA-y1)/(y2-y1))
+
+                            xA = x1 + tA * (x2 - x3)
+                            xB = x1 + tB * (x2 - x1)
+
+                            xP = xA
+                            # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
+                            k = 0
+                            if((xB-xA) == 0):
+                                k = 0
+                            else:
+                                k = ((xP-xA)/(xB-xA))
+                            IP = np.add(IA, np.dot(k, np.subtract(IB, IA)))
+                            dIx = ([0, 0, 0])
+                            if((xB-xA) <= 0):
+                                dIx = ([0, 0, 0])
+                            else:
+                                dIx = np.divide(np.subtract(IB, IA), (xB-xA))
+
+                            if(xP < xB):
+                                while(xP < xB):
+                                    IP = np.add(IP, dIx)
+                                    self.drawDot((xP, yA), IP)
+                                    xP += 1
+                            elif(xP > xB):
+                                while(xP > xB):
+                                    IP = np.add(IP, dIx)
+                                    self.drawDot((xP, yA), IP)
+                                    xP -= 1
+                                    
+                            yA -= 1
+                            yB -= 1
+                    
+                elif(idx == 1):
+                    counter1 += 1
+                    # garis paling panjang antara p1 dan p3
+
+                    I1 = ([I1[2], I1[1], I1[0]])
+                    I2 = ([I2[2], I2[1], I2[0]])
+                    I3 = ([I3[2], I3[1], I3[0]])
+
+                    yA = p1[1]
+                    yB = p1[1]
+                    y1 = p1[1]
+                    y2 = p2[1]
+                    y3 = p3[1]
+                    x1 = p1[0]
+                    x2 = p2[0]
+                    x3 = p3[0]
+
+                    if(yA < y3):
+                        # add
+                        while(yA < y2):
+                            # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
+                            # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
+                            IA = np.add(I1, np.dot(((yA-y1)/(y2-y1)), np.subtract(I2, I1)))
+                            IB = np.add(I1, np.dot(((yB-y1)/(y3-y1)), np.subtract(I3, I1)))
+                            
+                            tA = ((yA-y1)/(y2-y1))
+                            tB = ((yA-y1)/(y3-y1))
+
+                            xA = x1 + tA * (x2 - x1)
+                            xB = x1 + tB * (x3 - x1)
+
+                            xP = xA
+                            # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
+                            # print((xB-xA))
+                            k = 0
+                            if((xB-xA) == 0):
+                                k = 0
+                            else:
+                                k = ((xP-xA)/(xB-xA))
+                            IP = np.add(IA, np.dot(k, np.subtract(IB, IA)))
+                            dIx = ([0, 0, 0])
+                            if((xB-xA) <= 0):
+                                dIx = ([0, 0, 0])
+                            else:
+                                dIx = np.divide(np.subtract(IB, IA), (xB-xA))
+
+                            if(xP < xB):
+                                while(xP < xB):
+                                    IP = np.add(IP, dIx)
+                                    self.drawDot((xP, yA), IP)
+                                    xP += 1
+                            elif(xP > xB):
+                                while(xP > xB):
+                                    IP = np.add(IP, dIx)
+                                    self.drawDot((xP, yA), IP)
+                                    xP -= 1
+                                    
+                            yA += 1
+                            yB += 1
+
+                        while(yA < y3):
+                            # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
+                            # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
+                            IA = np.add(I1, np.dot(((yA-y1)/(y3-y1)), np.subtract(I3, I1)))
+                            IB = np.add(I1, np.dot(((yB-y1)/(y3-y2)), np.subtract(I3, I2)))
+                            
+                            tA = ((yA-y1)/(y3-y1))
+                            tB = ((yA-y1)/(y3-y2))
+
+                            xA = x1 + tA * (x3 - x1)
+                            xB = x1 + tB * (x3 - x2)
+
+                            xP = xA
+                            # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
+                            # print(xB-xA) # nyala negative
+                            k = 0
+                            if((xB-xA) == 0):
+                                k = 0
+                            else:
+                                k = ((xP-xA)/(xB-xA))
+                            IP = np.add(IA, np.dot(k, np.subtract(IB, IA)))
+                            dIx = ([0, 0, 0])
+                            if((xB-xA) <= 0):
+                                dIx = ([0, 0, 0])
+                            else:
+                                dIx = np.divide(np.subtract(IB, IA), (xB-xA))
+
+                            if(xP < xB):
+                                while(xP < xB):
+                                    IP = np.add(IP, dIx)
+                                    self.drawDot((xP, yA), IP)
+                                    xP += 1
+                            elif(xP > xB):
+                                while(xP > xB):
+                                    IP = np.add(IP, dIx)
+                                    self.drawDot((xP, yA), IP)
+                                    xP -= 1
+                                    
+                            yA += 1
+                            yB += 1
+
+                    elif(yA > y3):
+                        # subtract
+                        while(yA > y2):
+                            # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
+                            # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
+                            IA = np.add(I1, np.dot(((yA-y1)/(y2-y1)), np.subtract(I2, I1)))
+                            IB = np.add(I1, np.dot(((yB-y1)/(y3-y1)), np.subtract(I3, I1)))
+                            
+                            tA = ((yA-y1)/(y2-y1))
+                            tB = ((yA-y1)/(y3-y1))
+
+                            xA = x1 + tA * (x2 - x1)
+                            xB = x1 + tB * (x3 - x1)
+
+                            xP = xA
+                            # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
+                            # print(xB-xA)
+                            k = 0
+                            if((xB-xA) == 0):
+                                k = 0
+                            else:
+                                k = ((xP-xA)/(xB-xA))
+                            IP = np.add(IA, np.dot(k, np.subtract(IB, IA)))
+                            dIx = ([0, 0, 0])
+                            if((xB-xA) <= 0):
+                                dIx = ([0, 0, 0])
+                            else:
+                                dIx = np.divide(np.subtract(IB, IA), (xB-xA))
+
+                            if(xP < xB):
+                                while(xP < xB):
+                                    IP = np.add(IP, dIx)
+                                    self.drawDot((xP, yA), IP)
+                                    xP += 1
+                            elif(xP > xB):
+                                while(xP > xB):
+                                    IP = np.add(IP, dIx)
+                                    self.drawDot((xP, yA), IP)
+                                    xP -= 1
+                                    
+                            yA -= 1
+                            yB -= 1
+
+                        while(yA > y3):
+                            # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
+                            # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
+                            IA = np.add(I1, np.dot(((yA-y1)/(y3-y2)), np.subtract(I3, I2)))
+                            IB = np.add(I1, np.dot(((yB-y1)/(y3-y1)), np.subtract(I3, I1)))
+                            
+                            tA = ((yA-y1)/(y3-y2))
+                            tB = ((yA-y1)/(y3-y1))
+
+                            xA = x1 + tA * (x3 - x2)
+                            xB = x1 + tB * (x3 - x1)
+
+                            xP = xA
+                            # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
+                            # print(xB-xA) # nyala positive
+                            k = 0
+                            if((xB-xA) == 0):
+                                k = 0
+                            else:
+                                k = ((xP-xA)/(xB-xA))
+                            IP = np.add(IA, np.dot(k, np.subtract(IB, IA)))
+                            dIx = ([0, 0, 0])
+                            if((xB-xA) <= 0):
+                                dIx = ([0, 0, 0])
+                            else:
+                                dIx = np.divide(np.subtract(IB, IA), (xB-xA))
+
+                            if(xP < xB):
+                                while(xP < xB):
+                                    IP = np.add(IP, dIx)
+                                    self.drawDot((xP, yA), IP)
+                                    xP += 1
+                            elif(xP > xB):
+                                while(xP > xB):
+                                    IP = np.add(IP, dIx)
+                                    self.drawDot((xP, yA), IP)
+                                    xP -= 1
+                                    
+                            yA -= 1
+                            yB -= 1
+
+                elif(idx == 2):
+                    print("not included")
+                
+
+                # r = []
+                # g = []
+                # b = []
+                # for v in Isum:
+                #     r.append(v[0])
+                #     g.append(v[1])
+                #     b.append(v[2])
+                
+                # r_avg = np.average(r) - 128
+                # g_avg = np.average(g) - 128
+                # b_avg = 128 - np.average(b)
+
+                # if(r_avg < 0):
+                #     r_avg = 0
+                # if(g_avg < 0):
+                #     g_avg = 0
+                # if(b_avg < 0):
+                #     b_avg = 0
+
+                # res = [r_avg, g_avg, b_avg]
+
+                # self.fillTriangle((p[0], p[1], p[2]), (res[0], res[1], res[2]))
+        # print(counter0, counter1, counter0+counter1)
 
 if __name__ == "__main__":
     import sys
