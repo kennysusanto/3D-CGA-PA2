@@ -389,6 +389,102 @@ class Ui_MainWindow(object):
                 V1.append(self.F(r, i * dLong, j * -dLat, pos))
         V1.append(self.F(r, 0, -90, pos))
 
+        # VandV1 = []
+        # for k in V:
+        #     VandV1.append(k)
+        # for l in V1:
+        #     VandV1.append(l)
+
+
+        #parallelProjection
+        VRP = ([0, 0, 0])
+        VPN = ([0, 0, 1])
+        VUP = ([0, 1, 0])
+        COP = ([0, 0, 4])
+        umin = -2
+        vmin = -2
+        umax = 2
+        vmax = 2
+        fp = 2
+        bp = -10
+        VPN_mag = math.sqrt(math.pow(VPN[0], 2) + math.pow(VPN[1], 2) + math.pow(VPN[2], 2))
+        N = np.divide(VPN, VPN_mag)
+
+        VUP_mag = math.sqrt(math.pow(VUP[0], 2) + math.pow(VUP[1], 2) + math.pow(VUP[2], 2))
+        up = np.divide(VUP, VUP_mag)
+
+        upp = np.subtract(up, np.multiply(N, np.dot(up, N)))
+
+        upp_mag = math.sqrt(math.pow(upp[0], 2) + math.pow(upp[1], 2) + math.pow(upp[2], 2))
+
+        v = np.divide(upp, upp_mag)
+
+        u = np.cross(v, N)
+
+        r = ([VRP[0], VRP[1], VRP[2]])
+
+        rp = ([np.dot(np.negative(r), u), np.dot(np.negative(r), v), np.dot(np.negative(r), N)])
+
+        A = ([u[0], v[0], N[0], 0],
+             [u[1], v[1], N[1], 0],
+             [u[2], v[2], N[2], 0],
+             [rp[0], rp[1], rp[2], 1])
+        COPz = COP[2]
+        F = fp
+        B = bp
+
+        CW = ([(umax + umin) / 2, (vmax + vmin) / 2, 0])
+        DOP = np.subtract(CW, COP)
+
+        DOPx = DOP[0]
+        DOPy = DOP[1]
+        DOPz = DOP[2]
+        shx = -DOPx / DOPz
+        shy = -DOPy / DOPz
+
+        T3 = ([1, 0, 0, 0],
+              [0, 1, 0, 0],
+              [shx, shy, 1, 0],
+              [0, 0, 0, 1])
+
+        T4 = ([1, 0, 0, 0],
+              [0, 1, 0, 0],
+              [0, 0, 1, 0],
+              [-(umin + umax) / 2, -(vmin + vmax) / 2, -F, 1])
+
+        T5 = ([2 / (umax - umin), 0, 0, 0],
+              [0, 2 / (vmax - vmin), 0, 0],
+              [0, 0, 1 / (F - B), 0],
+              [0, 0, 0, 1])
+
+
+
+        T6 = ([1, 0, 0, 0],
+             [0, 1, 0, 0],
+             [0, 0, 1, 0],
+             [200, 200, 0, 1])
+
+        Pr1a = np.matmul(np.matmul(np.matmul(A, T3), T4), T5)
+        final = np.matmul(Pr1a,T6)
+
+
+
+        paralelV = []
+        for pr in V:
+            pv = (pr[0], pr[1], pr[2], 1)
+            res = np.matmul(Pr1a, pv)
+            paralelV.append(res)
+
+        paralelV1 = []
+        for pr in V1:
+            pv = (pr[0], pr[1], pr[2], 1)
+            res = np.matmul(Pr1a, pv)
+            paralelV1.append(res)
+
+        print(paralelV)
+
+
+
         # initializing polygons
         # top hemisphere
         P = []
@@ -422,21 +518,32 @@ class Ui_MainWindow(object):
         P1.append([(nLat - 1) * nLong + nLong - 1, (nLat - 1) * nLong, nLat * nLong])  
 
         # saving the sphere
-        
+
         for p in P:
-            p1 = V[p[0]]
-            p2 = V[p[1]]
-            p3 = V[p[2]]
+            p1 = paralelV[p[0]]
+            p2 = paralelV[p[1]]
+            p3 = paralelV[p[2]]
             self.P.append([p1, p2, p3])
 
         for p in P1:
-            p1 = V1[p[0]]
-            p2 = V1[p[1]]
-            p3 = V1[p[2]]
+            p1 = paralelV1[p[0]]
+            p2 = paralelV1[p[1]]
+            p3 = paralelV1[p[2]]
             self.P.append([p1, p2, p3])
-            
+
+
             
         # comment
+
+
+    # def parallelProj(self, vertex):
+
+        # # for p in points:
+        # for p in vertex:
+        #     pv = ([p[0], p[1], p[2], 1])
+        #     res = np.matmul(pv, Pr1a)
+
+
 
     def flatShading(self):
         P = self.P
@@ -491,14 +598,22 @@ class Ui_MainWindow(object):
 
                     R_uv = np.subtract(np.dot(np.dot(2, np.dot(L_uv, N_uv)), N_uv), L_uv)
 
+                    # r_only = np.dot((2 * N_uv), L_uv)
+                    # R_uv = np.subtract(np.dot(r_only, N_uv), L_uv)
+
                     Iamb = np.dot(ka, Ia)
                     Iamb = np.round(Iamb)
+                    ldotn  = np.dot(L_uv, N_uv)
                     Idiff = np.dot(np.dot(kd, IL), np.dot(L_uv, N_uv))
                     Idiff = np.round(Idiff)
-                    Ispec = np.dot(np.dot(ks, IL), math.pow(np.dot(V_uv, R_uv), n))
+
+                    vdotr = (np.dot(V_uv, R_uv))
+
+                    Ispec = np.dot(np.dot(ks, IL), math.pow(vdotr, n))
                     Ispec = np.round(Ispec)
+
                     # print((ks*IL), math.pow(np.dot(V_uv, R_uv), n), Ispec)
-                    
+
                     Ispec2 = []
                     for idx, k in enumerate(Idiff):
                         if(k < 0):
@@ -508,7 +623,7 @@ class Ui_MainWindow(object):
 
                     Itot = np.add(Iamb, Idiff)
                     Itot = np.add(Itot, Ispec2)
-                    
+
                     res = []
                     for k in Itot:
                         if(k < 0):
@@ -525,7 +640,7 @@ class Ui_MainWindow(object):
                     r.append(v[0])
                     g.append(v[1])
                     b.append(v[2])
-                
+
                 # r_avg = np.average(r) - 128
                 # g_avg = np.average(g) - 128
                 # b_avg = 128 - np.average(b)
@@ -536,10 +651,18 @@ class Ui_MainWindow(object):
 
                 if(r_avg < 0):
                     r_avg = 0
+                # elif(r_avg > 255):
+                #     r_avg = 255
+
                 if(g_avg < 0):
                     g_avg = 0
+                # elif (g_avg > 255):
+                #     g_avg = 255
+
                 if(b_avg < 0):
                     b_avg = 0
+                # elif (b_avg > 255):
+                #     b_avg = 255
 
                 res = [r_avg, g_avg, b_avg]
 
