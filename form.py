@@ -51,7 +51,7 @@ class PainterWidget(QtWidgets.QWidget):
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 440)
+        MainWindow.resize(1000, 440)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -60,7 +60,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(10, 10, 780, 400))
+        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(10, 10, 980, 400))
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
@@ -76,10 +76,32 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.painter)
         self.gridLayout = QtWidgets.QGridLayout()
         self.gridLayout.setObjectName("gridLayout")
+
+        # radio button
+        self.rFlat = QtWidgets.QRadioButton("Flat Shading", self.horizontalLayoutWidget)
+        self.rFlat.setChecked(True)
+        self.rFlat.toggled.connect(lambda: self.btnState(self.rFlat))
+
+        self.rGouraud = QtWidgets.QRadioButton("Gouraud Shading", self.horizontalLayoutWidget)
+        self.rGouraud.toggled.connect(lambda: self.btnState(self.rGouraud))
+
+        self.rPhong = QtWidgets.QRadioButton("Phong Shading", self.horizontalLayoutWidget)
+        self.rPhong.toggled.connect(lambda: self.btnState(self.rPhong))
+        
+        self.gridLayout_1 = QtWidgets.QGridLayout()
+
+        self.gridLayout_1.addWidget(self.rFlat, 0, 0, 1, 1)
+        self.gridLayout_1.addWidget(self.rGouraud, 0, 1, 1, 1)
+        self.gridLayout_1.addWidget(self.rPhong, 0, 2, 1, 1)
+
+        self.gridLayout.addLayout(self.gridLayout_1, 0, 0, 1, 2)
+        
+        # radio button end
+
         self.label_n = QtWidgets.QLabel(self.horizontalLayoutWidget)
         self.label_n.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_n.setObjectName("label_n")
-        self.gridLayout.addWidget(self.label_n, 5, 0, 1, 1)
+        self.gridLayout.addWidget(self.label_n, 6, 0, 1, 1)
         self.label_lightsource = QtWidgets.QLabel(self.horizontalLayoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -87,7 +109,7 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.label_lightsource.sizePolicy().hasHeightForWidth())
         self.label_lightsource.setSizePolicy(sizePolicy)
         self.label_lightsource.setObjectName("label_lightsource")
-        self.gridLayout.addWidget(self.label_lightsource, 0, 2, 1, 1)
+        self.gridLayout.addWidget(self.label_lightsource, 1, 1, 1, 1)
         self.gridLayout_5 = QtWidgets.QGridLayout()
         self.gridLayout_5.setObjectName("gridLayout_5")
         self.label_x_ls = QtWidgets.QLabel(self.horizontalLayoutWidget)
@@ -111,28 +133,12 @@ class Ui_MainWindow(object):
         self.lineEdit_z_ls = QtWidgets.QLineEdit(self.horizontalLayoutWidget)
         self.lineEdit_z_ls.setObjectName("lineEdit_z_ls")
         self.gridLayout_5.addWidget(self.lineEdit_z_ls, 2, 1, 1, 1)
-        self.gridLayout.addLayout(self.gridLayout_5, 1, 2, 1, 1)
-        self.lineEdit_ka = QtWidgets.QLineEdit(self.horizontalLayoutWidget)
-        self.lineEdit_ka.setObjectName("lineEdit_ka")
-        self.gridLayout.addWidget(self.lineEdit_ka, 2, 2, 1, 1)
-        self.lineEdit_kd = QtWidgets.QLineEdit(self.horizontalLayoutWidget)
-        self.lineEdit_kd.setObjectName("lineEdit_kd")
-        self.gridLayout.addWidget(self.lineEdit_kd, 3, 2, 1, 1)
-        self.lineEdit_ks = QtWidgets.QLineEdit(self.horizontalLayoutWidget)
-        self.lineEdit_ks.setObjectName("lineEdit_ks")
-        self.gridLayout.addWidget(self.lineEdit_ks, 4, 2, 1, 1)
-        self.label_sphere = QtWidgets.QLabel(self.horizontalLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label_sphere.sizePolicy().hasHeightForWidth())
-        self.label_sphere.setSizePolicy(sizePolicy)
-        self.label_sphere.setObjectName("label_sphere")
-        self.gridLayout.addWidget(self.label_sphere, 0, 0, 1, 1)
+        self.gridLayout.addLayout(self.gridLayout_5, 2, 1, 1, 1)
+        
         self.label_ks = QtWidgets.QLabel(self.horizontalLayoutWidget)
         self.label_ks.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_ks.setObjectName("label_ks")
-        self.gridLayout.addWidget(self.label_ks, 4, 0, 1, 1)
+        self.gridLayout.addWidget(self.label_ks, 5, 0, 1, 1)
         self.gridLayout_4 = QtWidgets.QGridLayout()
         self.gridLayout_4.setObjectName("gridLayout_4")
         self.lineEdit_x_sphere = QtWidgets.QLineEdit(self.horizontalLayoutWidget)
@@ -156,34 +162,111 @@ class Ui_MainWindow(object):
         self.label_y_sphere.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_y_sphere.setObjectName("label_y_sphere")
         self.gridLayout_4.addWidget(self.label_y_sphere, 1, 0, 1, 1)
-        self.gridLayout.addLayout(self.gridLayout_4, 1, 0, 1, 1)
+        self.gridLayout.addLayout(self.gridLayout_4, 2, 0, 1, 1)
         self.label_ka = QtWidgets.QLabel(self.horizontalLayoutWidget)
         self.label_ka.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_ka.setObjectName("label_ka")
-        self.gridLayout.addWidget(self.label_ka, 2, 0, 1, 1)
+        self.gridLayout.addWidget(self.label_ka, 3, 0, 1, 1)
+        self.lineEdit_ka = QtWidgets.QLineEdit(self.horizontalLayoutWidget)
+        self.lineEdit_ka.setObjectName("lineEdit_ka")
+        self.gridLayout.addWidget(self.lineEdit_ka, 3, 1, 1, 1)
+        self.lineEdit_kd = QtWidgets.QLineEdit(self.horizontalLayoutWidget)
+        self.lineEdit_kd.setObjectName("lineEdit_kd")
+        self.gridLayout.addWidget(self.lineEdit_kd, 4, 1, 1, 1)
+        self.lineEdit_ks = QtWidgets.QLineEdit(self.horizontalLayoutWidget)
+        self.lineEdit_ks.setObjectName("lineEdit_ks")
+        self.gridLayout.addWidget(self.lineEdit_ks, 5, 1, 1, 1)
+        self.label_sphere = QtWidgets.QLabel(self.horizontalLayoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_sphere.sizePolicy().hasHeightForWidth())
+        self.label_sphere.setSizePolicy(sizePolicy)
+        self.label_sphere.setObjectName("label_sphere")
+        self.gridLayout.addWidget(self.label_sphere, 1, 0, 1, 1)
         self.lineEdit_n = QtWidgets.QLineEdit(self.horizontalLayoutWidget)
         self.lineEdit_n.setObjectName("lineEdit_n")
-        self.gridLayout.addWidget(self.lineEdit_n, 5, 2, 1, 1)
+        self.gridLayout.addWidget(self.lineEdit_n, 6, 1, 1, 1)
         self.label_kd = QtWidgets.QLabel(self.horizontalLayoutWidget)
         self.label_kd.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_kd.setObjectName("label_kd")
-        self.gridLayout.addWidget(self.label_kd, 3, 0, 1, 1)
+        self.gridLayout.addWidget(self.label_kd, 4, 0, 1, 1)
         self.pushButton_update_3 = QtWidgets.QPushButton(self.horizontalLayoutWidget)
         self.pushButton_update_3.setObjectName("pushButton_update_3")
-        self.gridLayout.addWidget(self.pushButton_update_3, 6, 0, 1, 1)
+        self.gridLayout.addWidget(self.pushButton_update_3, 7, 0, 1, 1)
         self.pushButton_reset = QtWidgets.QPushButton(self.horizontalLayoutWidget)
         self.pushButton_reset.setObjectName("pushButton_reset")
-        self.gridLayout.addWidget(self.pushButton_reset, 6, 2, 1, 1)
+        self.gridLayout.addWidget(self.pushButton_reset, 7, 1, 1, 1)
+        self.gridLayout.setAlignment(QtCore.Qt.AlignTop) # align top
+
+        # listview
+        self.listView = QtWidgets.QListView(self.horizontalLayoutWidget)
+
+        entries = ['one','two', 'three']
+
+        model = QtGui.QStandardItemModel()
+        self.listView.setModel(model)
+
+        for i in entries:
+            item = QtGui.QStandardItem(i)
+            model.appendRow(item)
+
+        self.gridLayout.addWidget(self.listView, 8, 0, 1, 2)
+
+        self.listView.selectionModel().currentChanged.connect(self.checklv)
+
         self.horizontalLayout.addLayout(self.gridLayout)
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
+        # slider
+
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.horizontalLayoutWidget)
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.horizontalLayout.addLayout(self.verticalLayout)
+
+        label_slsx = QtWidgets.QLabel(self.horizontalLayoutWidget)
+        label_slsx.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
+        label_slsx.setText("light source x slider")
+
+        slider_lsx = QtWidgets.QSlider(QtCore.Qt.Horizontal)
+        slider_lsx.setTickPosition(QtWidgets.QSlider.TicksBothSides)
+        slider_lsx.setRange(-150, 150)
+        slider_lsx.valueChanged.connect(self.updateSliderx)
+
+        label_slsy = QtWidgets.QLabel(self.horizontalLayoutWidget)
+        label_slsy.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
+        label_slsy.setText("light source y slider")
+
+        slider_lsy = QtWidgets.QSlider(QtCore.Qt.Horizontal)
+        slider_lsy.setTickPosition(QtWidgets.QSlider.TicksBothSides)
+        slider_lsy.setRange(-150, 150)
+        slider_lsy.valueChanged.connect(self.updateSlidery)
+
+        label_slsz = QtWidgets.QLabel(self.horizontalLayoutWidget)
+        label_slsz.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
+        label_slsz.setText("light source z slider")
+
+        slider_lsz = QtWidgets.QSlider(QtCore.Qt.Horizontal)
+        slider_lsz.setTickPosition(QtWidgets.QSlider.TicksBothSides)
+        slider_lsz.setRange(101, 400)
+        slider_lsz.valueChanged.connect(self.updateSliderz)
+
+        self.verticalLayout.addWidget(label_slsx)
+        self.verticalLayout.addWidget(slider_lsx)
+        self.verticalLayout.addWidget(label_slsy)
+        self.verticalLayout.addWidget(slider_lsy)
+        self.verticalLayout.addWidget(label_slsz)
+        self.verticalLayout.addWidget(slider_lsz)
+        self.verticalLayout.addStretch() # align top
+
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-        # button connections
+        # connections
         self.pushButton_reset.clicked.connect(self.reset)
         self.pushButton_update_3.clicked.connect(self.updateAll)
         self.lineEdit_ka.returnPressed.connect(self.updateAll)
@@ -197,14 +280,18 @@ class Ui_MainWindow(object):
         self.lineEdit_z_ls.returnPressed.connect(self.updateAll)
         self.lineEdit_z_sphere.returnPressed.connect(self.updateAll)
 
-        # variable to store sphere polygons
+        # global variables
         self.P = []
+        self.mode = 0
+        self.backc = 0
+        self.frontc = 0
 
         # on form load
         self.reset()
-        self.statusbar.showMessage("Ready")
         self.generateSphere()
-
+        self.updateAll()
+        self.statusbar.showMessage("Ready")
+        
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Shading"))
@@ -223,6 +310,48 @@ class Ui_MainWindow(object):
         self.pushButton_update_3.setText(_translate("MainWindow", "Update"))
         self.pushButton_reset.setText(_translate("MainWindow", "Reset"))
 
+    def btnState(self, b):
+        if(b.text() == "Flat Shading"):
+            if(b.isChecked()):
+                self.mode = 0
+                print(f"{b.text()} is selected")
+            else:
+                print(f"{b.text()} is deselected")
+        
+        elif(b.text() == "Gouraud Shading"):
+            if(b.isChecked()):
+                self.mode = 1
+                print(f"{b.text()} is selected")
+            else:
+                print(f"{b.text()} is deselected")
+        
+        elif(b.text() == "Phong Shading"):
+            if(b.isChecked()):
+                self.mode = 2
+                print(f"{b.text()} is selected")
+            else:
+                print(f"{b.text()} is deselected")
+
+    def checklv(self, current, previous):
+        print('Row %d selected, prev %d row' % (current.row(), previous.row()))
+    
+    def updateSliderx(self, value):
+        self.lineEdit_x_ls.clear()
+        self.lineEdit_x_ls.insert(str(value))
+        self.suController()
+
+    def updateSlidery(self, value):
+        self.lineEdit_y_ls.clear()
+        self.lineEdit_y_ls.insert(str(value))
+        self.suController()
+
+    def updateSliderz(self, value):
+        self.lineEdit_z_ls.clear()
+        self.lineEdit_z_ls.insert(str(value))
+        self.suController()
+
+    
+
     def reset(self):
         self.lineEdit_x_sphere.setText("0")
         self.lineEdit_y_sphere.setText("0")
@@ -232,19 +361,19 @@ class Ui_MainWindow(object):
         self.lineEdit_y_ls.setText("0")
         self.lineEdit_z_ls.setText("200")
 
-        self.lineEdit_ka.setText("0.6")
-        self.lineEdit_kd.setText("0.4")
-        self.lineEdit_ks.setText("0.5")
-        self.lineEdit_n.setText("1")
+        self.lineEdit_ka.setText("0.3")
+        self.lineEdit_kd.setText("0.5")
+        self.lineEdit_ks.setText("0.7")
+        self.lineEdit_n.setText("10")
         
         self.clearScreen()
 
     def clearScreen(self):
         canvas = QtGui.QPixmap(400, 400)
-        canvas.fill(QtGui.QColor("white"))
+        canvas.fill(QtGui.QColor("black"))
         self.painter.setPixmap(canvas)
         self.painter.update()
-        self.P = []
+        # self.P = []
 
     def drawDot(self, loc, color):
         x = loc[0]
@@ -294,9 +423,7 @@ class Ui_MainWindow(object):
         P = [x, y, z]
         return P
 
-    def backfaceCulling(self, p1, p2, p3):
-        V = ([0, 0, 200])
-
+    def backfaceCulling(self, V, p1, p2, p3):
         p1 = ([p1[0], p1[1], p1[2]])
         p2 = ([p2[0], p2[1], p2[2]])
         p3 = ([p3[0], p3[1], p3[2]])
@@ -304,9 +431,11 @@ class Ui_MainWindow(object):
 
         if(np.dot(V, N) < 0):
             # front surface, draw
+            self.frontc += 1
             return [p1, p2, p3]
         elif(np.dot(V, N) > 0):
             # back surface, don't draw
+            self.backc += 1
             return None
         elif(np.dot(V, N) == 0):
             # side surface, draw
@@ -334,30 +463,130 @@ class Ui_MainWindow(object):
         points = [x1, y1, x2, y2]
         self.drawLine(points)
 
-    def drawHandler(self):
-        framework = True # draw framework?
+    def framework(self):
+        fw = True # draw framework?
         bc = True # enable backface culling?
+
+        viewer = self.parallelProj([0, 0, 300])
 
         P = self.P
         for p in P:
             p1 = p[0]
             p2 = p[1]
             p3 = p[2]
-            if(framework):
+            if(fw):
                 if(bc):
-                    res = self.backfaceCulling(p1, p2, p3)
+                    res = self.backfaceCulling(viewer, p1, p2, p3)
                     if(res):
                         self.drawPoly(res[0], res[1], res[2])
                 else:
                     self.drawPoly(p1, p2, p3)
 
+    def suController(self):
+        self.clearScreen()
+        if(self.mode == 0):
+            self.flatShading()
+        elif(self.mode == 1):
+            self.gouraudShading()
+        elif(self.mode == 2):
+            #self.phongShading()
+            print("not yet implemented")
+    
     def updateAll(self):
         self.clearScreen()
+        self.P = []
         self.generateSphere()
-        # self.drawHandler()
-        self.flatShading()
-        # self.gouraudShading()
+        # self.framework()
+        if(self.mode == 0):
+            self.flatShading()
+        elif(self.mode == 1):
+            self.gouraudShading()
+        elif(self.mode == 2):
+            #self.phongShading()
+            print("not yet implemented")
+
+        print(f"front polygons: {self.frontc}")
+        print(f"back polygons: {self.backc}")
+        self.frontc = 0
+        self.backc = 0
     
+    def parallelProj(self, V):
+
+        VRP = ([0, 0, 0])
+        VPN = ([0, 0, 1])
+        VUP = ([0, 1, 0])
+        COP = ([0, 0, 1])
+        umin = 0
+        vmin = 0
+        umax = 1
+        vmax = 1
+        fp = 1
+        bp = -1
+
+        VPN_mag = math.sqrt(math.pow(VPN[0], 2) + math.pow(VPN[1], 2) + math.pow(VPN[2], 2))
+        N = np.divide(VPN, VPN_mag)
+
+        VUP_mag = math.sqrt(math.pow(VUP[0], 2) + math.pow(VUP[1], 2) + math.pow(VUP[2], 2))
+        up = np.divide(VUP, VUP_mag)
+
+        upp = np.subtract(up, np.multiply(N, np.dot(up, N)))
+        
+        upp_mag = math.sqrt(math.pow(upp[0], 2) + math.pow(upp[1], 2) + math.pow(upp[2], 2))
+
+        v = np.divide(upp, upp_mag)
+
+        u = np.cross(v, N)
+
+        r = ([VRP[0], VRP[1], VRP[2]])
+
+        rp = ([np.dot(np.negative(r), u), np.dot(np.negative(r), v), np.dot(np.negative(r), N)])
+
+        A = ([u[0], v[0], N[0], 0],
+             [u[1], v[1], N[1], 0],
+             [u[2], v[2], N[2], 0],
+             [rp[0], rp[1], rp[2], 1])
+
+        F = fp
+        B = bp
+
+        CW = ([0, 0, 0])
+        DOP = np.subtract(CW, COP)
+        
+        DOPx = DOP[0]
+        DOPy = DOP[1]
+        DOPz = DOP[2]
+        shx = -(DOPx/DOPz)
+        shy = -(DOPy/DOPz)
+
+        T3 = ([1, 0, 0, 0],
+              [0, 1, 0, 0],
+              [shx, shy, 1, 0],
+              [0, 0, 0, 1])
+
+        T4 = ([1, 0, 0, 0],
+              [0, 1, 0, 0],
+              [0, 0, 1, 0],
+              [-1, 1, -1, 1])
+
+        T5 = ([1, 0, 0, 0],
+              [0, -1, 0, 0],
+              [0, 0, 1, 0],
+              [0, 0, 0, 1])
+
+        T6 = ([1, 0, 0, 0],
+              [0, 1, 0, 0],
+              [0, 0, 1, 0],
+              [0, 400, 0, 1])
+
+        pp = np.matmul(np.matmul(np.matmul(A, T3), T5), T6)
+        # pp = np.matmul(np.matmul(np.matmul(np.matmul(A, T3), T4), T5), T6)
+        # pp = np.matmul(np.matmul(np.matmul(A, T3), T4), T5)
+        pv = ([V[0], V[1], V[2], 1])
+
+        res = np.matmul(pv, pp)
+        
+        return [res[0], res[1], res[2]]
+
     def generateSphere(self):
         x = int(self.lineEdit_x_sphere.text())
         y = int(self.lineEdit_y_sphere.text())
@@ -365,8 +594,8 @@ class Ui_MainWindow(object):
 
         pos = [x, y, z]
 
-        nLat = 4
-        nLong = 16
+        nLat = 6
+        nLong = 12
         r = 100
 
         dLong = 360 / nLong
@@ -453,23 +682,29 @@ class Ui_MainWindow(object):
 
         ls_V = ([ls_x, ls_y, ls_z])
 
-        viewer = [0, 0, 200]
+        viewer = ([0, 0, 300])
 
         ka = float(self.lineEdit_ka.text())
         kd = float(self.lineEdit_kd.text())
         ks = float(self.lineEdit_ks.text())
         n = int(self.lineEdit_n.text())
-        Ia = 0.5
-        IL = 0.7
+        Ia = 0.7
+        IL = 0.9
 
-        aL = ([0, 0, 255])
+        aL = ([255, 0, 0])
         Ia = np.dot(Ia, aL)
 
-        iL = ([255, 255, 255])
-        IL = np.dot(IL, iL)
+        Iamb = np.dot(ka, Ia)
+        Iamb = np.round(Iamb)
+
+        iLd = ([255, 0, 0])
+        ILd = np.dot(IL, iLd)
+
+        iLs = ([255, 255, 255])
+        ILs = np.dot(IL, iLs)
 
         for p in P:
-            p = self.backfaceCulling(p[0], p[1], p[2])
+            p = self.backfaceCulling(viewer, p[0], p[1], p[2])
             if(p):
                 Isum = []
                 for v in p:
@@ -489,15 +724,23 @@ class Ui_MainWindow(object):
                     V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
                     V_uv = np.divide(V, V_mag)
 
-                    R_uv = np.subtract(np.dot(np.dot(2, np.dot(L_uv, N_uv)), N_uv), L_uv)
+                    R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
 
-                    Iamb = np.dot(ka, Ia)
-                    Iamb = np.round(Iamb)
-                    Idiff = np.dot(np.dot(kd, IL), np.dot(L_uv, N_uv))
-                    Idiff = np.round(Idiff)
-                    Ispec = np.dot(np.dot(ks, IL), math.pow(np.dot(V_uv, R_uv), n))
-                    Ispec = np.round(Ispec)
+                    Idiff = np.dot(np.multiply(kd, ILd), np.dot(L_uv, N_uv))
+                    # Idiff = np.round(Idiff)
+
+                    VR = np.dot(V_uv, R_uv)
+                    if(VR < 0): VR = 0
+                    Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
+                    # Ispec = np.round(Ispec)
                     # print((ks*IL), math.pow(np.dot(V_uv, R_uv), n), Ispec)
+
+                    Idiff2 = []
+                    for k in Idiff:
+                        if(k <= 0):
+                            Idiff2.append(0)
+                        else:
+                            Idiff2.append(k)
                     
                     Ispec2 = []
                     for idx, k in enumerate(Idiff):
@@ -506,7 +749,9 @@ class Ui_MainWindow(object):
                         else:
                             Ispec2.append(Ispec[idx])
 
-                    Itot = np.add(Iamb, Idiff)
+                    # print(Iamb, Idiff, Ispec)
+                    # Itot = Iamb
+                    Itot = np.add(Iamb, Idiff2)
                     Itot = np.add(Itot, Ispec2)
                     
                     res = []
@@ -543,12 +788,26 @@ class Ui_MainWindow(object):
 
                 res = [r_avg, g_avg, b_avg]
 
-                self.fillTriangle((p[0], p[1], p[2]), (res[0], res[1], res[2]))
+                v1 = p[0]
+                v2 = p[1]
+                v3 = p[2]
+                v1 = self.parallelProj(v1)
+                v2 = self.parallelProj(v2)
+                v3 = self.parallelProj(v3)
+
+                self.fillTriangle((v1, v2, v3), (res[0], res[1], res[2]))
         
-        self.fillCircle((ls_x, ls_y), (0, 255, 255))
+        v = self.parallelProj(ls_V)
+        self.fillCircle((v[0], v[1]), (0, 255, 255))
             
     def gouraudShading(self):
         P = self.P
+
+        x = int(self.lineEdit_x_sphere.text()) + 200
+        y = int(self.lineEdit_y_sphere.text()) + 200
+        z = int(self.lineEdit_z_sphere.text())
+
+        c_V = ([x, y, z])
 
         ls_x = int(self.lineEdit_x_ls.text()) + 200
         ls_y = int(self.lineEdit_y_ls.text()) + 200
@@ -556,42 +815,36 @@ class Ui_MainWindow(object):
 
         ls_V = ([ls_x, ls_y, ls_z])
 
-        viewer = [0, 0, 200]
+        viewer = ([0, 0, 300])
 
         ka = float(self.lineEdit_ka.text())
         kd = float(self.lineEdit_kd.text())
         ks = float(self.lineEdit_ks.text())
         n = int(self.lineEdit_n.text())
-        Ia = 0.5
-        IL = 0.5
+        Ia = 0.7
+        IL = 0.9
 
-        aL = ([0, 0, 255])
+        aL = ([0, 255, 0])
         Ia = np.dot(Ia, aL)
-
-        iL = ([255, 255, 255])
-        IL = np.dot(IL, iL)
 
         Iamb = np.dot(ka, Ia)
         Iamb = np.round(Iamb)
 
-        bfccounter = 0
-        for p in P:
-            if(self.backfaceCulling(p[0], p[1], p[2])):
-                bfccounter += 1
+        iLd = ([0, 255, 0])
+        ILd = np.dot(IL, iLd)
 
-        # print(len(P), bfccounter)
-
-        counter0 = 0
-        counter1 = 0
+        iLs = ([255, 255, 255])
+        ILs = np.dot(IL, iLs)
 
         for p in P:
-            p = self.backfaceCulling(p[0], p[1], p[2])
+            p = self.backfaceCulling(viewer, p[0], p[1], p[2])
             if(p):
                 Isum = []
                 for v in p:
                     p_V = ([v[0], v[1], v[2]])
                     L = np.subtract(ls_V, p_V)
-                    N = np.cross(np.subtract(p[2], p[0]), np.subtract(p[0], p[1]))
+                    # N = np.cross(np.subtract(p[2], p[0]), np.subtract(p[0], p[1]))
+                    N = np.subtract(p_V, c_V)
                     viewer_V = ([viewer[0], viewer[1], viewer[2]])
                     V = np.subtract(viewer_V, p_V)
 
@@ -604,13 +857,23 @@ class Ui_MainWindow(object):
                     V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
                     V_uv = np.divide(V, V_mag)
 
-                    R_uv = np.subtract(np.dot(np.dot(2, np.dot(L_uv, N_uv)), N_uv), L_uv)
+                    R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
 
-                    Idiff = np.dot(np.dot(kd, IL), np.dot(L_uv, N_uv))
-                    Idiff = np.round(Idiff)
-                    Ispec = np.dot(np.dot(ks, IL), math.pow(np.dot(V_uv, R_uv), n))
-                    Ispec = np.round(Ispec)
+                    Idiff = np.dot(np.multiply(kd, ILd), np.dot(L_uv, N_uv))
+                    # Idiff = np.round(Idiff)
+
+                    VR = np.dot(V_uv, R_uv)
+                    if(VR < 0): VR = 0
+                    Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
+                    # Ispec = np.round(Ispec)
                     # print((ks*IL), math.pow(np.dot(V_uv, R_uv), n), Ispec)
+
+                    Idiff2 = []
+                    for k in Idiff:
+                        if(k <= 0):
+                            Idiff2.append(0)
+                        else:
+                            Idiff2.append(k)
                     
                     Ispec2 = []
                     for idx, k in enumerate(Idiff):
@@ -619,7 +882,9 @@ class Ui_MainWindow(object):
                         else:
                             Ispec2.append(Ispec[idx])
 
-                    Itot = np.add(Iamb, Idiff)
+                    # print(Iamb, Idiff, Ispec)
+                    # Itot = Iamb
+                    Itot = np.add(Iamb, Idiff2)
                     Itot = np.add(Itot, Ispec2)
                     
                     res = []
@@ -631,6 +896,10 @@ class Ui_MainWindow(object):
 
                     Isum.append(res)
 
+                # I1 = np.add(Iamb, Isum[0])
+                # I2 = np.add(Iamb, Isum[1])
+                # I3 = np.add(Iamb, Isum[2])
+
                 I1 = Isum[0]
                 I2 = Isum[1]
                 I3 = Isum[2]
@@ -639,262 +908,45 @@ class Ui_MainWindow(object):
                 p2 = p[1]
                 p3 = p[2]
 
+                p1 = self.parallelProj(p1)
+                p2 = self.parallelProj(p2)
+                p3 = self.parallelProj(p3)
+
                 ydiff = [abs(p1[1]-p2[1]), abs(p1[1]-p3[1]), abs(p2[1]-p3[1])]
-                ydmax = np.max(ydiff)
                 
-                idx = ydiff.index(ydmax)
+                idx = ydiff.index(0)
 
                 if(idx == 0):
-                    counter0 += 1
-                    # garis paling panjang antara p1 dan p2
+                    # p1 and p2 has same y
+                    # I1 = np.add(I1, ([128, 0, 0]))
+                    # I2 = np.add(I2, ([128, 0, 0]))
+                    # I3 = np.add(I3, ([128, 0, 0]))
+
                     yA = p1[1]
-                    yB = p1[1]
+                    yB = p2[1]
                     y1 = p1[1]
                     y2 = p2[1]
                     y3 = p3[1]
                     x1 = p1[0]
                     x2 = p2[0]
                     x3 = p3[0]
-                    if(yA < y2):
-                        # add
-                        while(yA < y3):
-                            # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
-                            # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
-                            IA = np.add(I1, np.dot(((yA-y1)/(y3-y1)), np.subtract(I3, I1)))
-                            IB = np.add(I1, np.dot(((yB-y1)/(y2-y1)), np.subtract(I2, I1)))
-                            
-                            tA = ((yA-y1)/(y3-y1))
-                            tB = ((yA-y1)/(y2-y1))
-
-                            xA = x1 + tA * (x3 - x1)
-                            xB = x1 + tB * (x2 - x1)
-                            
-                            xP = xA
-                            # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
-                            k = 0
-                            if((xB-xA) == 0):
-                                k = 0
-                            else:
-                                k = ((xP-xA)/(xB-xA))
-                            IP = np.add(IA, np.dot(k, np.subtract(IB, IA)))
-                            dIx = ([0, 0, 0])
-                            if((xB-xA) <= 0):
-                                dIx = ([0, 0, 0])
-                            else:
-                                dIx = np.divide(np.subtract(IB, IA), (xB-xA))
-
-                            if(xP < xB):
-                                while(xP < xB):
-                                    IP = np.add(IP, dIx)
-                                    self.drawDot((xP, yA), IP)
-                                    xP += 1
-                            elif(xP > xB):
-                                while(xP > xB):
-                                    IP = np.add(IP, dIx)
-                                    self.drawDot((xP, yA), IP)
-                                    xP -= 1
-                                    
-                            yA += 1
-                            yB += 1
-
-                        while(yA < y2):
-                            # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
-                            # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
-                            IA = np.add(I1, np.dot(((yA-y1)/(y2-y3)), np.subtract(I2, I3)))
-                            IB = np.add(I1, np.dot(((yB-y1)/(y2-y1)), np.subtract(I2, I1)))
-                            
-                            tA = ((yA-y1)/(y2-y3))
-                            tB = ((yA-y1)/(y2-y1))
-
-                            xA = x1 + tA * (x2 - x3)
-                            xB = x1 + tB * (x2 - x1)
-                            
-                            xP = xA
-                            # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
-                            k = 0
-                            if((xB-xA) == 0):
-                                k = 0
-                            else:
-                                k = ((xP-xA)/(xB-xA))
-                            IP = np.add(IA, np.dot(k, np.subtract(IB, IA)))
-                            dIx = ([0, 0, 0])
-                            if((xB-xA) <= 0):
-                                dIx = ([0, 0, 0])
-                            else:
-                                dIx = np.divide(np.subtract(IB, IA), (xB-xA))
-
-                            if(xP < xB):
-                                while(xP < xB):
-                                    IP = np.add(IP, dIx)
-                                    self.drawDot((xP, yA), IP)
-                                    xP += 1
-                            elif(xP > xB):
-                                while(xP > xB):
-                                    IP = np.add(IP, dIx)
-                                    self.drawDot((xP, yA), IP)
-                                    xP -= 1
-                                    
-                            yA += 1
-                            yB += 1
-
-                    elif(yA > y2):
-                        # subtract
-                        # add
-                        while(yA > y3):
-                            # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
-                            # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
-                            IA = np.add(I1, np.dot(((yA-y1)/(y3-y1)), np.subtract(I3, I1)))
-                            IB = np.add(I1, np.dot(((yB-y1)/(y2-y1)), np.subtract(I2, I1)))
-                            
-                            tA = ((yA-y1)/(y3-y1))
-                            tB = ((yA-y1)/(y2-y1))
-
-                            xA = x1 + tA * (x3 - x1)
-                            xB = x1 + tB * (x2 - x1)
-
-                            xP = xA
-                            # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
-                            k = 0
-                            if((xB-xA) == 0):
-                                k = 0
-                            else:
-                                k = ((xP-xA)/(xB-xA))
-                            IP = np.add(IA, np.dot(k, np.subtract(IB, IA)))
-                            dIx = ([0, 0, 0])
-                            if((xB-xA) <= 0):
-                                dIx = ([0, 0, 0])
-                            else:
-                                dIx = np.divide(np.subtract(IB, IA), (xB-xA))
-
-                            if(xP < xB):
-                                while(xP < xB):
-                                    IP = np.add(IP, dIx)
-                                    self.drawDot((xP, yA), IP)
-                                    xP += 1
-                            elif(xP > xB):
-                                while(xP > xB):
-                                    IP = np.add(IP, dIx)
-                                    self.drawDot((xP, yA), IP)
-                                    xP -= 1
-                                    
-                            yA -= 1
-                            yB -= 1
-
-                        while(yA > y2):
-                            # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
-                            # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
-                            IA = np.add(I1, np.dot(((yA-y1)/(y2-y3)), np.subtract(I2, I3)))
-                            IB = np.add(I1, np.dot(((yB-y1)/(y2-y1)), np.subtract(I2, I1)))
-                            
-                            tA = ((yA-y1)/(y2-y3))
-                            tB = ((yA-y1)/(y2-y1))
-
-                            xA = x1 + tA * (x2 - x3)
-                            xB = x1 + tB * (x2 - x1)
-
-                            xP = xA
-                            # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
-                            k = 0
-                            if((xB-xA) == 0):
-                                k = 0
-                            else:
-                                k = ((xP-xA)/(xB-xA))
-                            IP = np.add(IA, np.dot(k, np.subtract(IB, IA)))
-                            dIx = ([0, 0, 0])
-                            if((xB-xA) <= 0):
-                                dIx = ([0, 0, 0])
-                            else:
-                                dIx = np.divide(np.subtract(IB, IA), (xB-xA))
-
-                            if(xP < xB):
-                                while(xP < xB):
-                                    IP = np.add(IP, dIx)
-                                    self.drawDot((xP, yA), IP)
-                                    xP += 1
-                            elif(xP > xB):
-                                while(xP > xB):
-                                    IP = np.add(IP, dIx)
-                                    self.drawDot((xP, yA), IP)
-                                    xP -= 1
-                                    
-                            yA -= 1
-                            yB -= 1
-                    
-                elif(idx == 1):
-                    counter1 += 1
-                    # garis paling panjang antara p1 dan p3
-
-                    I1 = ([I1[2], I1[1], I1[0]])
-                    I2 = ([I2[2], I2[1], I2[0]])
-                    I3 = ([I3[2], I3[1], I3[0]])
-
-                    yA = p1[1]
-                    yB = p1[1]
-                    y1 = p1[1]
-                    y2 = p2[1]
-                    y3 = p3[1]
-                    x1 = p1[0]
-                    x2 = p2[0]
-                    x3 = p3[0]
-
                     if(yA < y3):
+                        
                         # add
-                        while(yA < y2):
-                            # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
-                            # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
-                            IA = np.add(I1, np.dot(((yA-y1)/(y2-y1)), np.subtract(I2, I1)))
-                            IB = np.add(I1, np.dot(((yB-y1)/(y3-y1)), np.subtract(I3, I1)))
-                            
-                            tA = ((yA-y1)/(y2-y1))
-                            tB = ((yA-y1)/(y3-y1))
-
-                            xA = x1 + tA * (x2 - x1)
-                            xB = x1 + tB * (x3 - x1)
-
-                            xP = xA
-                            # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
-                            # print((xB-xA))
-                            k = 0
-                            if((xB-xA) == 0):
-                                k = 0
-                            else:
-                                k = ((xP-xA)/(xB-xA))
-                            IP = np.add(IA, np.dot(k, np.subtract(IB, IA)))
-                            dIx = ([0, 0, 0])
-                            if((xB-xA) <= 0):
-                                dIx = ([0, 0, 0])
-                            else:
-                                dIx = np.divide(np.subtract(IB, IA), (xB-xA))
-
-                            if(xP < xB):
-                                while(xP < xB):
-                                    IP = np.add(IP, dIx)
-                                    self.drawDot((xP, yA), IP)
-                                    xP += 1
-                            elif(xP > xB):
-                                while(xP > xB):
-                                    IP = np.add(IP, dIx)
-                                    self.drawDot((xP, yA), IP)
-                                    xP -= 1
-                                    
-                            yA += 1
-                            yB += 1
-
                         while(yA < y3):
                             # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
                             # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
                             IA = np.add(I1, np.dot(((yA-y1)/(y3-y1)), np.subtract(I3, I1)))
-                            IB = np.add(I1, np.dot(((yB-y1)/(y3-y2)), np.subtract(I3, I2)))
+                            IB = np.add(I1, np.dot(((yB-y2)/(y3-y2)), np.subtract(I3, I2)))
                             
                             tA = ((yA-y1)/(y3-y1))
-                            tB = ((yA-y1)/(y3-y2))
+                            tB = ((yA-y2)/(y3-y2))
 
                             xA = x1 + tA * (x3 - x1)
-                            xB = x1 + tB * (x3 - x2)
-
+                            xB = x2 + tB * (x3 - x2)
+                            
                             xP = xA
                             # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
-                            # print(xB-xA) # nyala negative
                             k = 0
                             if((xB-xA) == 0):
                                 k = 0
@@ -902,20 +954,52 @@ class Ui_MainWindow(object):
                                 k = ((xP-xA)/(xB-xA))
                             IP = np.add(IA, np.dot(k, np.subtract(IB, IA)))
                             dIx = ([0, 0, 0])
-                            if((xB-xA) <= 0):
+                            if((xB-xA) == 0):
                                 dIx = ([0, 0, 0])
+                            elif((xB-xA) < 0):
+                                dIx = np.divide(np.subtract(IB, IA), abs(xB-xA))
                             else:
                                 dIx = np.divide(np.subtract(IB, IA), (xB-xA))
 
+                            self.drawDot((xP, yA), IP)
                             if(xP < xB):
                                 while(xP < xB):
                                     IP = np.add(IP, dIx)
-                                    self.drawDot((xP, yA), IP)
+                                    IP2 = []
+                                    for e in IP:
+                                        if(e < 0):
+                                            IP2.append(0)
+                                        elif(e > 255):
+                                            IP2.append(255)
+                                        else:
+                                            IP2.append(e)
+                                    
+                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0): print(IP2, "1")
+                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0): 
+                                        IP2 = Iamb
+                                        print(IP2, "1", IA, IB)
+                                    
+                                    self.drawDot((xP, yA), IP2)
                                     xP += 1
                             elif(xP > xB):
                                 while(xP > xB):
                                     IP = np.add(IP, dIx)
-                                    self.drawDot((xP, yA), IP)
+                                    
+                                    
+                                    IP2 = []
+                                    for e in IP:
+                                        if(e < 0):
+                                            IP2.append(0)
+                                        elif(e > 255):
+                                            IP2.append(255)
+                                        else:
+                                            IP2.append(e)
+                                    
+                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0): print(IP2, "2")
+                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0): 
+                                        IP2 = Iamb
+                                        print(IP2, "2", IA, IB)
+                                    self.drawDot((xP, yA), IP2)
                                     xP -= 1
                                     
                             yA += 1
@@ -923,62 +1007,21 @@ class Ui_MainWindow(object):
 
                     elif(yA > y3):
                         # subtract
-                        while(yA > y2):
-                            # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
-                            # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
-                            IA = np.add(I1, np.dot(((yA-y1)/(y2-y1)), np.subtract(I2, I1)))
-                            IB = np.add(I1, np.dot(((yB-y1)/(y3-y1)), np.subtract(I3, I1)))
-                            
-                            tA = ((yA-y1)/(y2-y1))
-                            tB = ((yA-y1)/(y3-y1))
-
-                            xA = x1 + tA * (x2 - x1)
-                            xB = x1 + tB * (x3 - x1)
-
-                            xP = xA
-                            # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
-                            # print(xB-xA)
-                            k = 0
-                            if((xB-xA) == 0):
-                                k = 0
-                            else:
-                                k = ((xP-xA)/(xB-xA))
-                            IP = np.add(IA, np.dot(k, np.subtract(IB, IA)))
-                            dIx = ([0, 0, 0])
-                            if((xB-xA) <= 0):
-                                dIx = ([0, 0, 0])
-                            else:
-                                dIx = np.divide(np.subtract(IB, IA), (xB-xA))
-
-                            if(xP < xB):
-                                while(xP < xB):
-                                    IP = np.add(IP, dIx)
-                                    self.drawDot((xP, yA), IP)
-                                    xP += 1
-                            elif(xP > xB):
-                                while(xP > xB):
-                                    IP = np.add(IP, dIx)
-                                    self.drawDot((xP, yA), IP)
-                                    xP -= 1
-                                    
-                            yA -= 1
-                            yB -= 1
-
+                        # add
                         while(yA > y3):
                             # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
                             # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
-                            IA = np.add(I1, np.dot(((yA-y1)/(y3-y2)), np.subtract(I3, I2)))
-                            IB = np.add(I1, np.dot(((yB-y1)/(y3-y1)), np.subtract(I3, I1)))
+                            IA = np.add(I1, np.dot(((yA-y1)/(y3-y1)), np.subtract(I3, I1)))
+                            IB = np.add(I1, np.dot(((yB-y2)/(y3-y2)), np.subtract(I3, I2)))
                             
-                            tA = ((yA-y1)/(y3-y2))
-                            tB = ((yA-y1)/(y3-y1))
+                            tA = ((yA-y1)/(y3-y1))
+                            tB = ((yA-y2)/(y3-y2))
 
-                            xA = x1 + tA * (x3 - x2)
-                            xB = x1 + tB * (x3 - x1)
+                            xA = x1 + tA * (x3 - x1)
+                            xB = x2 + tB * (x3 - x2)
 
                             xP = xA
                             # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
-                            # print(xB-xA) # nyala positive
                             k = 0
                             if((xB-xA) == 0):
                                 k = 0
@@ -986,27 +1029,231 @@ class Ui_MainWindow(object):
                                 k = ((xP-xA)/(xB-xA))
                             IP = np.add(IA, np.dot(k, np.subtract(IB, IA)))
                             dIx = ([0, 0, 0])
-                            if((xB-xA) <= 0):
+                            if((xB-xA) == 0):
                                 dIx = ([0, 0, 0])
+                            elif((xB-xA) < 0):
+                                dIx = np.divide(np.subtract(IB, IA), abs(xB-xA))
                             else:
                                 dIx = np.divide(np.subtract(IB, IA), (xB-xA))
 
+                            self.drawDot((xP, yA), IP)
                             if(xP < xB):
                                 while(xP < xB):
                                     IP = np.add(IP, dIx)
-                                    self.drawDot((xP, yA), IP)
+                                    
+                                    
+                                    IP2 = []
+                                    for e in IP:
+                                        if(e < 0):
+                                            IP2.append(0)
+                                        elif(e > 255):
+                                            IP2.append(255)
+                                        else:
+                                            IP2.append(e)
+                                    
+                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0): print(IP2, "3")
+                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0): 
+                                        IP2 = Iamb
+                                        print(IP2, "3", IA, IB)
+                                    self.drawDot((xP, yA), IP2)
                                     xP += 1
                             elif(xP > xB):
                                 while(xP > xB):
                                     IP = np.add(IP, dIx)
-                                    self.drawDot((xP, yA), IP)
+                                    
+                                    
+                                    IP2 = []
+                                    for e in IP:
+                                        if(e < 0):
+                                            IP2.append(0)
+                                        elif(e > 255):
+                                            IP2.append(255)
+                                        else:
+                                            IP2.append(e)
+                                    
+                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0): print(IP2, "4")
+                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0): 
+                                        IP2 = Iamb
+                                        print(IP2, "4", IA, IB)
+                                    self.drawDot((xP, yA), IP2)
                                     xP -= 1
                                     
                             yA -= 1
                             yB -= 1
 
+                elif(idx == 1):
+                    print("index 1")
                 elif(idx == 2):
-                    print("not included")
+                    # p2 or p3 has same y
+                    # I1 = np.add(I1, ([0, 0, 128]))
+                    # I2 = np.add(I2, ([0, 0, 128]))
+                    # I3 = np.add(I3, ([0, 0, 128]))
+
+                    yA = p3[1]
+                    yB = p2[1]
+                    y1 = p1[1]
+                    y2 = p2[1]
+                    y3 = p3[1]
+                    x1 = p1[0]
+                    x2 = p2[0]
+                    x3 = p3[0]
+                    if(yA < y1):
+                        # add
+                        while(yA < y1):
+                            
+                            # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
+                            # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
+                            IA = np.add(I1, np.dot(((yA-y3)/(y1-y3)), np.subtract(I1, I3)))
+                            IB = np.add(I1, np.dot(((yB-y2)/(y1-y2)), np.subtract(I1, I2)))
+                            
+                            tA = ((yA-y3)/(y1-y3))
+                            tB = ((yA-y2)/(y1-y2))
+
+                            xA = x3 + tA * (x1 - x3)
+                            xB = x2 + tB * (x1 - x2)
+                            
+                            xP = xA
+                            # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
+                            k = 0
+                            if((xB-xA) == 0):
+                                k = 0
+                            else:
+                                k = ((xP-xA)/(xB-xA))
+                            IP = np.add(IA, np.dot(k, np.subtract(IB, IA)))
+                            dIx = ([0, 0, 0])
+                            if((xB-xA) == 0):
+                                dIx = ([0, 0, 0])
+                            elif((xB-xA) < 0):
+                                dIx = np.divide(np.subtract(IB, IA), abs(xB-xA))
+                            else:
+                                dIx = np.divide(np.subtract(IB, IA), (xB-xA))
+
+                            self.drawDot((xP, yA), IP)
+                            if(xP < xB):
+                                while(xP < xB):
+                                    IP = np.add(IP, dIx)
+                                    
+                                    
+                                    IP2 = []
+                                    for e in IP:
+                                        if(e < 0):
+                                            IP2.append(0)
+                                        elif(e > 255):
+                                            IP2.append(255)
+                                        else:
+                                            IP2.append(e)
+                                    
+                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0): print(IP2, "5")
+                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0): 
+                                        IP2 = Iamb
+                                        print(IP2, "5", IA, IB)
+                                    self.drawDot((xP, yA), IP2)
+                                    xP += 1
+                            elif(xP > xB):
+                                while(xP > xB):
+                                    IP = np.add(IP, dIx)
+                                    
+                                    
+                                    IP2 = []
+                                    for e in IP:
+                                        if(e < 0):
+                                            IP2.append(0)
+                                        elif(e > 255):
+                                            IP2.append(255)
+                                        else:
+                                            IP2.append(e)
+                                    
+                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0): print(IP2, "6")
+                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0): 
+                                        IP2 = Iamb
+                                        print(IP2, "6", IA, IB)
+                                        
+                                    self.drawDot((xP, yA), IP2)
+                                    xP -= 1
+                                    
+                            yA += 1
+                            yB += 1
+
+                    elif(yA > y1):
+                        # subtract
+                        while(yA > y1):
+                            # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
+                            # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
+                            IA = np.add(I1, np.dot(((yA-y3)/(y1-y3)), np.subtract(I1, I3)))
+                            IB = np.add(I1, np.dot(((yB-y2)/(y1-y2)), np.subtract(I1, I2)))
+                            
+                            tA = ((yA-y3)/(y1-y3))
+                            tB = ((yA-y2)/(y1-y2))
+
+                            xA = x3 + tA * (x1 - x3)
+                            xB = x2 + tB * (x1 - x2)
+
+                            xP = xA
+                            # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
+                            k = 0
+                            if((xB-xA) == 0):
+                                k = 0
+                            else:
+                                k = ((xP-xA)/(xB-xA))
+                            IP = np.add(IA, np.dot(k, np.subtract(IB, IA)))
+                            
+                            dIx = ([0, 0, 0])
+                            if((xB-xA) == 0):
+                                dIx = ([0, 0, 0])
+                            elif((xB-xA) < 0):
+                                dIx = np.divide(np.subtract(IB, IA), abs(xB-xA))
+                            else:
+                                dIx = np.divide(np.subtract(IB, IA), (xB-xA))
+
+                            self.drawDot((xP, yA), IP)
+                            if(xP < xB):
+                                while(xP < xB):
+                                    IP = np.add(IP, dIx)
+                                    
+                                    
+                                    IP2 = []
+                                    for e in IP:
+                                        if(e < 0):
+                                            IP2.append(0)
+                                        elif(e > 255):
+                                            IP2.append(255)
+                                        else:
+                                            IP2.append(e)
+                                    
+
+                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0): print(IP2, "7")
+                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0): 
+                                        IP2 = Iamb
+                                        print(IP2, "7", IA, IB)
+
+                                    self.drawDot((xP, yA), IP2)
+                                    xP += 1
+                            elif(xP > xB):
+                                while(xP > xB):
+                                    IP = np.add(IP, dIx)
+                                    
+                                    
+                                    IP2 = []
+                                    for e in IP:
+                                        if(e < 0):
+                                            IP2.append(0)
+                                        elif(e > 255):
+                                            IP2.append(255)
+                                        else:
+                                            IP2.append(e)
+                                    
+                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0): print(IP2, "8")
+                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0): 
+                                        IP2 = Iamb
+                                        print(IP2, "8", IA, IB)
+                                        
+                                    self.drawDot((xP, yA), IP2)
+                                    xP -= 1
+                                    
+                            yA -= 1
+                            yB -= 1
+
+                # sampe sini
                 
 
                 # r = []
@@ -1032,6 +1279,8 @@ class Ui_MainWindow(object):
 
                 # self.fillTriangle((p[0], p[1], p[2]), (res[0], res[1], res[2]))
         # print(counter0, counter1, counter0+counter1)
+        res = self.parallelProj(ls_V)
+        self.fillCircle((res[0], res[1]), (0, 255, 255))
 
 if __name__ == "__main__":
     import sys
