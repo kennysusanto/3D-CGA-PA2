@@ -287,10 +287,11 @@ class Ui_MainWindow(object):
         self.frontc = 0
 
         # on form load
+        self.statusbar.showMessage("Ready")
         self.reset()
         self.generateSphere()
         self.updateAll()
-        self.statusbar.showMessage("Ready")
+        
         
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -353,6 +354,8 @@ class Ui_MainWindow(object):
     
 
     def reset(self):
+        self.statusbar.showMessage("Ready")
+
         self.lineEdit_x_sphere.setText("0")
         self.lineEdit_y_sphere.setText("0")
         self.lineEdit_z_sphere.setText("0")
@@ -417,8 +420,8 @@ class Ui_MainWindow(object):
         self.painter.update()
 
     def F(self, r, d, e, pos):
-        x = r * np.cos(np.deg2rad(e)) * np.sin(np.deg2rad(d)) + pos[0] + 200
-        y = r * np.sin(np.deg2rad(e)) + pos[1] + 200
+        x = r * np.cos(np.deg2rad(e)) * np.sin(np.deg2rad(d)) + pos[0]
+        y = r * np.sin(np.deg2rad(e)) + pos[1]
         z = r * np.cos(np.deg2rad(d)) * np.cos(np.deg2rad(d)) + pos[2]
         P = [x, y, z]
         return P
@@ -505,8 +508,8 @@ class Ui_MainWindow(object):
             #self.phongShading()
             print("not yet implemented")
 
-        print(f"front polygons: {self.frontc}")
-        print(f"back polygons: {self.backc}")
+        # print(f"front polygons: {self.frontc}")
+        # print(f"back polygons: {self.backc}")
         self.frontc = 0
         self.backc = 0
     
@@ -566,7 +569,7 @@ class Ui_MainWindow(object):
         T4 = ([1, 0, 0, 0],
               [0, 1, 0, 0],
               [0, 0, 1, 0],
-              [-1, 1, -1, 1])
+              [-(umax-umin)/2, (vmax-vmin)/2, -F, 1])
 
         T5 = ([1, 0, 0, 0],
               [0, -1, 0, 0],
@@ -576,7 +579,7 @@ class Ui_MainWindow(object):
         T6 = ([1, 0, 0, 0],
               [0, 1, 0, 0],
               [0, 0, 1, 0],
-              [0, 400, 0, 1])
+              [200, 200, 0, 1])
 
         pp = np.matmul(np.matmul(np.matmul(A, T3), T5), T6)
         # pp = np.matmul(np.matmul(np.matmul(np.matmul(A, T3), T4), T5), T6)
@@ -668,16 +671,17 @@ class Ui_MainWindow(object):
         # comment
 
     def flatShading(self):
+        self.statusbar.showMessage("Flat shading")
         P = self.P
 
-        x = int(self.lineEdit_x_sphere.text()) + 200
-        y = int(self.lineEdit_y_sphere.text()) + 200
+        x = int(self.lineEdit_x_sphere.text())
+        y = int(self.lineEdit_y_sphere.text())
         z = int(self.lineEdit_z_sphere.text())
 
         c_V = ([x, y, z])
 
-        ls_x = int(self.lineEdit_x_ls.text()) + 200
-        ls_y = int(self.lineEdit_y_ls.text()) + 200
+        ls_x = int(self.lineEdit_x_ls.text())
+        ls_y = int(self.lineEdit_y_ls.text())
         ls_z = int(self.lineEdit_z_ls.text())
 
         ls_V = ([ls_x, ls_y, ls_z])
@@ -689,7 +693,7 @@ class Ui_MainWindow(object):
         ks = float(self.lineEdit_ks.text())
         n = int(self.lineEdit_n.text())
         Ia = 0.7
-        IL = 0.9
+        IL = 0.7
 
         aL = ([255, 0, 0])
         Ia = np.dot(Ia, aL)
@@ -797,20 +801,22 @@ class Ui_MainWindow(object):
 
                 self.fillTriangle((v1, v2, v3), (res[0], res[1], res[2]))
         
+        
         v = self.parallelProj(ls_V)
         self.fillCircle((v[0], v[1]), (0, 255, 255))
             
     def gouraudShading(self):
+        self.statusbar.showMessage("Gouraud shading")
         P = self.P
 
-        x = int(self.lineEdit_x_sphere.text()) + 200
-        y = int(self.lineEdit_y_sphere.text()) + 200
+        x = int(self.lineEdit_x_sphere.text())
+        y = int(self.lineEdit_y_sphere.text())
         z = int(self.lineEdit_z_sphere.text())
 
         c_V = ([x, y, z])
 
-        ls_x = int(self.lineEdit_x_ls.text()) + 200
-        ls_y = int(self.lineEdit_y_ls.text()) + 200
+        ls_x = int(self.lineEdit_x_ls.text())
+        ls_y = int(self.lineEdit_y_ls.text())
         ls_z = int(self.lineEdit_z_ls.text())
 
         ls_V = ([ls_x, ls_y, ls_z])
@@ -822,7 +828,7 @@ class Ui_MainWindow(object):
         ks = float(self.lineEdit_ks.text())
         n = int(self.lineEdit_n.text())
         Ia = 0.7
-        IL = 0.9
+        IL = 0.7
 
         aL = ([0, 255, 0])
         Ia = np.dot(Ia, aL)
@@ -910,7 +916,7 @@ class Ui_MainWindow(object):
 
                 p1 = self.parallelProj(p1)
                 p2 = self.parallelProj(p2)
-                p3 = self.parallelProj(p3)
+                p3 = self.parallelProj(p3)                
 
                 ydiff = [abs(p1[1]-p2[1]), abs(p1[1]-p3[1]), abs(p2[1]-p3[1])]
                 
@@ -921,9 +927,7 @@ class Ui_MainWindow(object):
                     # I1 = np.add(I1, ([128, 0, 0]))
                     # I2 = np.add(I2, ([128, 0, 0]))
                     # I3 = np.add(I3, ([128, 0, 0]))
-
                     yA = p1[1]
-                    yB = p2[1]
                     y1 = p1[1]
                     y2 = p2[1]
                     y3 = p3[1]
@@ -931,19 +935,28 @@ class Ui_MainWindow(object):
                     x2 = p2[0]
                     x3 = p3[0]
                     if(yA < y3):
-                        
                         # add
-                        while(yA < y3):
+                        yA = round(y2)
+                        yB = y1
+                        # I1 = np.add(I1, ([128, 0, 0]))
+                        # I2 = np.add(I2, ([128, 0, 0]))
+                        # I3 = np.add(I3, ([128, 0, 0]))
+                        # self.fillTriangle([p1, p2, p3], [255, 255, 255])
+                        while(yA <= y3):
+                            
                             # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
                             # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
-                            IA = np.add(I1, np.dot(((yA-y1)/(y3-y1)), np.subtract(I3, I1)))
-                            IB = np.add(I1, np.dot(((yB-y2)/(y3-y2)), np.subtract(I3, I2)))
+                            IA = np.add(I2, np.dot(((yA-y2)/(y3-y2)), np.subtract(I3, I2)))
+                            IB = np.add(I1, np.dot(((yB-y1)/(y3-y1)), np.subtract(I3, I1)))
                             
-                            tA = ((yA-y1)/(y3-y1))
-                            tB = ((yA-y2)/(y3-y2))
+                            tA = ((yA-y2)/(y3-y2))
+                            tB = ((yA-y1)/(y3-y1))
 
-                            xA = x1 + tA * (x3 - x1)
-                            xB = x2 + tB * (x3 - x2)
+                            xA = x2 + tA * (x3 - x2)
+                            xB = x1 + tB * (x3 - x1)
+
+                            xA = round(xA)
+                            xB = round(xB)
                             
                             xP = xA
                             # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
@@ -961,10 +974,8 @@ class Ui_MainWindow(object):
                             else:
                                 dIx = np.divide(np.subtract(IB, IA), (xB-xA))
 
-                            self.drawDot((xP, yA), IP)
                             if(xP < xB):
-                                while(xP < xB):
-                                    IP = np.add(IP, dIx)
+                                while(xP <= xB):
                                     IP2 = []
                                     for e in IP:
                                         if(e < 0):
@@ -980,12 +991,10 @@ class Ui_MainWindow(object):
                                         print(IP2, "1", IA, IB)
                                     
                                     self.drawDot((xP, yA), IP2)
-                                    xP += 1
-                            elif(xP > xB):
-                                while(xP > xB):
                                     IP = np.add(IP, dIx)
-                                    
-                                    
+                                    xP += 1
+                            elif(xP >= xB):
+                                while(xP > xB):
                                     IP2 = []
                                     for e in IP:
                                         if(e < 0):
@@ -1000,25 +1009,30 @@ class Ui_MainWindow(object):
                                         IP2 = Iamb
                                         print(IP2, "2", IA, IB)
                                     self.drawDot((xP, yA), IP2)
+                                    IP = np.add(IP, dIx)
                                     xP -= 1
-                                    
+
                             yA += 1
                             yB += 1
 
                     elif(yA > y3):
                         # subtract
-                        # add
-                        while(yA > y3):
+                        yA = y1
+                        yB = y2
+                        while(yA >= y3):
                             # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
                             # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
                             IA = np.add(I1, np.dot(((yA-y1)/(y3-y1)), np.subtract(I3, I1)))
-                            IB = np.add(I1, np.dot(((yB-y2)/(y3-y2)), np.subtract(I3, I2)))
+                            IB = np.add(I2, np.dot(((yB-y2)/(y3-y2)), np.subtract(I3, I2)))
                             
                             tA = ((yA-y1)/(y3-y1))
                             tB = ((yA-y2)/(y3-y2))
 
                             xA = x1 + tA * (x3 - x1)
                             xB = x2 + tB * (x3 - x2)
+
+                            xA = round(xA)
+                            xB = round(xB)
 
                             xP = xA
                             # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
@@ -1036,12 +1050,8 @@ class Ui_MainWindow(object):
                             else:
                                 dIx = np.divide(np.subtract(IB, IA), (xB-xA))
 
-                            self.drawDot((xP, yA), IP)
                             if(xP < xB):
-                                while(xP < xB):
-                                    IP = np.add(IP, dIx)
-                                    
-                                    
+                                while(xP <= xB):
                                     IP2 = []
                                     for e in IP:
                                         if(e < 0):
@@ -1056,12 +1066,10 @@ class Ui_MainWindow(object):
                                         IP2 = Iamb
                                         print(IP2, "3", IA, IB)
                                     self.drawDot((xP, yA), IP2)
+                                    IP = np.add(IP, dIx)
                                     xP += 1
                             elif(xP > xB):
-                                while(xP > xB):
-                                    IP = np.add(IP, dIx)
-                                    
-                                    
+                                while(xP >= xB):
                                     IP2 = []
                                     for e in IP:
                                         if(e < 0):
@@ -1076,8 +1084,8 @@ class Ui_MainWindow(object):
                                         IP2 = Iamb
                                         print(IP2, "4", IA, IB)
                                     self.drawDot((xP, yA), IP2)
+                                    IP = np.add(IP, dIx)
                                     xP -= 1
-                                    
                             yA -= 1
                             yB -= 1
 
@@ -1088,9 +1096,7 @@ class Ui_MainWindow(object):
                     # I1 = np.add(I1, ([0, 0, 128]))
                     # I2 = np.add(I2, ([0, 0, 128]))
                     # I3 = np.add(I3, ([0, 0, 128]))
-
-                    yA = p3[1]
-                    yB = p2[1]
+                    yA = p2[1]
                     y1 = p1[1]
                     y2 = p2[1]
                     y3 = p3[1]
@@ -1099,18 +1105,23 @@ class Ui_MainWindow(object):
                     x3 = p3[0]
                     if(yA < y1):
                         # add
-                        while(yA < y1):
+                        yA = y3
+                        yB = y2
+                        while(yA <= y1):
                             
                             # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
                             # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
-                            IA = np.add(I1, np.dot(((yA-y3)/(y1-y3)), np.subtract(I1, I3)))
-                            IB = np.add(I1, np.dot(((yB-y2)/(y1-y2)), np.subtract(I1, I2)))
+                            IA = np.add(I3, np.dot(((yA-y3)/(y1-y3)), np.subtract(I1, I3)))
+                            IB = np.add(I2, np.dot(((yB-y2)/(y1-y2)), np.subtract(I1, I2)))
                             
                             tA = ((yA-y3)/(y1-y3))
                             tB = ((yA-y2)/(y1-y2))
 
                             xA = x3 + tA * (x1 - x3)
                             xB = x2 + tB * (x1 - x2)
+
+                            xA = round(xA)
+                            xB = round(xB)
                             
                             xP = xA
                             # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
@@ -1128,12 +1139,8 @@ class Ui_MainWindow(object):
                             else:
                                 dIx = np.divide(np.subtract(IB, IA), (xB-xA))
 
-                            self.drawDot((xP, yA), IP)
                             if(xP < xB):
-                                while(xP < xB):
-                                    IP = np.add(IP, dIx)
-                                    
-                                    
+                                while(xP <= xB):
                                     IP2 = []
                                     for e in IP:
                                         if(e < 0):
@@ -1148,12 +1155,10 @@ class Ui_MainWindow(object):
                                         IP2 = Iamb
                                         print(IP2, "5", IA, IB)
                                     self.drawDot((xP, yA), IP2)
+                                    IP = np.add(IP, dIx)
                                     xP += 1
                             elif(xP > xB):
-                                while(xP > xB):
-                                    IP = np.add(IP, dIx)
-                                    
-                                    
+                                while(xP >= xB):
                                     IP2 = []
                                     for e in IP:
                                         if(e < 0):
@@ -1169,25 +1174,35 @@ class Ui_MainWindow(object):
                                         print(IP2, "6", IA, IB)
                                         
                                     self.drawDot((xP, yA), IP2)
+                                    IP = np.add(IP, dIx)
                                     xP -= 1
-                                    
+                
                             yA += 1
                             yB += 1
 
                     elif(yA > y1):
                         # subtract
-                        while(yA > y1):
+                        yA = round(y2)
+                        yB = y3
+                        # I1 = np.add(I1, ([0, 0, 128]))
+                        # I2 = np.add(I2, ([0, 0, 128]))
+                        # I3 = np.add(I3, ([0, 0, 128]))
+                        # self.fillTriangle([p1, p2, p3], [255, 255, 255])
+                        while(yA >= y1):
                             # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
                             # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
-                            IA = np.add(I1, np.dot(((yA-y3)/(y1-y3)), np.subtract(I1, I3)))
-                            IB = np.add(I1, np.dot(((yB-y2)/(y1-y2)), np.subtract(I1, I2)))
+                            IA = np.add(I2, np.dot(((yA-y2)/(y1-y2)), np.subtract(I1, I2)))
+                            IB = np.add(I3, np.dot(((yB-y3)/(y1-y3)), np.subtract(I1, I3)))
                             
-                            tA = ((yA-y3)/(y1-y3))
-                            tB = ((yA-y2)/(y1-y2))
+                            tA = ((yA-y2)/(y1-y2))
+                            tB = ((yA-y3)/(y1-y3))
 
-                            xA = x3 + tA * (x1 - x3)
-                            xB = x2 + tB * (x1 - x2)
+                            xA = x2 + tA * (x1 - x2)
+                            xB = x3 + tB * (x1 - x3)
 
+                            xA = round(xA)
+                            xB = round(xB)
+                            
                             xP = xA
                             # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
                             k = 0
@@ -1205,12 +1220,8 @@ class Ui_MainWindow(object):
                             else:
                                 dIx = np.divide(np.subtract(IB, IA), (xB-xA))
 
-                            self.drawDot((xP, yA), IP)
                             if(xP < xB):
-                                while(xP < xB):
-                                    IP = np.add(IP, dIx)
-                                    
-                                    
+                                while(xP <= xB):
                                     IP2 = []
                                     for e in IP:
                                         if(e < 0):
@@ -1219,7 +1230,6 @@ class Ui_MainWindow(object):
                                             IP2.append(255)
                                         else:
                                             IP2.append(e)
-                                    
 
                                     if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0): print(IP2, "7")
                                     if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0): 
@@ -1227,12 +1237,11 @@ class Ui_MainWindow(object):
                                         print(IP2, "7", IA, IB)
 
                                     self.drawDot((xP, yA), IP2)
-                                    xP += 1
-                            elif(xP > xB):
-                                while(xP > xB):
                                     IP = np.add(IP, dIx)
-                                    
-                                    
+                                    xP += 1
+
+                            elif(xP > xB):
+                                while(xP >= xB):
                                     IP2 = []
                                     for e in IP:
                                         if(e < 0):
@@ -1248,36 +1257,13 @@ class Ui_MainWindow(object):
                                         print(IP2, "8", IA, IB)
                                         
                                     self.drawDot((xP, yA), IP2)
+                                    IP = np.add(IP, dIx)
                                     xP -= 1
-                                    
+                
                             yA -= 1
                             yB -= 1
 
                 # sampe sini
-                
-
-                # r = []
-                # g = []
-                # b = []
-                # for v in Isum:
-                #     r.append(v[0])
-                #     g.append(v[1])
-                #     b.append(v[2])
-                
-                # r_avg = np.average(r) - 128
-                # g_avg = np.average(g) - 128
-                # b_avg = 128 - np.average(b)
-
-                # if(r_avg < 0):
-                #     r_avg = 0
-                # if(g_avg < 0):
-                #     g_avg = 0
-                # if(b_avg < 0):
-                #     b_avg = 0
-
-                # res = [r_avg, g_avg, b_avg]
-
-                # self.fillTriangle((p[0], p[1], p[2]), (res[0], res[1], res[2]))
         # print(counter0, counter1, counter0+counter1)
         res = self.parallelProj(ls_V)
         self.fillCircle((res[0], res[1]), (0, 255, 255))
