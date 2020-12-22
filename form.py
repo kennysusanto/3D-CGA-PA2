@@ -18,6 +18,7 @@ class PainterWidget(QtWidgets.QWidget):
         self.setFixedSize(400, 400)
         self.text = "Hello world"
         self.points = []
+        
 
     def setPoints(self, points):
         self.points = points
@@ -50,8 +51,16 @@ class PainterWidget(QtWidgets.QWidget):
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
+        # global variables
+        self.P = []
+        self.LS = []
+        self.lsindex = 0
+        self.mode = 0
+        self.backc = 0
+        self.frontc = 0
+
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1000, 440)
+        MainWindow.resize(740, 440)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -60,7 +69,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(10, 10, 980, 400))
+        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(10, 10, 700, 400))
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
@@ -197,21 +206,31 @@ class Ui_MainWindow(object):
         self.pushButton_reset = QtWidgets.QPushButton(self.horizontalLayoutWidget)
         self.pushButton_reset.setObjectName("pushButton_reset")
         self.gridLayout.addWidget(self.pushButton_reset, 7, 1, 1, 1)
+
+        # add new light source button
+        self.pushButton_newLS = QtWidgets.QPushButton(self.horizontalLayoutWidget)
+        self.pushButton_newLS.setObjectName("pushButton_newLS")
+        self.gridLayout.addWidget(self.pushButton_newLS, 8, 0, 1, 2)
+
         self.gridLayout.setAlignment(QtCore.Qt.AlignTop) # align top
 
         # listview
         self.listView = QtWidgets.QListView(self.horizontalLayoutWidget)
+        self.listView.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
 
-        entries = ['one','two', 'three']
+        entries = []
 
-        model = QtGui.QStandardItemModel()
-        self.listView.setModel(model)
+        for ls in self.LS:
+            entries.append(f"Light source {len(self.LS)} - {ls}")
+
+        self.model = QtGui.QStandardItemModel()
+        self.listView.setModel(self.model)
 
         for i in entries:
             item = QtGui.QStandardItem(i)
-            model.appendRow(item)
+            self.model.appendRow(item)
 
-        self.gridLayout.addWidget(self.listView, 8, 0, 1, 2)
+        self.gridLayout.addWidget(self.listView, 9, 0, 1, 2)
 
         self.listView.selectionModel().currentChanged.connect(self.checklv)
 
@@ -221,47 +240,47 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
-        # slider
+        # # slider
 
-        self.verticalLayout = QtWidgets.QVBoxLayout(self.horizontalLayoutWidget)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.horizontalLayout.addLayout(self.verticalLayout)
+        # self.verticalLayout = QtWidgets.QVBoxLayout(self.horizontalLayoutWidget)
+        # self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        # self.verticalLayout.setObjectName("verticalLayout")
+        # self.horizontalLayout.addLayout(self.verticalLayout)
 
-        label_slsx = QtWidgets.QLabel(self.horizontalLayoutWidget)
-        label_slsx.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
-        label_slsx.setText("light source x slider")
+        # label_slsx = QtWidgets.QLabel(self.horizontalLayoutWidget)
+        # label_slsx.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
+        # label_slsx.setText("light source x slider")
 
-        slider_lsx = QtWidgets.QSlider(QtCore.Qt.Horizontal)
-        slider_lsx.setTickPosition(QtWidgets.QSlider.TicksBothSides)
-        slider_lsx.setRange(-150, 150)
-        slider_lsx.valueChanged.connect(self.updateSliderx)
+        # slider_lsx = QtWidgets.QSlider(QtCore.Qt.Horizontal)
+        # slider_lsx.setTickPosition(QtWidgets.QSlider.TicksBothSides)
+        # slider_lsx.setRange(-150, 150)
+        # slider_lsx.valueChanged.connect(self.updateSliderx)
 
-        label_slsy = QtWidgets.QLabel(self.horizontalLayoutWidget)
-        label_slsy.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
-        label_slsy.setText("light source y slider")
+        # label_slsy = QtWidgets.QLabel(self.horizontalLayoutWidget)
+        # label_slsy.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
+        # label_slsy.setText("light source y slider")
 
-        slider_lsy = QtWidgets.QSlider(QtCore.Qt.Horizontal)
-        slider_lsy.setTickPosition(QtWidgets.QSlider.TicksBothSides)
-        slider_lsy.setRange(-150, 150)
-        slider_lsy.valueChanged.connect(self.updateSlidery)
+        # slider_lsy = QtWidgets.QSlider(QtCore.Qt.Horizontal)
+        # slider_lsy.setTickPosition(QtWidgets.QSlider.TicksBothSides)
+        # slider_lsy.setRange(-150, 150)
+        # slider_lsy.valueChanged.connect(self.updateSlidery)
 
-        label_slsz = QtWidgets.QLabel(self.horizontalLayoutWidget)
-        label_slsz.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
-        label_slsz.setText("light source z slider")
+        # label_slsz = QtWidgets.QLabel(self.horizontalLayoutWidget)
+        # label_slsz.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
+        # label_slsz.setText("light source z slider")
 
-        slider_lsz = QtWidgets.QSlider(QtCore.Qt.Horizontal)
-        slider_lsz.setTickPosition(QtWidgets.QSlider.TicksBothSides)
-        slider_lsz.setRange(101, 400)
-        slider_lsz.valueChanged.connect(self.updateSliderz)
+        # slider_lsz = QtWidgets.QSlider(QtCore.Qt.Horizontal)
+        # slider_lsz.setTickPosition(QtWidgets.QSlider.TicksBothSides)
+        # slider_lsz.setRange(101, 400)
+        # slider_lsz.valueChanged.connect(self.updateSliderz)
 
-        self.verticalLayout.addWidget(label_slsx)
-        self.verticalLayout.addWidget(slider_lsx)
-        self.verticalLayout.addWidget(label_slsy)
-        self.verticalLayout.addWidget(slider_lsy)
-        self.verticalLayout.addWidget(label_slsz)
-        self.verticalLayout.addWidget(slider_lsz)
-        self.verticalLayout.addStretch() # align top
+        # self.verticalLayout.addWidget(label_slsx)
+        # self.verticalLayout.addWidget(slider_lsx)
+        # self.verticalLayout.addWidget(label_slsy)
+        # self.verticalLayout.addWidget(slider_lsy)
+        # self.verticalLayout.addWidget(label_slsz)
+        # self.verticalLayout.addWidget(slider_lsz)
+        # self.verticalLayout.addStretch() # align top
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -269,6 +288,7 @@ class Ui_MainWindow(object):
         # connections
         self.pushButton_reset.clicked.connect(self.reset)
         self.pushButton_update_3.clicked.connect(self.updateAll)
+        self.pushButton_newLS.clicked.connect(self.addDefaultLS)
         self.lineEdit_ka.returnPressed.connect(self.updateAll)
         self.lineEdit_kd.returnPressed.connect(self.updateAll)
         self.lineEdit_ks.returnPressed.connect(self.updateAll)
@@ -280,18 +300,11 @@ class Ui_MainWindow(object):
         self.lineEdit_z_ls.returnPressed.connect(self.updateAll)
         self.lineEdit_z_sphere.returnPressed.connect(self.updateAll)
 
-        # global variables
-        self.P = []
-        self.mode = 0
-        self.backc = 0
-        self.frontc = 0
-
         # on form load
         self.statusbar.showMessage("Ready")
         self.reset()
         self.generateSphere()
         self.updateAll()
-        
         
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -310,6 +323,29 @@ class Ui_MainWindow(object):
         self.label_kd.setText(_translate("MainWindow", "diffuse coefficient (kd):"))
         self.pushButton_update_3.setText(_translate("MainWindow", "Update"))
         self.pushButton_reset.setText(_translate("MainWindow", "Reset"))
+        self.pushButton_newLS.setText(_translate("MainWindow", "Add new light source"))
+
+    def updateLV(self):
+        self.model.clear()
+        entries = []
+        i = 1
+        for ls in self.LS:
+            entries.append(f"Light source {i} - {ls}")
+            i += 1
+
+        for i in entries:
+            item = QtGui.QStandardItem(i)
+            self.model.appendRow(item)
+
+    def addDefaultLS(self):
+        ls = ['0', '0', '200']
+        self.LS.append(ls)
+        self.updateLV()
+
+    def addNewLS(self, lspos):
+        ls = [lspos[0], lspos[1], lspos[2]]
+        self.LS.append(ls)
+        self.updateLV()        
 
     def btnState(self, b):
         if(b.text() == "Flat Shading"):
@@ -334,7 +370,27 @@ class Ui_MainWindow(object):
                 print(f"{b.text()} is deselected")
 
     def checklv(self, current, previous):
-        print('Row %d selected, prev %d row' % (current.row(), previous.row()))
+        # print('Row %d selected, prev %d row' % (current.row(), previous.row()))
+        
+        i = self.lsindex
+        ls = self.LS[i]
+        ls[0] = self.lineEdit_x_ls.text()
+        ls[1] = self.lineEdit_y_ls.text()
+        ls[2] = self.lineEdit_z_ls.text()
+        self.updateLV()
+
+        i = current.row()
+        self.lsindex = i
+        ls = self.LS[i] 
+        x = ls[0]
+        y = ls[1]
+        z = ls[2]
+        self.lineEdit_x_ls.clear()
+        self.lineEdit_x_ls.insert(str(x))
+        self.lineEdit_y_ls.clear()
+        self.lineEdit_y_ls.insert(str(y))
+        self.lineEdit_z_ls.clear()
+        self.lineEdit_z_ls.insert(str(z))
     
     def updateSliderx(self, value):
         self.lineEdit_x_ls.clear()
@@ -368,6 +424,13 @@ class Ui_MainWindow(object):
         self.lineEdit_kd.setText("0.5")
         self.lineEdit_ks.setText("0.7")
         self.lineEdit_n.setText("10")
+
+        self.lsindex = 0
+        self.LS = []
+        self.addDefaultLS()
+        self.updateLV()
+        self.listView.setCurrentIndex(self.model.index(0, 0))
+        # self.listView.selectionModel().setCurrentIndex(self.model.index(0, 0), QtCore.QItemSelectionModel.Select)
         
         self.clearScreen()
 
@@ -405,6 +468,21 @@ class Ui_MainWindow(object):
         path.moveTo(p1[0], p1[1])
         path.lineTo(p2[0], p2[1])
         path.lineTo(p3[0], p3[1])
+        canvas.setPen(QtGui.QPen(QtGui.QColor(color[0], color[1], color[2], alpha)))
+        canvas.drawPath(path)
+
+    def fillRect(self, points, color, alpha=255):
+        p1 = points[0]
+        p2 = points[1]
+        p3 = points[2]
+        p4 = points[3]
+        canvas = QtGui.QPainter(self.painter.pixmap())
+        path = QtGui.QPainterPath()
+        canvas.setBrush(QtGui.QColor(color[0], color[1], color[2], alpha))
+        path.moveTo(p1[0], p1[1])
+        path.lineTo(p2[0], p2[1])
+        path.lineTo(p3[0], p3[1])
+        path.lineTo(p4[0], p4[1])
         canvas.setPen(QtGui.QPen(QtGui.QColor(color[0], color[1], color[2], alpha)))
         canvas.drawPath(path)
     
@@ -496,6 +574,18 @@ class Ui_MainWindow(object):
             print("not yet implemented")
     
     def updateAll(self):
+        self.statusbar.showMessage("Updating...")
+        i = self.lsindex
+        ls = self.LS[i]
+        ls[0] = self.lineEdit_x_ls.text()
+        ls[1] = self.lineEdit_y_ls.text()
+        ls[2] = self.lineEdit_z_ls.text()
+        self.updateLV()
+
+        loop = QtCore.QEventLoop()
+        QtCore.QTimer.singleShot(1000, loop.quit)
+        loop.exec_()
+
         self.clearScreen()
         self.P = []
         self.generateSphere()
@@ -505,14 +595,8 @@ class Ui_MainWindow(object):
         elif(self.mode == 1):
             self.gouraudShading()
         elif(self.mode == 2):
-            #self.phongShading()
-            print("not yet implemented")
+            self.phongShading()
 
-        # print(f"front polygons: {self.frontc}")
-        # print(f"back polygons: {self.backc}")
-        self.frontc = 0
-        self.backc = 0
-    
     def parallelProj(self, V):
 
         VRP = ([0, 0, 0])
@@ -597,8 +681,8 @@ class Ui_MainWindow(object):
 
         pos = [x, y, z]
 
-        nLat = 6
-        nLong = 12
+        nLat = 8
+        nLong = 16
         r = 100
 
         dLong = 360 / nLong
@@ -680,11 +764,11 @@ class Ui_MainWindow(object):
 
         c_V = ([x, y, z])
 
-        ls_x = int(self.lineEdit_x_ls.text())
-        ls_y = int(self.lineEdit_y_ls.text())
-        ls_z = int(self.lineEdit_z_ls.text())
+        # ls_x = int(self.lineEdit_x_ls.text())
+        # ls_y = int(self.lineEdit_y_ls.text())
+        # ls_z = int(self.lineEdit_z_ls.text())
 
-        ls_V = ([ls_x, ls_y, ls_z])
+        # ls_V = ([ls_x, ls_y, ls_z])
 
         viewer = ([0, 0, 300])
 
@@ -707,77 +791,97 @@ class Ui_MainWindow(object):
         iLs = ([255, 255, 255])
         ILs = np.dot(IL, iLs)
 
+        # tmpList = []
+        # pcounter = 0
+        # tcounter = 0
         for p in P:
+            # if(tcounter > 1): tcounter = 0
             p = self.backfaceCulling(viewer, p[0], p[1], p[2])
             if(p):
+                # pvertices = []
                 Isum = []
                 for v in p:
-                    p_V = ([v[0], v[1], v[2]])
-                    L = np.subtract(ls_V, p_V)
-                    # N = np.cross(np.subtract(p[2], p[0]), np.subtract(p[0], p[1]))
-                    N = np.subtract(p_V, c_V)
-                    viewer_V = ([viewer[0], viewer[1], viewer[2]])
-                    V = np.subtract(viewer_V, p_V)
+                    tmpI = ([0, 0, 0])
+                    for ls in self.LS:
+                        ls_x = int(ls[0])
+                        ls_y = int(ls[1])
+                        ls_z = int(ls[2])
+                        ls_V = ([ls_x, ls_y, ls_z])
 
-                    L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
-                    L_uv = np.divide(L, L_mag)
+                        p_V = ([v[0], v[1], v[2]])
+                        L = np.subtract(ls_V, p_V)
+                        N = np.subtract(p_V, c_V)
+                        viewer_V = ([viewer[0], viewer[1], viewer[2]])
+                        V = np.subtract(viewer_V, p_V)
 
-                    N_mag = math.sqrt(math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
-                    N_uv = np.divide(N, N_mag)
+                        L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
+                        L_uv = np.divide(L, L_mag)
 
-                    V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
-                    V_uv = np.divide(V, V_mag)
+                        N_mag = math.sqrt(math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
+                        N_uv = np.divide(N, N_mag)
 
-                    R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
+                        V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
+                        V_uv = np.divide(V, V_mag)
 
-                    Idiff = np.dot(np.multiply(kd, ILd), np.dot(L_uv, N_uv))
-                    # Idiff = np.round(Idiff)
+                        R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
 
-                    VR = np.dot(V_uv, R_uv)
-                    if(VR < 0): VR = 0
-                    Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
-                    # Ispec = np.round(Ispec)
-                    # print((ks*IL), math.pow(np.dot(V_uv, R_uv), n), Ispec)
+                        Idiff = np.dot(np.multiply(kd, ILd), np.dot(L_uv, N_uv))
 
-                    Idiff2 = []
-                    for k in Idiff:
-                        if(k <= 0):
-                            Idiff2.append(0)
-                        else:
-                            Idiff2.append(k)
+                        VR = np.dot(V_uv, R_uv)
+                        if(VR < 0): VR = 0
+                        Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
+
+                        Idiff2 = []
+                        for k in Idiff:
+                            if(k <= 0):
+                                Idiff2.append(0)
+                            else:
+                                Idiff2.append(k)
+                        
+                        Ispec2 = []
+                        for idx, k in enumerate(Idiff):
+                            if(k < 0):
+                                Ispec2.append(0)
+                            else:
+                                Ispec2.append(Ispec[idx])
+
+                        # Itot = np.add(Iamb, Idiff2)
+                        Itot = Idiff2
+                        Itot = np.add(Itot, Ispec2)
+                        
+                        res = []
+                        for k in Itot:
+                            if(k < 0):
+                                res.append(0)
+                            else:
+                                res.append(k)
+                        
+                        tmpI = np.add(tmpI, res)
                     
-                    Ispec2 = []
-                    for idx, k in enumerate(Idiff):
-                        if(k < 0):
-                            Ispec2.append(0)
+                    Isum.append(tmpI)
+
+                tmpIsum = []
+                for e in Isum:
+                    tmpIsum.append(np.add(e, Iamb))
+
+                Isum2 = []
+                for e in tmpIsum:
+                    tmp = []
+                    for c in e:
+                        if(c > 255):
+                            tmp.append(255)
                         else:
-                            Ispec2.append(Ispec[idx])
+                            tmp.append(c)
 
-                    # print(Iamb, Idiff, Ispec)
-                    # Itot = Iamb
-                    Itot = np.add(Iamb, Idiff2)
-                    Itot = np.add(Itot, Ispec2)
-                    
-                    res = []
-                    for k in Itot:
-                        if(k < 0):
-                            res.append(0)
-                        else:
-                            res.append(k)
-
-                    Isum.append(res)
-
+                    Isum2.append(tmp)
+                
                 r = []
                 g = []
                 b = []
-                for v in Isum:
+                for v in Isum2:
                     r.append(v[0])
                     g.append(v[1])
                     b.append(v[2])
-                
-                # r_avg = np.average(r) - 128
-                # g_avg = np.average(g) - 128
-                # b_avg = 128 - np.average(b)
 
                 r_avg = np.average(r)
                 g_avg = np.average(g)
@@ -801,9 +905,65 @@ class Ui_MainWindow(object):
 
                 self.fillTriangle((v1, v2, v3), (res[0], res[1], res[2]))
         
-        
-        v = self.parallelProj(ls_V)
-        self.fillCircle((v[0], v[1]), (0, 255, 255))
+        # square instead of triangle
+        #         vertex = []
+        #         if(tcounter == 0):
+        #             vertex.append(v1)
+        #             vertex.append(Isum[0])
+        #             pvertices.append(vertex)
+        #             vertex = []
+        #             vertex.append(v2)
+        #             vertex.append(Isum[1])
+        #             pvertices.append(vertex)
+        #             vertex = []
+        #             vertex.append(v3)
+        #             vertex.append(Isum[2])
+        #             pvertices.append(vertex)
+        #             tmpList.append(pvertices)
+        #         elif(tcounter == 1):
+        #             vertex = []
+        #             vertex.append(v3)
+        #             vertex.append(Isum[2])
+        #             i = len(tmpList) - 1
+        #             tmpList[i].append(vertex)
+        #         tcounter += 1
+        #         pcounter += 1
+
+        # ptot = len(tmpList)
+
+        # for p in tmpList:
+        #     Isum = []
+        #     vertices = []
+        #     for v in p:
+        #         loc = v[0]
+        #         I = v[1]
+        #         x = loc[0]
+        #         y = loc[1]
+        #         vertices.append([x, y])
+        #         Isum.append(I)
+            
+        #     r = []
+        #     g = []
+        #     b = []
+        #     for i in Isum:
+        #         r.append(i[0])
+        #         g.append(i[1])
+        #         b.append(i[2])
+
+        #     r_avg = np.average(r)
+        #     g_avg = np.average(g)
+        #     b_avg = np.average(b)
+
+        #     if(r_avg < 0):
+        #         r_avg = 0
+        #     if(g_avg < 0):
+        #         g_avg = 0
+        #     if(b_avg < 0):
+        #         b_avg = 0
+
+        #     Ires = [r_avg, g_avg, b_avg]
+
+        #     self.fillRect(vertices, Ires)
             
     def gouraudShading(self):
         self.statusbar.showMessage("Gouraud shading")
@@ -815,11 +975,11 @@ class Ui_MainWindow(object):
 
         c_V = ([x, y, z])
 
-        ls_x = int(self.lineEdit_x_ls.text())
-        ls_y = int(self.lineEdit_y_ls.text())
-        ls_z = int(self.lineEdit_z_ls.text())
+        # ls_x = int(self.lineEdit_x_ls.text())
+        # ls_y = int(self.lineEdit_y_ls.text())
+        # ls_z = int(self.lineEdit_z_ls.text())
 
-        ls_V = ([ls_x, ls_y, ls_z])
+        # ls_V = ([ls_x, ls_y, ls_z])
 
         viewer = ([0, 0, 300])
 
@@ -847,68 +1007,83 @@ class Ui_MainWindow(object):
             if(p):
                 Isum = []
                 for v in p:
-                    p_V = ([v[0], v[1], v[2]])
-                    L = np.subtract(ls_V, p_V)
-                    # N = np.cross(np.subtract(p[2], p[0]), np.subtract(p[0], p[1]))
-                    N = np.subtract(p_V, c_V)
-                    viewer_V = ([viewer[0], viewer[1], viewer[2]])
-                    V = np.subtract(viewer_V, p_V)
+                    tmpI = ([0, 0, 0])
+                    for ls in self.LS:
+                        ls_x = int(ls[0])
+                        ls_y = int(ls[1])
+                        ls_z = int(ls[2])
+                        ls_V = ([ls_x, ls_y, ls_z])
 
-                    L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
-                    L_uv = np.divide(L, L_mag)
+                        p_V = ([v[0], v[1], v[2]])
+                        L = np.subtract(ls_V, p_V)
+                        N = np.subtract(p_V, c_V)
+                        viewer_V = ([viewer[0], viewer[1], viewer[2]])
+                        V = np.subtract(viewer_V, p_V)
 
-                    N_mag = math.sqrt(math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
-                    N_uv = np.divide(N, N_mag)
+                        L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
+                        L_uv = np.divide(L, L_mag)
 
-                    V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
-                    V_uv = np.divide(V, V_mag)
+                        N_mag = math.sqrt(math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
+                        N_uv = np.divide(N, N_mag)
 
-                    R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
+                        V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
+                        V_uv = np.divide(V, V_mag)
 
-                    Idiff = np.dot(np.multiply(kd, ILd), np.dot(L_uv, N_uv))
-                    # Idiff = np.round(Idiff)
+                        R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
 
-                    VR = np.dot(V_uv, R_uv)
-                    if(VR < 0): VR = 0
-                    Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
-                    # Ispec = np.round(Ispec)
-                    # print((ks*IL), math.pow(np.dot(V_uv, R_uv), n), Ispec)
+                        Idiff = np.dot(np.multiply(kd, ILd), np.dot(L_uv, N_uv))
 
-                    Idiff2 = []
-                    for k in Idiff:
-                        if(k <= 0):
-                            Idiff2.append(0)
+                        VR = np.dot(V_uv, R_uv)
+                        if(VR < 0): VR = 0
+                        Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
+
+                        Idiff2 = []
+                        for k in Idiff:
+                            if(k <= 0):
+                                Idiff2.append(0)
+                            else:
+                                Idiff2.append(k)
+                        
+                        Ispec2 = []
+                        for idx, k in enumerate(Idiff):
+                            if(k < 0):
+                                Ispec2.append(0)
+                            else:
+                                Ispec2.append(Ispec[idx])
+
+                        # Itot = np.add(Iamb, Idiff2)
+                        Itot = Idiff2
+                        Itot = np.add(Itot, Ispec2)
+                        
+                        res = []
+                        for k in Itot:
+                            if(k < 0):
+                                res.append(0)
+                            else:
+                                res.append(k)
+                        
+                        tmpI = np.add(tmpI, res)
+
+                    Isum.append(tmpI)
+
+                tmpIsum = []
+                for e in Isum:
+                    tmpIsum.append(np.add(e, Iamb))
+
+                Isum2 = []
+                for e in tmpIsum:
+                    tmp = []
+                    for c in e:
+                        if(c > 255):
+                            tmp.append(255)
                         else:
-                            Idiff2.append(k)
-                    
-                    Ispec2 = []
-                    for idx, k in enumerate(Idiff):
-                        if(k < 0):
-                            Ispec2.append(0)
-                        else:
-                            Ispec2.append(Ispec[idx])
+                            tmp.append(c)
 
-                    # print(Iamb, Idiff, Ispec)
-                    # Itot = Iamb
-                    Itot = np.add(Iamb, Idiff2)
-                    Itot = np.add(Itot, Ispec2)
-                    
-                    res = []
-                    for k in Itot:
-                        if(k < 0):
-                            res.append(0)
-                        else:
-                            res.append(k)
-
-                    Isum.append(res)
-
-                # I1 = np.add(Iamb, Isum[0])
-                # I2 = np.add(Iamb, Isum[1])
-                # I3 = np.add(Iamb, Isum[2])
-
-                I1 = Isum[0]
-                I2 = Isum[1]
-                I3 = Isum[2]
+                    Isum2.append(tmp)
+                
+                I1 = Isum2[0]
+                I2 = Isum2[1]
+                I3 = Isum2[2]
 
                 p1 = p[0]
                 p2 = p[1]
@@ -923,10 +1098,6 @@ class Ui_MainWindow(object):
                 idx = ydiff.index(0)
 
                 if(idx == 0):
-                    # p1 and p2 has same y
-                    # I1 = np.add(I1, ([128, 0, 0]))
-                    # I2 = np.add(I2, ([128, 0, 0]))
-                    # I3 = np.add(I3, ([128, 0, 0]))
                     yA = p1[1]
                     y1 = p1[1]
                     y2 = p2[1]
@@ -937,15 +1108,8 @@ class Ui_MainWindow(object):
                     if(yA < y3):
                         # add
                         yA = round(y2)
-                        yB = y1
-                        # I1 = np.add(I1, ([128, 0, 0]))
-                        # I2 = np.add(I2, ([128, 0, 0]))
-                        # I3 = np.add(I3, ([128, 0, 0]))
-                        # self.fillTriangle([p1, p2, p3], [255, 255, 255])
+                        yB = round(y1)
                         while(yA <= y3):
-                            
-                            # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
-                            # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
                             IA = np.add(I2, np.dot(((yA-y2)/(y3-y2)), np.subtract(I3, I2)))
                             IB = np.add(I1, np.dot(((yB-y1)/(y3-y1)), np.subtract(I3, I1)))
                             
@@ -959,7 +1123,6 @@ class Ui_MainWindow(object):
                             xB = round(xB)
                             
                             xP = xA
-                            # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
                             k = 0
                             if((xB-xA) == 0):
                                 k = 0
@@ -1017,11 +1180,9 @@ class Ui_MainWindow(object):
 
                     elif(yA > y3):
                         # subtract
-                        yA = y1
-                        yB = y2
+                        yA = round(y1)
+                        yB = round(y2)
                         while(yA >= y3):
-                            # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
-                            # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
                             IA = np.add(I1, np.dot(((yA-y1)/(y3-y1)), np.subtract(I3, I1)))
                             IB = np.add(I2, np.dot(((yB-y2)/(y3-y2)), np.subtract(I3, I2)))
                             
@@ -1035,7 +1196,6 @@ class Ui_MainWindow(object):
                             xB = round(xB)
 
                             xP = xA
-                            # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
                             k = 0
                             if((xB-xA) == 0):
                                 k = 0
@@ -1092,10 +1252,6 @@ class Ui_MainWindow(object):
                 elif(idx == 1):
                     print("index 1")
                 elif(idx == 2):
-                    # p2 or p3 has same y
-                    # I1 = np.add(I1, ([0, 0, 128]))
-                    # I2 = np.add(I2, ([0, 0, 128]))
-                    # I3 = np.add(I3, ([0, 0, 128]))
                     yA = p2[1]
                     y1 = p1[1]
                     y2 = p2[1]
@@ -1105,12 +1261,9 @@ class Ui_MainWindow(object):
                     x3 = p3[0]
                     if(yA < y1):
                         # add
-                        yA = y3
-                        yB = y2
+                        yA = round(y3)
+                        yB = round(y2)
                         while(yA <= y1):
-                            
-                            # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
-                            # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
                             IA = np.add(I3, np.dot(((yA-y3)/(y1-y3)), np.subtract(I1, I3)))
                             IB = np.add(I2, np.dot(((yB-y2)/(y1-y2)), np.subtract(I1, I2)))
                             
@@ -1124,7 +1277,6 @@ class Ui_MainWindow(object):
                             xB = round(xB)
                             
                             xP = xA
-                            # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
                             k = 0
                             if((xB-xA) == 0):
                                 k = 0
@@ -1183,14 +1335,8 @@ class Ui_MainWindow(object):
                     elif(yA > y1):
                         # subtract
                         yA = round(y2)
-                        yB = y3
-                        # I1 = np.add(I1, ([0, 0, 128]))
-                        # I2 = np.add(I2, ([0, 0, 128]))
-                        # I3 = np.add(I3, ([0, 0, 128]))
-                        # self.fillTriangle([p1, p2, p3], [255, 255, 255])
+                        yB = round(y3)
                         while(yA >= y1):
-                            # IA = I1 + ((yA-y1)/(y3-y1)) * (I3 - I1)
-                            # IB = I1 + ((yB-y1)/(y2-y1)) * (I2 - I1)
                             IA = np.add(I2, np.dot(((yA-y2)/(y1-y2)), np.subtract(I1, I2)))
                             IB = np.add(I3, np.dot(((yB-y3)/(y1-y3)), np.subtract(I1, I3)))
                             
@@ -1204,7 +1350,6 @@ class Ui_MainWindow(object):
                             xB = round(xB)
                             
                             xP = xA
-                            # IP = IA + ((xP-xA)/(xB-xA)) * (IB-IA)
                             k = 0
                             if((xB-xA) == 0):
                                 k = 0
@@ -1263,10 +1408,963 @@ class Ui_MainWindow(object):
                             yA -= 1
                             yB -= 1
 
-                # sampe sini
-        # print(counter0, counter1, counter0+counter1)
-        res = self.parallelProj(ls_V)
-        self.fillCircle((res[0], res[1]), (0, 255, 255))
+    def phongShading(self):
+        self.statusbar.showMessage("Phong shading")
+        P = self.P
+
+        x = int(self.lineEdit_x_sphere.text())
+        y = int(self.lineEdit_y_sphere.text())
+        z = int(self.lineEdit_z_sphere.text())
+
+        c_V = ([x, y, z])
+
+        # ls_x = int(self.lineEdit_x_ls.text())
+        # ls_y = int(self.lineEdit_y_ls.text())
+        # ls_z = int(self.lineEdit_z_ls.text())
+
+        # ls_V = ([ls_x, ls_y, ls_z])
+
+        viewer = ([0, 0, 300])
+
+        ka = float(self.lineEdit_ka.text())
+        kd = float(self.lineEdit_kd.text())
+        ks = float(self.lineEdit_ks.text())
+        n = int(self.lineEdit_n.text())
+        Ia = 0.7
+        IL = 0.7
+
+        aL = ([0, 0, 255])
+        Ia = np.dot(Ia, aL)
+
+        Iamb = np.dot(ka, Ia)
+        Iamb = np.round(Iamb)
+
+        iLd = ([0, 0, 255])
+        ILd = np.dot(IL, iLd)
+
+        iLs = ([255, 255, 255])
+        ILs = np.dot(IL, iLs)
+
+        for p in P:
+            p = self.backfaceCulling(viewer, p[0], p[1], p[2])
+            if(p):
+                Nsum = []
+                for v in p:
+                    p_V = ([v[0], v[1], v[2]])
+                    N = np.subtract(p_V, c_V)
+                    N_mag = math.sqrt(math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
+                    N_uv = np.divide(N, N_mag)
+                    Nsum.append(N_uv)
+
+                N1 = Nsum[0]
+                N2 = Nsum[1]
+                N3 = Nsum[2]
+                
+                p1 = p[0]
+                p2 = p[1]
+                p3 = p[2]         
+
+                ydiff = [abs(p1[1]-p2[1]), abs(p1[1]-p3[1]), abs(p2[1]-p3[1])]
+                
+                idx = ydiff.index(0)
+
+                if(idx == 0):
+                    # p1 and p2 has same y
+                    yA = p1[1]
+                    y1 = p1[1]
+                    y2 = p2[1]
+                    y3 = p3[1]
+                    x1 = p1[0]
+                    x2 = p2[0]
+                    x3 = p3[0]
+                    z1 = p1[2]
+                    z2 = p2[2]
+                    z3 = p3[2]
+                    if(yA < y3):
+                        # add
+                        yA = round(y2)
+                        yB = round(y1)
+                        while(yA <= y3):
+                            NA = np.add(N2, np.dot(((yA-y2)/(y3-y2)), np.subtract(N3, N2)))
+                            NB = np.add(N1, np.dot(((yB-y1)/(y3-y1)), np.subtract(N3, N1)))
+                            
+                            tA = ((yA-y2)/(y3-y2))
+                            tB = ((yA-y1)/(y3-y1))
+
+                            xA = x2 + tA * (x3 - x2)
+                            xB = x1 + tB * (x3 - x1)
+
+                            zA = z2 + tA * (z3 - z2)
+                            zB = z1 + tB * (z3 - z1)
+
+                            xA = round(xA)
+                            xB = round(xB)
+                            
+                            xP = xA
+                            zP = zA
+                            k = 0
+                            if((xB-xA) == 0):
+                                k = 0
+                            else:
+                                k = ((xP-xA)/(xB-xA))
+                            NP = np.add(NA, np.dot(k, np.subtract(NB, NA)))
+                            k = 0
+                            if((zB-zA) == 0):
+                                k = 0
+                            else:
+                                k = ((zP-zA)/(zB-zA))
+                            
+                            zP = np.add(zA, np.dot(k, np.subtract(zB, zA)))
+
+                            dNx = ([0, 0, 0])
+                            if((xB-xA) == 0):
+                                dNx = ([0, 0, 0])
+                            elif((xB-xA) < 0):
+                                dNx = np.divide(np.subtract(NB, NA), abs(xB-xA))
+                            else:
+                                dNx = np.divide(np.subtract(NB, NA), (xB-xA))
+
+                            dZx = ([0, 0, 0])
+                            if((xB-xA) == 0):
+                                dZx = ([0, 0, 0])
+                            elif((xB-xA) < 0):
+                                dZx = np.divide(np.subtract(zB, zA), abs(xB-xA))
+                            else:
+                                dZx = np.divide(np.subtract(zB, zA), (xB-xA))
+
+                            if(xP < xB):
+                                while(xP <= xB):
+                                    tmpI = ([0, 0, 0])
+                                    for ls in self.LS:
+                                        ls_x = int(ls[0])
+                                        ls_y = int(ls[1])
+                                        ls_z = int(ls[2])
+                                        ls_V = ([ls_x, ls_y, ls_z])
+
+                                        p_V = ([xP, yA, zP])
+                                        L = np.subtract(ls_V, p_V)
+                                        viewer_V = ([viewer[0], viewer[1], viewer[2]])
+                                        V = np.subtract(viewer_V, p_V)
+
+                                        L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
+                                        L_uv = np.divide(L, L_mag)
+
+                                        V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
+                                        V_uv = np.divide(V, V_mag)
+                                        R_uv = np.subtract(np.dot(NP, np.dot(2, np.dot(L_uv, NP))), L_uv)
+
+                                        Idiff = np.dot(np.multiply(kd, ILd), np.dot(L_uv, NP))
+
+                                        VR = np.dot(V_uv, R_uv)
+                                        if(VR < 0): VR = 0
+                                        Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
+
+                                        Idiff2 = []
+                                        for k in Idiff:
+                                            if(k <= 0):
+                                                Idiff2.append(0)
+                                            else:
+                                                Idiff2.append(k)
+                                        
+                                        Ispec2 = []
+                                        for idx, k in enumerate(Idiff):
+                                            if(k < 0):
+                                                Ispec2.append(0)
+                                            else:
+                                                Ispec2.append(Ispec[idx])
+
+                                        
+                                        # Itot = np.add(Iamb, Idiff2)
+                                        Itot = Idiff2
+                                        Itot = np.add(Itot, Ispec2)
+                                        
+                                        res = []
+                                        for k in Itot:
+                                            if(k < 0):
+                                                res.append(0)
+                                            elif(k > 255):
+                                                res.append(255)
+                                            else:
+                                                res.append(k)
+
+                                        tmpI = np.add(tmpI, res)
+
+                                    res = Iamb
+                                    tmp = []
+                                    for e in tmpI:
+                                        if(e > 255):
+                                            tmp.append(255)
+                                        else:
+                                            tmp.append(e)
+                                        
+                                    res = np.add(res, tmp)
+
+                                    res2 = []
+                                    for e in res:
+                                        if(e > 255):
+                                            res2.append(255)
+                                        else:
+                                            res2.append(e)
+                                        
+                                    tmpP = self.parallelProj([xP, yA, zP])
+                                    
+                                    self.drawDot([tmpP[0], tmpP[1]], res2)
+                                    
+                                    NP = np.add(NP, dNx)
+                                    zP = zP + dZx
+                                    xP += 1
+                            elif(xP >= xB):
+                                while(xP > xB):
+                                    tmpI = ([0, 0, 0])
+                                    for ls in self.LS:
+                                        ls_x = int(ls[0])
+                                        ls_y = int(ls[1])
+                                        ls_z = int(ls[2])
+                                        ls_V = ([ls_x, ls_y, ls_z])
+                                        p_V = ([xP, yA, zP])
+                                        L = np.subtract(ls_V, p_V)
+                                        viewer_V = ([viewer[0], viewer[1], viewer[2]])
+                                        V = np.subtract(viewer_V, p_V)
+
+                                        L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
+                                        L_uv = np.divide(L, L_mag)
+
+                                        V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
+                                        V_uv = np.divide(V, V_mag)
+                                        R_uv = np.subtract(np.dot(NP, np.dot(2, np.dot(L_uv, NP))), L_uv)
+
+                                        Idiff = np.dot(np.multiply(kd, ILd), np.dot(L_uv, NP))
+
+                                        VR = np.dot(V_uv, R_uv)
+                                        if(VR < 0): VR = 0
+                                        Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
+
+                                        Idiff2 = []
+                                        for k in Idiff:
+                                            if(k <= 0):
+                                                Idiff2.append(0)
+                                            else:
+                                                Idiff2.append(k)
+                                        
+                                        Ispec2 = []
+                                        for idx, k in enumerate(Idiff):
+                                            if(k < 0):
+                                                Ispec2.append(0)
+                                            else:
+                                                Ispec2.append(Ispec[idx])
+
+                                        
+                                        # Itot = np.add(Iamb, Idiff2)
+                                        Itot = Idiff2
+                                        Itot = np.add(Itot, Ispec2)
+                                        
+                                        res = []
+                                        for k in Itot:
+                                            if(k < 0):
+                                                res.append(0)
+                                            elif(k > 255):
+                                                res.append(255)
+                                            else:
+                                                res.append(k)
+                                        
+                                        tmpI = np.add(tmpI, res)
+                                    
+                                    res = Iamb
+                                    tmp = []
+                                    for e in tmpI:
+                                        if(e > 255):
+                                            tmp.append(255)
+                                        else:
+                                            tmp.append(e)
+                                        
+                                    res = np.add(res, tmp)
+
+                                    res2 = []
+                                    for e in res:
+                                        if(e > 255):
+                                            res2.append(255)
+                                        else:
+                                            res2.append(e)
+                                    
+                                    tmpP = self.parallelProj([xP, yA, zP])
+                                    
+                                    self.drawDot([tmpP[0], tmpP[1]], res2)
+                                    
+                                    NP = np.add(NP, dNx)
+                                    zP = zP + dZx
+                                    xP -= 1
+
+                            yA += 1
+                            yB += 1
+
+                    elif(yA > y3):
+                        # subtract
+                        yA = round(y1)
+                        yB = round(y2)
+                        while(yA >= y3):
+                            NA = np.add(N1, np.dot(((yA-y1)/(y3-y1)), np.subtract(N3, N1)))
+                            NB = np.add(N2, np.dot(((yB-y2)/(y3-y2)), np.subtract(N3, N2)))
+                            
+                            tA = ((yA-y1)/(y3-y1))
+                            tB = ((yA-y2)/(y3-y2))
+
+                            xA = x1 + tA * (x3 - x1)
+                            xB = x2 + tB * (x3 - x2)
+
+                            zA = z1 + tA * (z3 - z1)
+                            zB = z2 + tB * (z3 - z2)
+
+                            xA = round(xA)
+                            xB = round(xB)
+                            
+                            xP = xA
+                            zP = zA
+                            k = 0
+                            if((xB-xA) == 0):
+                                k = 0
+                            else:
+                                k = ((xP-xA)/(xB-xA))
+                            NP = np.add(NA, np.dot(k, np.subtract(NB, NA)))
+                            k = 0
+                            if((zB-zA) == 0):
+                                k = 0
+                            else:
+                                k = ((zP-zA)/(zB-zA))
+                            
+                            zP = np.add(zA, np.dot(k, np.subtract(zB, zA)))
+
+                            dNx = ([0, 0, 0])
+                            if((xB-xA) == 0):
+                                dNx = ([0, 0, 0])
+                            elif((xB-xA) < 0):
+                                dNx = np.divide(np.subtract(NB, NA), abs(xB-xA))
+                            else:
+                                dNx = np.divide(np.subtract(NB, NA), (xB-xA))
+
+                            dZx = ([0, 0, 0])
+                            if((xB-xA) == 0):
+                                dZx = ([0, 0, 0])
+                            elif((xB-xA) < 0):
+                                dZx = np.divide(np.subtract(zB, zA), abs(xB-xA))
+                            else:
+                                dZx = np.divide(np.subtract(zB, zA), (xB-xA))
+
+                            if(xP < xB):
+                                while(xP <= xB):
+                                    tmpI = ([0, 0, 0])
+                                    for ls in self.LS:
+                                        ls_x = int(ls[0])
+                                        ls_y = int(ls[1])
+                                        ls_z = int(ls[2])
+                                        ls_V = ([ls_x, ls_y, ls_z])
+                                            
+                                        p_V = ([xP, yA, zP])
+                                        L = np.subtract(ls_V, p_V)
+                                        viewer_V = ([viewer[0], viewer[1], viewer[2]])
+                                        V = np.subtract(viewer_V, p_V)
+
+                                        L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
+                                        L_uv = np.divide(L, L_mag)
+
+                                        V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
+                                        V_uv = np.divide(V, V_mag)
+                                        R_uv = np.subtract(np.dot(NP, np.dot(2, np.dot(L_uv, NP))), L_uv)
+
+                                        Idiff = np.dot(np.multiply(kd, ILd), np.dot(L_uv, NP))
+
+                                        VR = np.dot(V_uv, R_uv)
+                                        if(VR < 0): VR = 0
+                                        Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
+
+                                        Idiff2 = []
+                                        for k in Idiff:
+                                            if(k <= 0):
+                                                Idiff2.append(0)
+                                            else:
+                                                Idiff2.append(k)
+                                        
+                                        Ispec2 = []
+                                        for idx, k in enumerate(Idiff):
+                                            if(k < 0):
+                                                Ispec2.append(0)
+                                            else:
+                                                Ispec2.append(Ispec[idx])
+
+                                        
+                                        # Itot = np.add(Iamb, Idiff2)
+                                        Itot = Idiff2
+                                        Itot = np.add(Itot, Ispec2)
+                                        
+                                        res = []
+                                        for k in Itot:
+                                            if(k < 0):
+                                                res.append(0)
+                                            elif(k > 255):
+                                                res.append(255)
+                                            else:
+                                                res.append(k)
+
+                                        tmpI = np.add(tmpI, res)
+                                    
+                                    res = Iamb
+                                    tmp = []
+                                    for e in tmpI:
+                                        if(e > 255):
+                                            tmp.append(255)
+                                        else:
+                                            tmp.append(e)
+                                        
+                                    res = np.add(res, tmp)
+
+                                    res2 = []
+                                    for e in res:
+                                        if(e > 255):
+                                            res2.append(255)
+                                        else:
+                                            res2.append(e)
+                                    
+                                    tmpP = self.parallelProj([xP, yA, zP])
+                                    
+                                    self.drawDot([tmpP[0], tmpP[1]], res2)
+                                    
+                                    NP = np.add(NP, dNx)
+                                    zP = zP + dZx
+                                    xP += 1
+                            elif(xP >= xB):
+                                while(xP > xB):
+                                    tmpI = ([0, 0, 0])
+                                    for ls in self.LS:
+                                        ls_x = int(ls[0])
+                                        ls_y = int(ls[1])
+                                        ls_z = int(ls[2])
+                                        ls_V = ([ls_x, ls_y, ls_z])
+                                            
+                                        p_V = ([xP, yA, zP])
+                                        L = np.subtract(ls_V, p_V)
+                                        viewer_V = ([viewer[0], viewer[1], viewer[2]])
+                                        V = np.subtract(viewer_V, p_V)
+
+                                        L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
+                                        L_uv = np.divide(L, L_mag)
+
+                                        V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
+                                        V_uv = np.divide(V, V_mag)
+                                        R_uv = np.subtract(np.dot(NP, np.dot(2, np.dot(L_uv, NP))), L_uv)
+
+                                        Idiff = np.dot(np.multiply(kd, ILd), np.dot(L_uv, NP))
+
+                                        VR = np.dot(V_uv, R_uv)
+                                        if(VR < 0): VR = 0
+                                        Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
+
+                                        Idiff2 = []
+                                        for k in Idiff:
+                                            if(k <= 0):
+                                                Idiff2.append(0)
+                                            else:
+                                                Idiff2.append(k)
+                                        
+                                        Ispec2 = []
+                                        for idx, k in enumerate(Idiff):
+                                            if(k < 0):
+                                                Ispec2.append(0)
+                                            else:
+                                                Ispec2.append(Ispec[idx])
+
+                                        
+                                        # Itot = np.add(Iamb, Idiff2)
+                                        Itot = Idiff2
+                                        Itot = np.add(Itot, Ispec2)
+                                        
+                                        res = []
+                                        for k in Itot:
+                                            if(k < 0):
+                                                res.append(0)
+                                            elif(k > 255):
+                                                res.append(255)
+                                            else:
+                                                res.append(k)
+
+                                        tmpI = np.add(tmpI, res)
+                                    
+                                    res = Iamb
+                                    tmp = []
+                                    for e in tmpI:
+                                        if(e > 255):
+                                            tmp.append(255)
+                                        else:
+                                            tmp.append(e)
+                                        
+                                    res = np.add(res, tmp)
+
+                                    res2 = []
+                                    for e in res:
+                                        if(e > 255):
+                                            res2.append(255)
+                                        else:
+                                            res2.append(e)
+                                    
+                                    tmpP = self.parallelProj([xP, yA, zP])
+                                     
+                                    self.drawDot([tmpP[0], tmpP[1]], res2)
+                                    
+                                    NP = np.add(NP, dNx)
+                                    zP = zP + dZx
+                                    xP -= 1
+                            yA -= 1
+                            yB -= 1
+
+                elif(idx == 1):
+                    print("index 1")
+                elif(idx == 2):
+                    # p2 or p3 has same y
+                    yA = p2[1]
+                    y1 = p1[1]
+                    y2 = p2[1]
+                    y3 = p3[1]
+                    x1 = p1[0]
+                    x2 = p2[0]
+                    x3 = p3[0]
+                    z1 = p1[2]
+                    z2 = p2[2]
+                    z3 = p3[2]
+                    if(yA < y1):
+                        # add
+                        yA = round(y3)
+                        yB = round(y2)
+                        while(yA <= y1):
+                            NA = np.add(N3, np.dot(((yA-y3)/(y1-y3)), np.subtract(N1, N3)))
+                            NB = np.add(N2, np.dot(((yB-y2)/(y1-y2)), np.subtract(N1, N2)))
+                            
+                            tA = ((yA-y3)/(y1-y3))
+                            tB = ((yA-y2)/(y1-y2))
+
+                            xA = x3 + tA * (x1 - x3)
+                            xB = x2 + tB * (x1 - x2)
+
+                            zA = z3 + tA * (z1 - z3)
+                            zB = z2 + tB * (z1 - z2)
+
+                            xA = round(xA)
+                            xB = round(xB)
+                            
+                            xP = xA
+                            zP = zA
+                            k = 0
+                            if((xB-xA) == 0):
+                                k = 0
+                            else:
+                                k = ((xP-xA)/(xB-xA))
+
+                            NP = np.add(NA, np.dot(k, np.subtract(NB, NA)))
+
+                            k = 0
+                            if((zB-zA) == 0):
+                                k = 0
+                            else:
+                                k = ((zP-zA)/(zB-zA))
+                            
+                            zP = np.add(zA, np.dot(k, np.subtract(zB, zA)))
+
+                            dNx = ([0, 0, 0])
+                            if((xB-xA) == 0):
+                                dNx = ([0, 0, 0])
+                            elif((xB-xA) < 0):
+                                dNx = np.divide(np.subtract(NB, NA), abs(xB-xA))
+                            else:
+                                dNx = np.divide(np.subtract(NB, NA), (xB-xA))
+
+                            dZx = ([0, 0, 0])
+                            if((xB-xA) == 0):
+                                dZx = ([0, 0, 0])
+                            elif((xB-xA) < 0):
+                                dZx = np.divide(np.subtract(zB, zA), abs(xB-xA))
+                            else:
+                                dZx = np.divide(np.subtract(zB, zA), (xB-xA))
+
+                            if(xP < xB):
+                                while(xP <= xB):
+                                    tmpI = ([0, 0, 0])
+                                    for ls in self.LS:
+                                        ls_x = int(ls[0])
+                                        ls_y = int(ls[1])
+                                        ls_z = int(ls[2])
+                                        ls_V = ([ls_x, ls_y, ls_z])
+                                            
+                                        p_V = ([xP, yA, zP])
+                                        L = np.subtract(ls_V, p_V)
+                                        viewer_V = ([viewer[0], viewer[1], viewer[2]])
+                                        V = np.subtract(viewer_V, p_V)
+
+                                        L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
+                                        L_uv = np.divide(L, L_mag)
+
+                                        V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
+                                        V_uv = np.divide(V, V_mag)
+                                        R_uv = np.subtract(np.dot(NP, np.dot(2, np.dot(L_uv, NP))), L_uv)
+
+                                        Idiff = np.dot(np.multiply(kd, ILd), np.dot(L_uv, NP))
+
+                                        VR = np.dot(V_uv, R_uv)
+                                        if(VR < 0): VR = 0
+                                        Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
+
+                                        Idiff2 = []
+                                        for k in Idiff:
+                                            if(k <= 0):
+                                                Idiff2.append(0)
+                                            else:
+                                                Idiff2.append(k)
+                                        
+                                        Ispec2 = []
+                                        for idx, k in enumerate(Idiff):
+                                            if(k < 0):
+                                                Ispec2.append(0)
+                                            else:
+                                                Ispec2.append(Ispec[idx])
+
+                                        
+                                        # Itot = np.add(Iamb, Idiff2)
+                                        Itot = Idiff2
+                                        Itot = np.add(Itot, Ispec2)
+                                        
+                                        res = []
+                                        for k in Itot:
+                                            if(k < 0):
+                                                res.append(0)
+                                            elif(k > 255):
+                                                res.append(255)
+                                            else:
+                                                res.append(k)
+
+                                        tmpI = np.add(tmpI, res)
+
+                                    res = Iamb
+                                    tmp = []
+                                    for e in tmpI:
+                                        if(e > 255):
+                                            tmp.append(255)
+                                        else:
+                                            tmp.append(e)
+                                        
+                                    res = np.add(res, tmp)
+
+                                    res2 = []
+                                    for e in res:
+                                        if(e > 255):
+                                            res2.append(255)
+                                        else:
+                                            res2.append(e)
+                                    
+                                    tmpP = self.parallelProj([xP, yA, zP])
+                                    
+                                    self.drawDot([tmpP[0], tmpP[1]], res2)
+                                    
+                                    NP = np.add(NP, dNx)
+                                    zP = zP + dZx
+                                    xP += 1
+                            elif(xP >= xB):
+                                while(xP > xB):
+                                    tmpI = ([0, 0, 0])
+                                    for ls in self.LS:
+                                        ls_x = int(ls[0])
+                                        ls_y = int(ls[1])
+                                        ls_z = int(ls[2])
+                                        ls_V = ([ls_x, ls_y, ls_z])
+
+                                        p_V = ([xP, yA, zP])
+                                        L = np.subtract(ls_V, p_V)
+                                        viewer_V = ([viewer[0], viewer[1], viewer[2]])
+                                        V = np.subtract(viewer_V, p_V)
+
+                                        L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
+                                        L_uv = np.divide(L, L_mag)
+
+                                        V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
+                                        V_uv = np.divide(V, V_mag)
+                                        R_uv = np.subtract(np.dot(NP, np.dot(2, np.dot(L_uv, NP))), L_uv)
+
+                                        Idiff = np.dot(np.multiply(kd, ILd), np.dot(L_uv, NP))
+
+                                        VR = np.dot(V_uv, R_uv)
+                                        if(VR < 0): VR = 0
+                                        Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
+
+                                        Idiff2 = []
+                                        for k in Idiff:
+                                            if(k <= 0):
+                                                Idiff2.append(0)
+                                            else:
+                                                Idiff2.append(k)
+                                        
+                                        Ispec2 = []
+                                        for idx, k in enumerate(Idiff):
+                                            if(k < 0):
+                                                Ispec2.append(0)
+                                            else:
+                                                Ispec2.append(Ispec[idx])
+
+                                        
+                                        # Itot = np.add(Iamb, Idiff2)
+                                        Itot = Idiff2
+                                        Itot = np.add(Itot, Ispec2)
+                                        
+                                        res = []
+                                        for k in Itot:
+                                            if(k < 0):
+                                                res.append(0)
+                                            elif(k > 255):
+                                                res.append(255)
+                                            else:
+                                                res.append(k)
+
+                                        tmpI = np.add(tmpI, res)
+
+                                    res = Iamb
+                                    tmp = []
+                                    for e in tmpI:
+                                        if(e > 255):
+                                            tmp.append(255)
+                                        else:
+                                            tmp.append(e)
+                                        
+                                    res = np.add(res, tmp)
+
+                                    res2 = []
+                                    for e in res:
+                                        if(e > 255):
+                                            res2.append(255)
+                                        else:
+                                            res2.append(e)
+                                    
+                                    tmpP = self.parallelProj([xP, yA, zP])
+                                    
+                                    self.drawDot([tmpP[0], tmpP[1]], res2)
+                                    
+                                    NP = np.add(NP, dNx)
+                                    zP = zP + dZx
+                                    xP -= 1
+
+                            yA += 1
+                            yB += 1
+
+                    elif(yA > y1):
+                        # subtract
+                        yA = round(y2)
+                        yB = round(y3)
+                        while(yA >= y1):
+                            NA = np.add(N2, np.dot(((yA-y2)/(y1-y2)), np.subtract(N1, N2)))
+                            NB = np.add(N3, np.dot(((yB-y3)/(y1-y3)), np.subtract(N1, N3)))
+                            
+                            tA = ((yA-y2)/(y1-y2))
+                            tB = ((yA-y3)/(y1-y3))
+
+                            xA = x2 + tA * (x1 - x2)
+                            xB = x3 + tB * (x1 - x3)
+
+                            zA = z2 + tA * (z1 - z2)
+                            zB = z3 + tB * (z1 - z3)
+
+                            xA = round(xA)
+                            xB = round(xB)
+                            
+                            xP = xA
+                            zP = zA
+                            k = 0
+                            if((xB-xA) == 0):
+                                k = 0
+                            else:
+                                k = ((xP-xA)/(xB-xA))
+                            NP = np.add(NA, np.dot(k, np.subtract(NB, NA)))
+                            k = 0
+                            if((zB-zA) == 0):
+                                k = 0
+                            else:
+                                k = ((zP-zA)/(zB-zA))
+                            
+                            zP = np.add(zA, np.dot(k, np.subtract(zB, zA)))
+
+                            dNx = ([0, 0, 0])
+                            if((xB-xA) == 0):
+                                dNx = ([0, 0, 0])
+                            elif((xB-xA) < 0):
+                                dNx = np.divide(np.subtract(NB, NA), abs(xB-xA))
+                            else:
+                                dNx = np.divide(np.subtract(NB, NA), (xB-xA))
+
+                            dZx = ([0, 0, 0])
+                            if((xB-xA) == 0):
+                                dZx = ([0, 0, 0])
+                            elif((xB-xA) < 0):
+                                dZx = np.divide(np.subtract(zB, zA), abs(xB-xA))
+                            else:
+                                dZx = np.divide(np.subtract(zB, zA), (xB-xA))
+
+                            if(xP < xB):
+                                while(xP <= xB):
+                                    tmpI = ([0, 0, 0])
+                                    for ls in self.LS:
+                                        ls_x = int(ls[0])
+                                        ls_y = int(ls[1])
+                                        ls_z = int(ls[2])
+                                        ls_V = ([ls_x, ls_y, ls_z])
+                                            
+                                        p_V = ([xP, yA, zP])
+                                        L = np.subtract(ls_V, p_V)
+                                        viewer_V = ([viewer[0], viewer[1], viewer[2]])
+                                        V = np.subtract(viewer_V, p_V)
+
+                                        L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
+                                        L_uv = np.divide(L, L_mag)
+
+                                        V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
+                                        V_uv = np.divide(V, V_mag)
+                                        R_uv = np.subtract(np.dot(NP, np.dot(2, np.dot(L_uv, NP))), L_uv)
+
+                                        Idiff = np.dot(np.multiply(kd, ILd), np.dot(L_uv, NP))
+
+                                        VR = np.dot(V_uv, R_uv)
+                                        if(VR < 0): VR = 0
+                                        Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
+
+                                        Idiff2 = []
+                                        for k in Idiff:
+                                            if(k <= 0):
+                                                Idiff2.append(0)
+                                            else:
+                                                Idiff2.append(k)
+                                        
+                                        Ispec2 = []
+                                        for idx, k in enumerate(Idiff):
+                                            if(k < 0):
+                                                Ispec2.append(0)
+                                            else:
+                                                Ispec2.append(Ispec[idx])
+
+                                        
+                                        # Itot = np.add(Iamb, Idiff2)
+                                        Itot = Idiff2
+                                        Itot = np.add(Itot, Ispec2)
+                                        
+                                        res = []
+                                        for k in Itot:
+                                            if(k < 0):
+                                                res.append(0)
+                                            elif(k > 255):
+                                                res.append(255)
+                                            else:
+                                                res.append(k)
+
+                                        tmpI = np.add(tmpI, res)
+
+                                    res = Iamb
+                                    tmp = []
+                                    for e in tmpI:
+                                        if(e > 255):
+                                            tmp.append(255)
+                                        else:
+                                            tmp.append(e)
+                                        
+                                    res = np.add(res, tmp)
+
+                                    res2 = []
+                                    for e in res:
+                                        if(e > 255):
+                                            res2.append(255)
+                                        else:
+                                            res2.append(e)
+                                    
+                                    tmpP = self.parallelProj([xP, yA, zP])
+                                    
+                                    self.drawDot([tmpP[0], tmpP[1]], res2)
+                                    
+                                    NP = np.add(NP, dNx)
+                                    zP = zP + dZx
+                                    xP += 1
+                            elif(xP >= xB):
+                                while(xP > xB):
+                                    tmpI = ([0, 0, 0])
+                                    for ls in self.LS:
+                                        ls_x = int(ls[0])
+                                        ls_y = int(ls[1])
+                                        ls_z = int(ls[2])
+                                        ls_V = ([ls_x, ls_y, ls_z])
+                                            
+                                        p_V = ([xP, yA, zP])
+                                        L = np.subtract(ls_V, p_V)
+                                        viewer_V = ([viewer[0], viewer[1], viewer[2]])
+                                        V = np.subtract(viewer_V, p_V)
+
+                                        L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
+                                        L_uv = np.divide(L, L_mag)
+
+                                        V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
+                                        V_uv = np.divide(V, V_mag)
+                                        R_uv = np.subtract(np.dot(NP, np.dot(2, np.dot(L_uv, NP))), L_uv)
+
+                                        Idiff = np.dot(np.multiply(kd, ILd), np.dot(L_uv, NP))
+
+                                        VR = np.dot(V_uv, R_uv)
+                                        if(VR < 0): VR = 0
+                                        Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
+
+                                        Idiff2 = []
+                                        for k in Idiff:
+                                            if(k <= 0):
+                                                Idiff2.append(0)
+                                            else:
+                                                Idiff2.append(k)
+                                        
+                                        Ispec2 = []
+                                        for idx, k in enumerate(Idiff):
+                                            if(k < 0):
+                                                Ispec2.append(0)
+                                            else:
+                                                Ispec2.append(Ispec[idx])
+
+                                        
+                                        # Itot = np.add(Iamb, Idiff2)
+                                        Itot = Idiff2
+                                        Itot = np.add(Itot, Ispec2)
+                                        
+                                        res = []
+                                        for k in Itot:
+                                            if(k < 0):
+                                                res.append(0)
+                                            elif(k > 255):
+                                                res.append(255)
+                                            else:
+                                                res.append(k)
+
+                                        tmpI = np.add(tmpI, res)
+
+                                    res = Iamb
+                                    tmp = []
+                                    for e in tmpI:
+                                        if(e > 255):
+                                            tmp.append(255)
+                                        else:
+                                            tmp.append(e)
+                                        
+                                    res = np.add(res, tmp)
+
+                                    res2 = []
+                                    for e in res:
+                                        if(e > 255):
+                                            res2.append(255)
+                                        else:
+                                            res2.append(e)
+                                    
+                                    tmpP = self.parallelProj([xP, yA, zP])
+                                    
+                                    self.drawDot([tmpP[0], tmpP[1]], res2)
+                                    
+                                    NP = np.add(NP, dNx)
+                                    zP = zP + dZx
+                                    xP -= 1
+                            yA -= 1
+                            yB -= 1
+        
 
 if __name__ == "__main__":
     import sys
