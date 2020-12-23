@@ -56,11 +56,9 @@ class Ui_MainWindow(object):
         self.LS = []
         self.lsindex = 0
         self.mode = 0
-        self.backc = 0
-        self.frontc = 0
 
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(740, 440)
+        MainWindow.setFixedSize(730, 440)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -512,11 +510,9 @@ class Ui_MainWindow(object):
 
         if(np.dot(V, N) < 0):
             # front surface, draw
-            self.frontc += 1
             return [p1, p2, p3]
         elif(np.dot(V, N) > 0):
             # back surface, don't draw
-            self.backc += 1
             return None
         elif(np.dot(V, N) == 0):
             # side surface, draw
@@ -605,9 +601,9 @@ class Ui_MainWindow(object):
         COP = ([0, 0, 1])
         umin = 0
         vmin = 0
-        umax = 1
-        vmax = 1
-        fp = 1
+        umax = 2
+        vmax = 2
+        fp = 0
         bp = -1
 
         VPN_mag = math.sqrt(math.pow(VPN[0], 2) + math.pow(VPN[1], 2) + math.pow(VPN[2], 2))
@@ -655,9 +651,9 @@ class Ui_MainWindow(object):
               [0, 0, 1, 0],
               [-(umax-umin)/2, (vmax-vmin)/2, -F, 1])
 
-        T5 = ([1, 0, 0, 0],
-              [0, -1, 0, 0],
-              [0, 0, 1, 0],
+        T5 = ([2/(umax-umin), 0, 0, 0],
+              [0, -2/(vmax-vmin), 0, 0],
+              [0, 0, 1/(F-B), 0],
               [0, 0, 0, 1])
 
         T6 = ([1, 0, 0, 0],
