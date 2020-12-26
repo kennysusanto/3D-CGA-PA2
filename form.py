@@ -776,10 +776,10 @@ class Ui_MainWindow(object):
         Iamb = np.round(Iamb)
 
         iLd = ([255, 0, 0])
-        ILd = np.dot(IL, iLd)
+        # ILd = np.multiply(IL, iLd)
 
         iLs = ([255, 255, 255])
-        ILs = np.dot(IL, iLs)
+        # ILs = np.dot(IL, iLs)
 
         # tmpList = []
         # pcounter = 0
@@ -814,6 +814,14 @@ class Ui_MainWindow(object):
                         V_uv = np.divide(V, V_mag)
 
                         R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
+
+                        # distance
+                        L_magn = L_mag / (255 * 5) # multiplier bisa diubah2
+                        ILn = IL - L_magn
+                        # semakin besar L_mag, semakin jauh light source dari vertex / point di surface sphere
+                        # semakin besar L_mag, semakin kecil intensity --> ILn = IL - L_magn
+                        ILd = np.multiply(ILn, iLd) # diffuse light intensity 
+                        ILs = np.dot(ILn, iLs) # specular light intensity
 
                         LN = np.dot(L_uv, N_uv)
                         Idiff = None
@@ -989,10 +997,10 @@ class Ui_MainWindow(object):
         Iamb = np.round(Iamb)
 
         iLd = ([0, 255, 0])
-        ILd = np.dot(IL, iLd)
+        # ILd = np.dot(IL, iLd)
 
         iLs = ([255, 255, 255])
-        ILs = np.dot(IL, iLs)
+        # ILs = np.dot(IL, iLs)
 
         for p in P:
             p = self.backfaceCulling(viewer, p[0], p[1], p[2])
@@ -1022,6 +1030,14 @@ class Ui_MainWindow(object):
                         V_uv = np.divide(V, V_mag)
 
                         R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
+
+                        # distance
+                        L_magn = L_mag / (255 * 5) # multiplier bisa diubah2
+                        ILn = IL - L_magn
+                        # semakin besar L_mag, semakin jauh light source dari vertex / point di surface sphere
+                        # semakin besar L_mag, semakin kecil intensity --> ILn = IL - L_magn
+                        ILd = np.multiply(ILn, iLd) # diffuse light intensity 
+                        ILs = np.dot(ILn, iLs) # specular light intensity
 
                         LN = np.dot(L_uv, N_uv)
                         Idiff = None
@@ -1434,10 +1450,10 @@ class Ui_MainWindow(object):
         Iamb = np.round(Iamb)
 
         iLd = ([0, 0, 255])
-        ILd = np.dot(IL, iLd)
+        # ILd = np.dot(IL, iLd)
 
         iLs = ([255, 255, 255])
-        ILs = np.dot(IL, iLs)
+        # ILs = np.dot(IL, iLs)
 
         for p in P:
             p = self.backfaceCulling(viewer, p[0], p[1], p[2])
@@ -1482,13 +1498,13 @@ class Ui_MainWindow(object):
                             xP = xA
                             zP = zA
                             
-                            k = 0
-                            if((zB-zA) == 0):
-                                k = 0
-                            else:
-                                k = ((zP-zA)/(zB-zA))
+                            # k = 0
+                            # if((zB-zA) == 0):
+                            #     k = 0
+                            # else:
+                            #     k = ((zP-zA)/(zB-zA))
                             
-                            zP = np.add(zA, np.dot(k, np.subtract(zB, zA)))
+                            # zP = np.add(zA, np.dot(k, np.subtract(zB, zA)))
 
                             dZx = ([0, 0, 0])
                             if((xB-xA) == 0):
@@ -1522,6 +1538,14 @@ class Ui_MainWindow(object):
                                         V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
                                         V_uv = np.divide(V, V_mag)
                                         R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
+
+                                        # distance
+                                        L_magn = L_mag / (255 * 5) # multiplier bisa diubah2
+                                        ILn = IL - L_magn
+                                        # semakin besar L_mag, semakin jauh light source dari vertex / point di surface sphere
+                                        # semakin besar L_mag, semakin kecil intensity --> ILn = IL - L_magn
+                                        ILd = np.multiply(ILn, iLd) # diffuse light intensity 
+                                        ILs = np.dot(ILn, iLs) # specular light intensity
 
                                         LN = np.dot(L_uv, N_uv)
                                         Idiff = None
@@ -1604,6 +1628,14 @@ class Ui_MainWindow(object):
                                         V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
                                         V_uv = np.divide(V, V_mag)
                                         R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
+
+                                        # distance
+                                        L_magn = L_mag / (255 * 5) # multiplier bisa diubah2
+                                        ILn = IL - L_magn
+                                        # semakin besar L_mag, semakin jauh light source dari vertex / point di surface sphere
+                                        # semakin besar L_mag, semakin kecil intensity --> ILn = IL - L_magn
+                                        ILd = np.multiply(ILn, iLd) # diffuse light intensity 
+                                        ILs = np.dot(ILn, iLs) # specular light intensity
 
                                         LN = np.dot(L_uv, N_uv)
                                         Idiff = None
@@ -1688,13 +1720,13 @@ class Ui_MainWindow(object):
                             xP = xA
                             zP = zA
                             
-                            k = 0
-                            if((zB-zA) == 0):
-                                k = 0
-                            else:
-                                k = ((zP-zA)/(zB-zA))
+                            # k = 0
+                            # if((zB-zA) == 0):
+                            #     k = 0
+                            # else:
+                            #     k = ((zP-zA)/(zB-zA))
                             
-                            zP = np.add(zA, np.dot(k, np.subtract(zB, zA)))
+                            # zP = np.add(zA, np.dot(k, np.subtract(zB, zA)))
 
                             dZx = ([0, 0, 0])
                             if((xB-xA) == 0):
@@ -1728,6 +1760,14 @@ class Ui_MainWindow(object):
                                         V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
                                         V_uv = np.divide(V, V_mag)
                                         R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
+
+                                        # distance
+                                        L_magn = L_mag / (255 * 5) # multiplier bisa diubah2
+                                        ILn = IL - L_magn
+                                        # semakin besar L_mag, semakin jauh light source dari vertex / point di surface sphere
+                                        # semakin besar L_mag, semakin kecil intensity --> ILn = IL - L_magn
+                                        ILd = np.multiply(ILn, iLd) # diffuse light intensity 
+                                        ILs = np.dot(ILn, iLs) # specular light intensity
 
                                         LN = np.dot(L_uv, N_uv)
                                         Idiff = None
@@ -1812,6 +1852,14 @@ class Ui_MainWindow(object):
                                         V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
                                         V_uv = np.divide(V, V_mag)
                                         R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
+
+                                        # distance
+                                        L_magn = L_mag / (255 * 5) # multiplier bisa diubah2
+                                        ILn = IL - L_magn
+                                        # semakin besar L_mag, semakin jauh light source dari vertex / point di surface sphere
+                                        # semakin besar L_mag, semakin kecil intensity --> ILn = IL - L_magn
+                                        ILd = np.multiply(ILn, iLd) # diffuse light intensity 
+                                        ILs = np.dot(ILn, iLs) # specular light intensity
 
                                         LN = np.dot(L_uv, N_uv)
                                         Idiff = None
@@ -1909,13 +1957,13 @@ class Ui_MainWindow(object):
                             xP = xA
                             zP = zA
                             
-                            k = 0
-                            if((zB-zA) == 0):
-                                k = 0
-                            else:
-                                k = ((zP-zA)/(zB-zA))
+                            # k = 0
+                            # if((zB-zA) == 0):
+                            #     k = 0
+                            # else:
+                            #     k = ((zP-zA)/(zB-zA))
                             
-                            zP = np.add(zA, np.dot(k, np.subtract(zB, zA)))
+                            # zP = np.add(zA, np.dot(k, np.subtract(zB, zA)))
 
                             dZx = ([0, 0, 0])
                             if((xB-xA) == 0):
@@ -1949,6 +1997,14 @@ class Ui_MainWindow(object):
                                         V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
                                         V_uv = np.divide(V, V_mag)
                                         R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
+
+                                        # distance
+                                        L_magn = L_mag / (255 * 5) # multiplier bisa diubah2
+                                        ILn = IL - L_magn
+                                        # semakin besar L_mag, semakin jauh light source dari vertex / point di surface sphere
+                                        # semakin besar L_mag, semakin kecil intensity --> ILn = IL - L_magn
+                                        ILd = np.multiply(ILn, iLd) # diffuse light intensity 
+                                        ILs = np.dot(ILn, iLs) # specular light intensity
 
                                         LN = np.dot(L_uv, N_uv)
                                         Idiff = None
@@ -2033,6 +2089,14 @@ class Ui_MainWindow(object):
                                         V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
                                         V_uv = np.divide(V, V_mag)
                                         R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
+
+                                        # distance
+                                        L_magn = L_mag / (255 * 5) # multiplier bisa diubah2
+                                        ILn = IL - L_magn
+                                        # semakin besar L_mag, semakin jauh light source dari vertex / point di surface sphere
+                                        # semakin besar L_mag, semakin kecil intensity --> ILn = IL - L_magn
+                                        ILd = np.multiply(ILn, iLd) # diffuse light intensity 
+                                        ILs = np.dot(ILn, iLs) # specular light intensity
 
                                         LN = np.dot(L_uv, N_uv)
                                         Idiff = None
@@ -2117,13 +2181,13 @@ class Ui_MainWindow(object):
                             xP = xA
                             zP = zA
                             
-                            k = 0
-                            if((zB-zA) == 0):
-                                k = 0
-                            else:
-                                k = ((zP-zA)/(zB-zA))
+                            # k = 0
+                            # if((zB-zA) == 0):
+                            #     k = 0
+                            # else:
+                            #     k = ((zP-zA)/(zB-zA))
                             
-                            zP = np.add(zA, np.dot(k, np.subtract(zB, zA)))
+                            # zP = np.add(zA, np.dot(k, np.subtract(zB, zA)))
 
                             dZx = ([0, 0, 0])
                             if((xB-xA) == 0):
@@ -2157,6 +2221,14 @@ class Ui_MainWindow(object):
                                         V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
                                         V_uv = np.divide(V, V_mag)
                                         R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
+
+                                        # distance
+                                        L_magn = L_mag / (255 * 5) # multiplier bisa diubah2
+                                        ILn = IL - L_magn
+                                        # semakin besar L_mag, semakin jauh light source dari vertex / point di surface sphere
+                                        # semakin besar L_mag, semakin kecil intensity --> ILn = IL - L_magn
+                                        ILd = np.multiply(ILn, iLd) # diffuse light intensity 
+                                        ILs = np.dot(ILn, iLs) # specular light intensity
 
                                         LN = np.dot(L_uv, N_uv)
                                         Idiff = None
@@ -2241,6 +2313,14 @@ class Ui_MainWindow(object):
                                         V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
                                         V_uv = np.divide(V, V_mag)
                                         R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
+
+                                        # distance
+                                        L_magn = L_mag / (255 * 5) # multiplier bisa diubah2
+                                        ILn = IL - L_magn
+                                        # semakin besar L_mag, semakin jauh light source dari vertex / point di surface sphere
+                                        # semakin besar L_mag, semakin kecil intensity --> ILn = IL - L_magn
+                                        ILd = np.multiply(ILn, iLd) # diffuse light intensity 
+                                        ILs = np.dot(ILn, iLs) # specular light intensity
 
                                         LN = np.dot(L_uv, N_uv)
                                         Idiff = None
