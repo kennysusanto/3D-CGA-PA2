@@ -12,13 +12,13 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import numpy as np
 import math
 
+
 class PainterWidget(QtWidgets.QWidget):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs) 
+        super().__init__(*args, **kwargs)
         self.setFixedSize(400, 400)
         self.text = "Hello world"
         self.points = []
-        
 
     def setPoints(self, points):
         self.points = points
@@ -59,17 +59,20 @@ class Ui_MainWindow(object):
 
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(830, 440)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            MainWindow.sizePolicy().hasHeightForWidth())
         MainWindow.setSizePolicy(sizePolicy)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
         self.horizontalLayoutWidget.setGeometry(QtCore.QRect(10, 10, 800, 400))
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
-        self.horizontalLayout = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
+        self.horizontalLayout = QtWidgets.QHBoxLayout(
+            self.horizontalLayoutWidget)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.painter = QtWidgets.QLabel(self.horizontalLayoutWidget)
@@ -79,22 +82,25 @@ class Ui_MainWindow(object):
         canvas = QtGui.QPixmap(400, 400)
         canvas.fill(QtGui.QColor("white"))
         self.painter.setPixmap(canvas)
-        
+
         self.horizontalLayout.addWidget(self.painter)
         self.gridLayout = QtWidgets.QGridLayout()
         self.gridLayout.setObjectName("gridLayout")
 
         # radio button
-        self.rFlat = QtWidgets.QRadioButton("Flat Shading", self.horizontalLayoutWidget)
+        self.rFlat = QtWidgets.QRadioButton(
+            "Flat Shading", self.horizontalLayoutWidget)
         self.rFlat.setChecked(True)
         self.rFlat.toggled.connect(lambda: self.btnState(self.rFlat))
 
-        self.rGouraud = QtWidgets.QRadioButton("Gouraud Shading", self.horizontalLayoutWidget)
+        self.rGouraud = QtWidgets.QRadioButton(
+            "Gouraud Shading", self.horizontalLayoutWidget)
         self.rGouraud.toggled.connect(lambda: self.btnState(self.rGouraud))
 
-        self.rPhong = QtWidgets.QRadioButton("Phong Shading", self.horizontalLayoutWidget)
+        self.rPhong = QtWidgets.QRadioButton(
+            "Phong Shading", self.horizontalLayoutWidget)
         self.rPhong.toggled.connect(lambda: self.btnState(self.rPhong))
-        
+
         self.gridLayout_1 = QtWidgets.QGridLayout()
 
         self.gridLayout_1.addWidget(self.rFlat, 0, 0, 1, 1)
@@ -102,76 +108,90 @@ class Ui_MainWindow(object):
         self.gridLayout_1.addWidget(self.rPhong, 0, 2, 1, 1)
 
         self.gridLayout.addLayout(self.gridLayout_1, 0, 0, 1, 2)
-        
+
         # radio button end
 
         self.label_n = QtWidgets.QLabel(self.horizontalLayoutWidget)
-        self.label_n.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_n.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.label_n.setObjectName("label_n")
         self.gridLayout.addWidget(self.label_n, 6, 0, 1, 1)
         self.label_lightsource = QtWidgets.QLabel(self.horizontalLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label_lightsource.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.label_lightsource.sizePolicy().hasHeightForWidth())
         self.label_lightsource.setSizePolicy(sizePolicy)
         self.label_lightsource.setObjectName("label_lightsource")
         self.gridLayout.addWidget(self.label_lightsource, 1, 1, 1, 1)
         self.gridLayout_5 = QtWidgets.QGridLayout()
         self.gridLayout_5.setObjectName("gridLayout_5")
         self.label_x_ls = QtWidgets.QLabel(self.horizontalLayoutWidget)
-        self.label_x_ls.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_x_ls.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.label_x_ls.setObjectName("label_x_ls")
         self.gridLayout_5.addWidget(self.label_x_ls, 0, 0, 1, 1)
         self.lineEdit_x_ls = QtWidgets.QLineEdit(self.horizontalLayoutWidget)
         self.lineEdit_x_ls.setObjectName("lineEdit_x_ls")
         self.gridLayout_5.addWidget(self.lineEdit_x_ls, 0, 1, 1, 1)
         self.label_y_ls = QtWidgets.QLabel(self.horizontalLayoutWidget)
-        self.label_y_ls.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_y_ls.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.label_y_ls.setObjectName("label_y_ls")
         self.gridLayout_5.addWidget(self.label_y_ls, 1, 0, 1, 1)
         self.lineEdit_y_ls = QtWidgets.QLineEdit(self.horizontalLayoutWidget)
         self.lineEdit_y_ls.setObjectName("lineEdit_y_ls")
         self.gridLayout_5.addWidget(self.lineEdit_y_ls, 1, 1, 1, 1)
         self.label_z_ls = QtWidgets.QLabel(self.horizontalLayoutWidget)
-        self.label_z_ls.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_z_ls.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.label_z_ls.setObjectName("label_z_ls")
         self.gridLayout_5.addWidget(self.label_z_ls, 2, 0, 1, 1)
         self.lineEdit_z_ls = QtWidgets.QLineEdit(self.horizontalLayoutWidget)
         self.lineEdit_z_ls.setObjectName("lineEdit_z_ls")
         self.gridLayout_5.addWidget(self.lineEdit_z_ls, 2, 1, 1, 1)
         self.gridLayout.addLayout(self.gridLayout_5, 2, 1, 1, 1)
-        
+
         self.label_ks = QtWidgets.QLabel(self.horizontalLayoutWidget)
-        self.label_ks.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_ks.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.label_ks.setObjectName("label_ks")
         self.gridLayout.addWidget(self.label_ks, 5, 0, 1, 1)
         self.gridLayout_4 = QtWidgets.QGridLayout()
         self.gridLayout_4.setObjectName("gridLayout_4")
-        self.lineEdit_x_sphere = QtWidgets.QLineEdit(self.horizontalLayoutWidget)
+        self.lineEdit_x_sphere = QtWidgets.QLineEdit(
+            self.horizontalLayoutWidget)
         self.lineEdit_x_sphere.setObjectName("lineEdit_x_sphere")
         self.gridLayout_4.addWidget(self.lineEdit_x_sphere, 0, 1, 1, 1)
-        self.lineEdit_y_sphere = QtWidgets.QLineEdit(self.horizontalLayoutWidget)
+        self.lineEdit_y_sphere = QtWidgets.QLineEdit(
+            self.horizontalLayoutWidget)
         self.lineEdit_y_sphere.setObjectName("lineEdit_y_sphere")
         self.gridLayout_4.addWidget(self.lineEdit_y_sphere, 1, 1, 1, 1)
         self.label_z_sphere = QtWidgets.QLabel(self.horizontalLayoutWidget)
-        self.label_z_sphere.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_z_sphere.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.label_z_sphere.setObjectName("label_z_sphere")
         self.gridLayout_4.addWidget(self.label_z_sphere, 2, 0, 1, 1)
         self.label_x_sphere = QtWidgets.QLabel(self.horizontalLayoutWidget)
-        self.label_x_sphere.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_x_sphere.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.label_x_sphere.setObjectName("label_x_sphere")
         self.gridLayout_4.addWidget(self.label_x_sphere, 0, 0, 1, 1)
-        self.lineEdit_z_sphere = QtWidgets.QLineEdit(self.horizontalLayoutWidget)
+        self.lineEdit_z_sphere = QtWidgets.QLineEdit(
+            self.horizontalLayoutWidget)
         self.lineEdit_z_sphere.setObjectName("lineEdit_z_sphere")
         self.gridLayout_4.addWidget(self.lineEdit_z_sphere, 2, 1, 1, 1)
         self.label_y_sphere = QtWidgets.QLabel(self.horizontalLayoutWidget)
-        self.label_y_sphere.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_y_sphere.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.label_y_sphere.setObjectName("label_y_sphere")
         self.gridLayout_4.addWidget(self.label_y_sphere, 1, 0, 1, 1)
         self.gridLayout.addLayout(self.gridLayout_4, 2, 0, 1, 1)
         self.label_ka = QtWidgets.QLabel(self.horizontalLayoutWidget)
-        self.label_ka.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_ka.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.label_ka.setObjectName("label_ka")
         self.gridLayout.addWidget(self.label_ka, 3, 0, 1, 1)
         self.lineEdit_ka = QtWidgets.QLineEdit(self.horizontalLayoutWidget)
@@ -184,10 +204,12 @@ class Ui_MainWindow(object):
         self.lineEdit_ks.setObjectName("lineEdit_ks")
         self.gridLayout.addWidget(self.lineEdit_ks, 5, 1, 1, 1)
         self.label_sphere = QtWidgets.QLabel(self.horizontalLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label_sphere.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.label_sphere.sizePolicy().hasHeightForWidth())
         self.label_sphere.setSizePolicy(sizePolicy)
         self.label_sphere.setObjectName("label_sphere")
         self.gridLayout.addWidget(self.label_sphere, 1, 0, 1, 1)
@@ -195,26 +217,31 @@ class Ui_MainWindow(object):
         self.lineEdit_n.setObjectName("lineEdit_n")
         self.gridLayout.addWidget(self.lineEdit_n, 6, 1, 1, 1)
         self.label_kd = QtWidgets.QLabel(self.horizontalLayoutWidget)
-        self.label_kd.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_kd.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.label_kd.setObjectName("label_kd")
         self.gridLayout.addWidget(self.label_kd, 4, 0, 1, 1)
-        self.pushButton_update_3 = QtWidgets.QPushButton(self.horizontalLayoutWidget)
+        self.pushButton_update_3 = QtWidgets.QPushButton(
+            self.horizontalLayoutWidget)
         self.pushButton_update_3.setObjectName("pushButton_update_3")
         self.gridLayout.addWidget(self.pushButton_update_3, 7, 0, 1, 1)
-        self.pushButton_reset = QtWidgets.QPushButton(self.horizontalLayoutWidget)
+        self.pushButton_reset = QtWidgets.QPushButton(
+            self.horizontalLayoutWidget)
         self.pushButton_reset.setObjectName("pushButton_reset")
         self.gridLayout.addWidget(self.pushButton_reset, 7, 1, 1, 1)
 
         # add new light source button
-        self.pushButton_newLS = QtWidgets.QPushButton(self.horizontalLayoutWidget)
+        self.pushButton_newLS = QtWidgets.QPushButton(
+            self.horizontalLayoutWidget)
         self.pushButton_newLS.setObjectName("pushButton_newLS")
         self.gridLayout.addWidget(self.pushButton_newLS, 8, 0, 1, 2)
 
-        self.gridLayout.setAlignment(QtCore.Qt.AlignTop) # align top
+        self.gridLayout.setAlignment(QtCore.Qt.AlignTop)  # align top
 
         # listview
         self.listView = QtWidgets.QListView(self.horizontalLayoutWidget)
-        self.listView.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.listView.setEditTriggers(
+            QtWidgets.QAbstractItemView.NoEditTriggers)
 
         entries = []
 
@@ -303,25 +330,31 @@ class Ui_MainWindow(object):
         self.reset()
         self.generateSphere()
         self.updateAll()
-        
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Shading"))
-        self.label_n.setText(_translate("MainWindow", "specular reflection exponent (n):"))
-        self.label_lightsource.setText(_translate("MainWindow", "Light source"))
+        self.label_n.setText(_translate(
+            "MainWindow", "specular reflection exponent (n):"))
+        self.label_lightsource.setText(
+            _translate("MainWindow", "Light source"))
         self.label_x_ls.setText(_translate("MainWindow", "x:"))
         self.label_y_ls.setText(_translate("MainWindow", "y:"))
         self.label_z_ls.setText(_translate("MainWindow", "z:"))
         self.label_sphere.setText(_translate("MainWindow", "Sphere"))
-        self.label_ks.setText(_translate("MainWindow", "specular coefficient (ks):"))
+        self.label_ks.setText(_translate(
+            "MainWindow", "specular coefficient (ks):"))
         self.label_z_sphere.setText(_translate("MainWindow", "z:"))
         self.label_x_sphere.setText(_translate("MainWindow", "x:"))
         self.label_y_sphere.setText(_translate("MainWindow", "y:"))
-        self.label_ka.setText(_translate("MainWindow", "ambient coefficient (ka):"))
-        self.label_kd.setText(_translate("MainWindow", "diffuse coefficient (kd):"))
+        self.label_ka.setText(_translate(
+            "MainWindow", "ambient coefficient (ka):"))
+        self.label_kd.setText(_translate(
+            "MainWindow", "diffuse coefficient (kd):"))
         self.pushButton_update_3.setText(_translate("MainWindow", "Update"))
         self.pushButton_reset.setText(_translate("MainWindow", "Reset"))
-        self.pushButton_newLS.setText(_translate("MainWindow", "Add new light source"))
+        self.pushButton_newLS.setText(_translate(
+            "MainWindow", "Add new light source"))
 
     def updateLV(self):
         self.model.clear()
@@ -343,7 +376,7 @@ class Ui_MainWindow(object):
     def addNewLS(self, lspos):
         ls = [lspos[0], lspos[1], lspos[2]]
         self.LS.append(ls)
-        self.updateLV()        
+        self.updateLV()
 
     def btnState(self, b):
         if(b.text() == "Flat Shading"):
@@ -352,14 +385,14 @@ class Ui_MainWindow(object):
                 print(f"{b.text()} is selected")
             else:
                 print(f"{b.text()} is deselected")
-        
+
         elif(b.text() == "Gouraud Shading"):
             if(b.isChecked()):
                 self.mode = 1
                 print(f"{b.text()} is selected")
             else:
                 print(f"{b.text()} is deselected")
-        
+
         elif(b.text() == "Phong Shading"):
             if(b.isChecked()):
                 self.mode = 2
@@ -369,7 +402,7 @@ class Ui_MainWindow(object):
 
     def checklv(self, current, previous):
         # print('Row %d selected, prev %d row' % (current.row(), previous.row()))
-        
+
         i = self.lsindex
         ls = self.LS[i]
         ls[0] = self.lineEdit_x_ls.text()
@@ -379,7 +412,7 @@ class Ui_MainWindow(object):
 
         i = current.row()
         self.lsindex = i
-        ls = self.LS[i] 
+        ls = self.LS[i]
         x = ls[0]
         y = ls[1]
         z = ls[2]
@@ -389,7 +422,7 @@ class Ui_MainWindow(object):
         self.lineEdit_y_ls.insert(str(y))
         self.lineEdit_z_ls.clear()
         self.lineEdit_z_ls.insert(str(z))
-    
+
     def updateSliderx(self, value):
         self.lineEdit_x_ls.clear()
         self.lineEdit_x_ls.insert(str(value))
@@ -404,8 +437,6 @@ class Ui_MainWindow(object):
         self.lineEdit_z_ls.clear()
         self.lineEdit_z_ls.insert(str(value))
         self.suController()
-
-    
 
     def reset(self):
         self.statusbar.showMessage("Ready")
@@ -429,7 +460,7 @@ class Ui_MainWindow(object):
         self.updateLV()
         self.listView.setCurrentIndex(self.model.index(0, 0))
         # self.listView.selectionModel().setCurrentIndex(self.model.index(0, 0), QtCore.QItemSelectionModel.Select)
-        
+
         self.clearScreen()
 
     def clearScreen(self):
@@ -455,7 +486,7 @@ class Ui_MainWindow(object):
         canvas.setBrush(QtGui.QColor(color[0], color[1], color[2]))
         canvas.setPen(QtGui.QPen(QtGui.QColor(color[0], color[1], color[2])))
         canvas.drawEllipse(QtCore.QPoint(x, y), 5, 5)
-    
+
     def fillTriangle(self, points, color, alpha=255):
         p1 = points[0]
         p2 = points[1]
@@ -466,7 +497,8 @@ class Ui_MainWindow(object):
         path.moveTo(p1[0], p1[1])
         path.lineTo(p2[0], p2[1])
         path.lineTo(p3[0], p3[1])
-        canvas.setPen(QtGui.QPen(QtGui.QColor(color[0], color[1], color[2], alpha)))
+        canvas.setPen(QtGui.QPen(QtGui.QColor(
+            color[0], color[1], color[2], alpha)))
         canvas.drawPath(path)
 
     def fillRect(self, points, color, alpha=255):
@@ -481,9 +513,10 @@ class Ui_MainWindow(object):
         path.lineTo(p2[0], p2[1])
         path.lineTo(p3[0], p3[1])
         path.lineTo(p4[0], p4[1])
-        canvas.setPen(QtGui.QPen(QtGui.QColor(color[0], color[1], color[2], alpha)))
+        canvas.setPen(QtGui.QPen(QtGui.QColor(
+            color[0], color[1], color[2], alpha)))
         canvas.drawPath(path)
-    
+
     def drawLine(self, points):
         x1 = points[0]
         y1 = points[1]
@@ -498,7 +531,8 @@ class Ui_MainWindow(object):
     def F(self, r, d, e, pos):
         x = r * np.cos(np.deg2rad(e)) * np.sin(np.deg2rad(d)) + pos[0]
         y = r * np.sin(np.deg2rad(e)) + pos[1]
-        z = r * np.cos(np.deg2rad(d)) * np.cos(np.deg2rad(d)) + pos[2]
+        z = r * np.cos(np.deg2rad(d)) * np.cos(np.deg2rad(d)) + \
+            pos[2]  # mungkin cos e inget2 oke? oke
         P = [x, y, z]
         return P
 
@@ -541,8 +575,8 @@ class Ui_MainWindow(object):
         self.drawLine(points)
 
     def framework(self):
-        fw = True # draw framework?
-        bc = True # enable backface culling?
+        fw = True  # draw framework?
+        bc = True  # enable backface culling?
 
         viewer = self.parallelProj([0, 0, 300])
 
@@ -566,9 +600,9 @@ class Ui_MainWindow(object):
         elif(self.mode == 1):
             self.gouraudShading()
         elif(self.mode == 2):
-            #self.phongShading()
+            # self.phongShading()
             print("not yet implemented")
-    
+
     def updateAll(self):
         self.statusbar.showMessage("Updating...")
         i = self.lsindex
@@ -606,15 +640,18 @@ class Ui_MainWindow(object):
         fp = 0
         bp = -1
 
-        VPN_mag = math.sqrt(math.pow(VPN[0], 2) + math.pow(VPN[1], 2) + math.pow(VPN[2], 2))
+        VPN_mag = math.sqrt(
+            math.pow(VPN[0], 2) + math.pow(VPN[1], 2) + math.pow(VPN[2], 2))
         N = np.divide(VPN, VPN_mag)
 
-        VUP_mag = math.sqrt(math.pow(VUP[0], 2) + math.pow(VUP[1], 2) + math.pow(VUP[2], 2))
+        VUP_mag = math.sqrt(
+            math.pow(VUP[0], 2) + math.pow(VUP[1], 2) + math.pow(VUP[2], 2))
         up = np.divide(VUP, VUP_mag)
 
         upp = np.subtract(up, np.multiply(N, np.dot(up, N)))
-        
-        upp_mag = math.sqrt(math.pow(upp[0], 2) + math.pow(upp[1], 2) + math.pow(upp[2], 2))
+
+        upp_mag = math.sqrt(
+            math.pow(upp[0], 2) + math.pow(upp[1], 2) + math.pow(upp[2], 2))
 
         v = np.divide(upp, upp_mag)
 
@@ -622,7 +659,8 @@ class Ui_MainWindow(object):
 
         r = ([VRP[0], VRP[1], VRP[2]])
 
-        rp = ([np.dot(np.negative(r), u), np.dot(np.negative(r), v), np.dot(np.negative(r), N)])
+        rp = ([np.dot(np.negative(r), u), np.dot(
+            np.negative(r), v), np.dot(np.negative(r), N)])
 
         A = ([u[0], v[0], N[0], 0],
              [u[1], v[1], N[1], 0],
@@ -634,7 +672,7 @@ class Ui_MainWindow(object):
 
         CW = ([0, 0, 0])
         DOP = np.subtract(CW, COP)
-        
+
         DOPx = DOP[0]
         DOPy = DOP[1]
         DOPz = DOP[2]
@@ -667,7 +705,7 @@ class Ui_MainWindow(object):
         pv = ([V[0], V[1], V[2], 1])
 
         res = np.matmul(pv, pp)
-        
+
         return [res[0], res[1], res[2]]
 
     def generateSphere(self):
@@ -683,7 +721,7 @@ class Ui_MainWindow(object):
 
         dLong = 360 / nLong
         dLat = 90 / nLat
-        
+
         # note that the hempisheres are upside-down
 
         # initializing vertices
@@ -714,8 +752,10 @@ class Ui_MainWindow(object):
             P.append([k + nLong - 1, k + nLong, k + 2 * nLong - 1])
 
         for i in range(nLong-1):
-            P.append([i + (nLat - 1) * nLong, i + (nLat - 1) * nLong + 1, nLat * nLong])
-        P.append([(nLat - 1) * nLong + nLong - 1, (nLat - 1) * nLong, nLat * nLong])      
+            P.append([i + (nLat - 1) * nLong, i +
+                      (nLat - 1) * nLong + 1, nLat * nLong])
+        P.append([(nLat - 1) * nLong + nLong - 1,
+                  (nLat - 1) * nLong, nLat * nLong])
 
         # bottom hemisphere
         P1 = []
@@ -728,13 +768,14 @@ class Ui_MainWindow(object):
             P1.append([k + nLong - 1, k, k + nLong])
             P1.append([k + nLong - 1, k + nLong, k + 2 * nLong - 1])
 
-        
         for i in range(nLong-1):
-            P1.append([i + (nLat - 1) * nLong, i + (nLat - 1) * nLong + 1, nLat * nLong])
-        P1.append([(nLat - 1) * nLong + nLong - 1, (nLat - 1) * nLong, nLat * nLong])  
+            P1.append([i + (nLat - 1) * nLong, i +
+                       (nLat - 1) * nLong + 1, nLat * nLong])
+        P1.append([(nLat - 1) * nLong + nLong - 1,
+                   (nLat - 1) * nLong, nLat * nLong])
 
         # saving the sphere
-        
+
         for p in P:
             p1 = V[p[0]]
             p2 = V[p[1]]
@@ -746,8 +787,7 @@ class Ui_MainWindow(object):
             p2 = V1[p[1]]
             p3 = V1[p[2]]
             self.P.append([p1, p2, p3])
-            
-            
+
         # comment
 
     def flatShading(self):
@@ -797,31 +837,36 @@ class Ui_MainWindow(object):
                         ls_y = int(ls[1])
                         ls_z = int(ls[2])
                         ls_V = ([ls_x, ls_y, ls_z])
-
-                        p_V = ([v[0], v[1], v[2]])
+                        zP = math.sqrt(
+                            abs(10000 - (v[0] * v[0]) - (v[1] * v[1])))
+                        p_V = ([v[0], v[1], zP])
                         L = np.subtract(ls_V, p_V)
                         N = np.subtract(p_V, c_V)
                         viewer_V = ([viewer[0], viewer[1], viewer[2]])
                         V = np.subtract(viewer_V, p_V)
 
-                        L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
+                        L_mag = math.sqrt(
+                            math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
                         L_uv = np.divide(L, L_mag)
 
-                        N_mag = math.sqrt(math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
+                        N_mag = math.sqrt(
+                            math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
                         N_uv = np.divide(N, N_mag)
 
-                        V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
+                        V_mag = math.sqrt(
+                            math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
                         V_uv = np.divide(V, V_mag)
 
-                        R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
+                        R_uv = np.subtract(
+                            np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
 
                         # distance
-                        L_magn = L_mag / (255 * 5) # multiplier bisa diubah2
+                        L_magn = L_mag / (255 * 12)  # multiplier bisa diubah2
                         ILn = IL - L_magn
                         # semakin besar L_mag, semakin jauh light source dari vertex / point di surface sphere
                         # semakin besar L_mag, semakin kecil intensity --> ILn = IL - L_magn
-                        ILd = np.multiply(ILn, iLd) # diffuse light intensity 
-                        ILs = np.dot(ILn, iLs) # specular light intensity
+                        ILd = np.multiply(ILn, iLd)  # diffuse light intensity
+                        ILs = np.dot(ILn, iLs)  # specular light intensity
 
                         LN = np.dot(L_uv, N_uv)
                         Idiff = None
@@ -832,10 +877,11 @@ class Ui_MainWindow(object):
 
                         VR = np.dot(V_uv, R_uv)
                         Ispec = None
-                        if(VR < 0): 
+                        if(VR < 0):
                             Ispec = ([0, 0, 0])
                         else:
-                            Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
+                            Ispec = np.dot(np.multiply(
+                                ks, ILs), math.pow(VR, n))
 
                         Idiff2 = []
                         for k in Idiff:
@@ -843,7 +889,7 @@ class Ui_MainWindow(object):
                                 Idiff2.append(0)
                             else:
                                 Idiff2.append(k)
-                        
+
                         Ispec2 = []
                         for idx, k in enumerate(Idiff):
                             if(k < 0):
@@ -854,16 +900,16 @@ class Ui_MainWindow(object):
                         # Itot = np.add(Iamb, Idiff2)
                         Itot = Idiff2
                         Itot = np.add(Itot, Ispec2)
-                        
+
                         res = []
                         for k in Itot:
                             if(k < 0):
                                 res.append(0)
                             else:
                                 res.append(k)
-                        
+
                         tmpI = np.add(tmpI, res)
-                    
+
                     Isum.append(tmpI)
 
                 tmpIsum = []
@@ -880,7 +926,7 @@ class Ui_MainWindow(object):
                             tmp.append(c)
 
                     Isum2.append(tmp)
-                
+
                 r = []
                 g = []
                 b = []
@@ -910,7 +956,7 @@ class Ui_MainWindow(object):
                 v3 = self.parallelProj(v3)
 
                 self.fillTriangle((v1, v2, v3), (res[0], res[1], res[2]))
-        
+
         # square instead of triangle
         #         vertex = []
         #         if(tcounter == 0):
@@ -947,7 +993,7 @@ class Ui_MainWindow(object):
         #         y = loc[1]
         #         vertices.append([x, y])
         #         Isum.append(I)
-            
+
         #     r = []
         #     g = []
         #     b = []
@@ -970,7 +1016,7 @@ class Ui_MainWindow(object):
         #     Ires = [r_avg, g_avg, b_avg]
 
         #     self.fillRect(vertices, Ires)
-            
+
     def gouraudShading(self):
         self.statusbar.showMessage("Gouraud shading - Ready")
         P = self.P
@@ -1014,30 +1060,36 @@ class Ui_MainWindow(object):
                         ls_z = int(ls[2])
                         ls_V = ([ls_x, ls_y, ls_z])
 
-                        p_V = ([v[0], v[1], v[2]])
+                        zP = math.sqrt(
+                            abs(10000 - (v[0] * v[0]) - (v[1] * v[1])))
+                        p_V = ([v[0], v[1], zP])
                         L = np.subtract(ls_V, p_V)
                         N = np.subtract(p_V, c_V)
                         viewer_V = ([viewer[0], viewer[1], viewer[2]])
                         V = np.subtract(viewer_V, p_V)
 
-                        L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
+                        L_mag = math.sqrt(
+                            math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
                         L_uv = np.divide(L, L_mag)
 
-                        N_mag = math.sqrt(math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
+                        N_mag = math.sqrt(
+                            math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
                         N_uv = np.divide(N, N_mag)
 
-                        V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
+                        V_mag = math.sqrt(
+                            math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
                         V_uv = np.divide(V, V_mag)
 
-                        R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
+                        R_uv = np.subtract(
+                            np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
 
                         # distance
-                        L_magn = L_mag / (255 * 5) # multiplier bisa diubah2
+                        L_magn = L_mag / (255 * 12)  # multiplier bisa diubah2
                         ILn = IL - L_magn
                         # semakin besar L_mag, semakin jauh light source dari vertex / point di surface sphere
                         # semakin besar L_mag, semakin kecil intensity --> ILn = IL - L_magn
-                        ILd = np.multiply(ILn, iLd) # diffuse light intensity 
-                        ILs = np.dot(ILn, iLs) # specular light intensity
+                        ILd = np.multiply(ILn, iLd)  # diffuse light intensity
+                        ILs = np.dot(ILn, iLs)  # specular light intensity
 
                         LN = np.dot(L_uv, N_uv)
                         Idiff = None
@@ -1048,10 +1100,11 @@ class Ui_MainWindow(object):
 
                         VR = np.dot(V_uv, R_uv)
                         Ispec = None
-                        if(VR < 0): 
+                        if(VR < 0):
                             Ispec = ([0, 0, 0])
                         else:
-                            Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
+                            Ispec = np.dot(np.multiply(
+                                ks, ILs), math.pow(VR, n))
 
                         Idiff2 = []
                         for k in Idiff:
@@ -1059,7 +1112,7 @@ class Ui_MainWindow(object):
                                 Idiff2.append(0)
                             else:
                                 Idiff2.append(k)
-                        
+
                         Ispec2 = []
                         for idx, k in enumerate(Idiff):
                             if(k < 0):
@@ -1070,14 +1123,14 @@ class Ui_MainWindow(object):
                         # Itot = np.add(Iamb, Idiff2)
                         Itot = Idiff2
                         Itot = np.add(Itot, Ispec2)
-                        
+
                         res = []
                         for k in Itot:
                             if(k < 0):
                                 res.append(0)
                             else:
                                 res.append(k)
-                        
+
                         tmpI = np.add(tmpI, res)
 
                     Isum.append(tmpI)
@@ -1096,7 +1149,7 @@ class Ui_MainWindow(object):
                             tmp.append(c)
 
                     Isum2.append(tmp)
-                
+
                 I1 = Isum2[0]
                 I2 = Isum2[1]
                 I3 = Isum2[2]
@@ -1107,10 +1160,10 @@ class Ui_MainWindow(object):
 
                 p1 = self.parallelProj(p1)
                 p2 = self.parallelProj(p2)
-                p3 = self.parallelProj(p3)                
+                p3 = self.parallelProj(p3)
 
                 ydiff = [abs(p1[1]-p2[1]), abs(p1[1]-p3[1]), abs(p2[1]-p3[1])]
-                
+
                 idx = ydiff.index(0)
 
                 if(idx == 0):
@@ -1126,9 +1179,11 @@ class Ui_MainWindow(object):
                         yA = round(y2)
                         yB = round(y1)
                         while(yA <= y3):
-                            IA = np.add(I2, np.dot(((yA-y2)/(y3-y2)), np.subtract(I3, I2)))
-                            IB = np.add(I1, np.dot(((yB-y1)/(y3-y1)), np.subtract(I3, I1)))
-                            
+                            IA = np.add(I2, np.dot(
+                                ((yA-y2)/(y3-y2)), np.subtract(I3, I2)))
+                            IB = np.add(I1, np.dot(
+                                ((yB-y1)/(y3-y1)), np.subtract(I3, I1)))
+
                             tA = ((yA-y2)/(y3-y2))
                             tB = ((yA-y1)/(y3-y1))
 
@@ -1137,7 +1192,7 @@ class Ui_MainWindow(object):
 
                             xA = round(xA)
                             xB = round(xB)
-                            
+
                             xP = xA
                             k = 0
                             if((xB-xA) == 0):
@@ -1149,9 +1204,11 @@ class Ui_MainWindow(object):
                             if((xB-xA) == 0):
                                 dIx = ([0, 0, 0])
                             elif((xB-xA) < 0):
-                                dIx = np.divide(np.subtract(IB, IA), abs(xB-xA))
+                                dIx = np.divide(
+                                    np.subtract(IB, IA), abs(xB-xA))
                             else:
                                 dIx = np.divide(np.subtract(IB, IA), (xB-xA))
+                            # print(dIx)
 
                             if(xP < xB):
                                 while(xP <= xB):
@@ -1163,12 +1220,13 @@ class Ui_MainWindow(object):
                                             IP2.append(255)
                                         else:
                                             IP2.append(e)
-                                    
-                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0): print(IP2, "1")
-                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0): 
+
+                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0):
+                                        print(IP2, "1")
+                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0):
                                         IP2 = Iamb
                                         print(IP2, "1", IA, IB)
-                                    
+
                                     self.drawDot((xP, yA), IP2)
                                     IP = np.add(IP, dIx)
                                     xP += 1
@@ -1182,9 +1240,10 @@ class Ui_MainWindow(object):
                                             IP2.append(255)
                                         else:
                                             IP2.append(e)
-                                    
-                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0): print(IP2, "2")
-                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0): 
+
+                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0):
+                                        print(IP2, "2")
+                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0):
                                         IP2 = Iamb
                                         print(IP2, "2", IA, IB)
                                     self.drawDot((xP, yA), IP2)
@@ -1199,9 +1258,11 @@ class Ui_MainWindow(object):
                         yA = round(y1)
                         yB = round(y2)
                         while(yA >= y3):
-                            IA = np.add(I1, np.dot(((yA-y1)/(y3-y1)), np.subtract(I3, I1)))
-                            IB = np.add(I2, np.dot(((yB-y2)/(y3-y2)), np.subtract(I3, I2)))
-                            
+                            IA = np.add(I1, np.dot(
+                                ((yA-y1)/(y3-y1)), np.subtract(I3, I1)))
+                            IB = np.add(I2, np.dot(
+                                ((yB-y2)/(y3-y2)), np.subtract(I3, I2)))
+
                             tA = ((yA-y1)/(y3-y1))
                             tB = ((yA-y2)/(y3-y2))
 
@@ -1222,9 +1283,11 @@ class Ui_MainWindow(object):
                             if((xB-xA) == 0):
                                 dIx = ([0, 0, 0])
                             elif((xB-xA) < 0):
-                                dIx = np.divide(np.subtract(IB, IA), abs(xB-xA))
+                                dIx = np.divide(
+                                    np.subtract(IB, IA), abs(xB-xA))
                             else:
                                 dIx = np.divide(np.subtract(IB, IA), (xB-xA))
+                            # print(dIx)
 
                             if(xP < xB):
                                 while(xP <= xB):
@@ -1236,9 +1299,10 @@ class Ui_MainWindow(object):
                                             IP2.append(255)
                                         else:
                                             IP2.append(e)
-                                    
-                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0): print(IP2, "3")
-                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0): 
+
+                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0):
+                                        print(IP2, "3")
+                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0):
                                         IP2 = Iamb
                                         print(IP2, "3", IA, IB)
                                     self.drawDot((xP, yA), IP2)
@@ -1254,9 +1318,10 @@ class Ui_MainWindow(object):
                                             IP2.append(255)
                                         else:
                                             IP2.append(e)
-                                    
-                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0): print(IP2, "4")
-                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0): 
+
+                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0):
+                                        print(IP2, "4")
+                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0):
                                         IP2 = Iamb
                                         print(IP2, "4", IA, IB)
                                     self.drawDot((xP, yA), IP2)
@@ -1280,9 +1345,11 @@ class Ui_MainWindow(object):
                         yA = round(y3)
                         yB = round(y2)
                         while(yA <= y1):
-                            IA = np.add(I3, np.dot(((yA-y3)/(y1-y3)), np.subtract(I1, I3)))
-                            IB = np.add(I2, np.dot(((yB-y2)/(y1-y2)), np.subtract(I1, I2)))
-                            
+                            IA = np.add(I3, np.dot(
+                                ((yA-y3)/(y1-y3)), np.subtract(I1, I3)))
+                            IB = np.add(I2, np.dot(
+                                ((yB-y2)/(y1-y2)), np.subtract(I1, I2)))
+
                             tA = ((yA-y3)/(y1-y3))
                             tB = ((yA-y2)/(y1-y2))
 
@@ -1291,7 +1358,7 @@ class Ui_MainWindow(object):
 
                             xA = round(xA)
                             xB = round(xB)
-                            
+
                             xP = xA
                             k = 0
                             if((xB-xA) == 0):
@@ -1303,9 +1370,11 @@ class Ui_MainWindow(object):
                             if((xB-xA) == 0):
                                 dIx = ([0, 0, 0])
                             elif((xB-xA) < 0):
-                                dIx = np.divide(np.subtract(IB, IA), abs(xB-xA))
+                                dIx = np.divide(
+                                    np.subtract(IB, IA), abs(xB-xA))
                             else:
                                 dIx = np.divide(np.subtract(IB, IA), (xB-xA))
+                            # print(dIx)
 
                             if(xP < xB):
                                 while(xP <= xB):
@@ -1317,9 +1386,10 @@ class Ui_MainWindow(object):
                                             IP2.append(255)
                                         else:
                                             IP2.append(e)
-                                    
-                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0): print(IP2, "5")
-                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0): 
+
+                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0):
+                                        print(IP2, "5")
+                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0):
                                         IP2 = Iamb
                                         print(IP2, "5", IA, IB)
                                     self.drawDot((xP, yA), IP2)
@@ -1335,16 +1405,17 @@ class Ui_MainWindow(object):
                                             IP2.append(255)
                                         else:
                                             IP2.append(e)
-                                    
-                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0): print(IP2, "6")
-                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0): 
+
+                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0):
+                                        print(IP2, "6")
+                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0):
                                         IP2 = Iamb
                                         print(IP2, "6", IA, IB)
-                                        
+
                                     self.drawDot((xP, yA), IP2)
                                     IP = np.add(IP, dIx)
                                     xP -= 1
-                
+
                             yA += 1
                             yB += 1
 
@@ -1353,9 +1424,11 @@ class Ui_MainWindow(object):
                         yA = round(y2)
                         yB = round(y3)
                         while(yA >= y1):
-                            IA = np.add(I2, np.dot(((yA-y2)/(y1-y2)), np.subtract(I1, I2)))
-                            IB = np.add(I3, np.dot(((yB-y3)/(y1-y3)), np.subtract(I1, I3)))
-                            
+                            IA = np.add(I2, np.dot(
+                                ((yA-y2)/(y1-y2)), np.subtract(I1, I2)))
+                            IB = np.add(I3, np.dot(
+                                ((yB-y3)/(y1-y3)), np.subtract(I1, I3)))
+
                             tA = ((yA-y2)/(y1-y2))
                             tB = ((yA-y3)/(y1-y3))
 
@@ -1364,7 +1437,7 @@ class Ui_MainWindow(object):
 
                             xA = round(xA)
                             xB = round(xB)
-                            
+
                             xP = xA
                             k = 0
                             if((xB-xA) == 0):
@@ -1372,14 +1445,16 @@ class Ui_MainWindow(object):
                             else:
                                 k = ((xP-xA)/(xB-xA))
                             IP = np.add(IA, np.dot(k, np.subtract(IB, IA)))
-                            
+
                             dIx = ([0, 0, 0])
                             if((xB-xA) == 0):
                                 dIx = ([0, 0, 0])
                             elif((xB-xA) < 0):
-                                dIx = np.divide(np.subtract(IB, IA), abs(xB-xA))
+                                dIx = np.divide(
+                                    np.subtract(IB, IA), abs(xB-xA))
                             else:
                                 dIx = np.divide(np.subtract(IB, IA), (xB-xA))
+                            # print(dIx)
 
                             if(xP < xB):
                                 while(xP <= xB):
@@ -1392,8 +1467,9 @@ class Ui_MainWindow(object):
                                         else:
                                             IP2.append(e)
 
-                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0): print(IP2, "7")
-                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0): 
+                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0):
+                                        print(IP2, "7")
+                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0):
                                         IP2 = Iamb
                                         print(IP2, "7", IA, IB)
 
@@ -1411,16 +1487,17 @@ class Ui_MainWindow(object):
                                             IP2.append(255)
                                         else:
                                             IP2.append(e)
-                                    
-                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0): print(IP2, "8")
-                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0): 
+
+                                    if(IP2[0] < 0 or IP2[1] < 0 or IP2[2] < 0):
+                                        print(IP2, "8")
+                                    if(IP2[0] == 0 and IP2[1] == 0 and IP2[2] == 0):
                                         IP2 = Iamb
                                         print(IP2, "8", IA, IB)
-                                        
+
                                     self.drawDot((xP, yA), IP2)
                                     IP = np.add(IP, dIx)
                                     xP -= 1
-                
+
                             yA -= 1
                             yB -= 1
 
@@ -1457,13 +1534,13 @@ class Ui_MainWindow(object):
 
         for p in P:
             p = self.backfaceCulling(viewer, p[0], p[1], p[2])
-            if(p):                
+            if(p):
                 p1 = p[0]
                 p2 = p[1]
-                p3 = p[2]         
+                p3 = p[2]
 
                 ydiff = [abs(p1[1]-p2[1]), abs(p1[1]-p3[1]), abs(p2[1]-p3[1])]
-                
+
                 idx = ydiff.index(0)
 
                 if(idx == 0):
@@ -1482,7 +1559,7 @@ class Ui_MainWindow(object):
                         # add
                         yA = round(y2)
                         yB = round(y1)
-                        while(yA <= y3):                            
+                        while(yA <= y3):
                             tA = ((yA-y2)/(y3-y2))
                             tB = ((yA-y1)/(y3-y1))
 
@@ -1494,30 +1571,34 @@ class Ui_MainWindow(object):
 
                             xA = round(xA)
                             xB = round(xB)
-                            
+
                             xP = xA
                             zP = zA
-                            
+
                             # k = 0
                             # if((zB-zA) == 0):
                             #     k = 0
                             # else:
                             #     k = ((zP-zA)/(zB-zA))
-                            
+
                             # zP = np.add(zA, np.dot(k, np.subtract(zB, zA)))
 
-                            dZx = ([0, 0, 0])
-                            if((xB-xA) == 0):
-                                dZx = ([0, 0, 0])
-                            elif((xB-xA) < 0):
-                                dZx = np.divide(np.subtract(zB, zA), abs(xB-xA))
-                            else:
-                                dZx = np.divide(np.subtract(zB, zA), (xB-xA))
+                            # dZx = ([0, 0, 0])
+                            # if((xB-xA) == 0):
+                            #     dZx = ([0, 0, 0])
+                            # elif((xB-xA) < 0):
+                            #     dZx = np.divide(
+                            #         np.subtract(zB, zA), abs(xB-xA))
+                            # else:
+                            #     dZx = np.divide(np.subtract(zB, zA), (xB-xA))
 
                             if(xP < xB):
                                 while(xP <= xB):
                                     tmpI = ([0, 0, 0])
                                     for ls in self.LS:
+                                        zP = math.sqrt(
+                                            abs(10000 - (xP * xP) - (yA * yA)))
+                                        zP = round(zP)
                                         ls_x = int(ls[0])
                                         ls_y = int(ls[1])
                                         ls_z = int(ls[2])
@@ -1525,49 +1606,59 @@ class Ui_MainWindow(object):
 
                                         p_V = ([xP, yA, zP])
                                         L = np.subtract(ls_V, p_V)
-                                        viewer_V = ([viewer[0], viewer[1], viewer[2]])
+                                        viewer_V = (
+                                            [viewer[0], viewer[1], viewer[2]])
                                         V = np.subtract(viewer_V, p_V)
                                         N = np.subtract(p_V, c_V)
 
-                                        N_mag = math.sqrt(math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
+                                        N_mag = math.sqrt(
+                                            math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
                                         N_uv = np.divide(N, N_mag)
 
-                                        L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
+                                        L_mag = math.sqrt(
+                                            math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
                                         L_uv = np.divide(L, L_mag)
 
-                                        V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
+                                        V_mag = math.sqrt(
+                                            math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
                                         V_uv = np.divide(V, V_mag)
-                                        R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
+                                        R_uv = np.subtract(
+                                            np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
 
                                         # distance
-                                        L_magn = L_mag / (255 * 5) # multiplier bisa diubah2
+                                        # multiplier bisa diubah2
+                                        L_magn = L_mag / (255*12)
                                         ILn = IL - L_magn
                                         # semakin besar L_mag, semakin jauh light source dari vertex / point di surface sphere
                                         # semakin besar L_mag, semakin kecil intensity --> ILn = IL - L_magn
-                                        ILd = np.multiply(ILn, iLd) # diffuse light intensity 
-                                        ILs = np.dot(ILn, iLs) # specular light intensity
+                                        # diffuse light intensity kekw
+                                        ILd = np.multiply(ILn, iLd)
+                                        # specular light intensity
+                                        ILs = np.dot(ILn, iLs)
 
                                         LN = np.dot(L_uv, N_uv)
                                         Idiff = None
                                         if(LN < 0):
                                             Idiff = ([0, 0, 0])
                                         else:
-                                            Idiff = np.dot(np.multiply(kd, ILd), LN)
+                                            Idiff = np.dot(
+                                                np.multiply(kd, ILd), LN)
 
                                         VR = np.dot(V_uv, R_uv)
                                         Ispec = None
-                                        if(VR < 0): 
+                                        if(VR < 0):
                                             Ispec = ([0, 0, 0])
                                         else:
-                                            Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
-                                        
+                                            Ispec = np.dot(np.multiply(
+                                                ks, ILs), math.pow(VR, n))
+
                                         Idiff2 = []
                                         for k in Idiff:
                                             if(k <= 0):
                                                 Idiff2.append(0)
                                             else:
                                                 Idiff2.append(k)
-                                        
+
                                         Ispec2 = []
                                         for idx, k in enumerate(Idiff):
                                             if(k < 0):
@@ -1575,11 +1666,10 @@ class Ui_MainWindow(object):
                                             else:
                                                 Ispec2.append(Ispec[idx])
 
-                                        
                                         # Itot = np.add(Iamb, Idiff2)
                                         Itot = Idiff2
                                         Itot = np.add(Itot, Ispec2)
-                                        
+
                                         res = []
                                         for k in Itot:
                                             if(k < 0):
@@ -1599,57 +1689,70 @@ class Ui_MainWindow(object):
                                             res2.append(255)
                                         else:
                                             res2.append(e)
-                                        
+
                                     tmpP = self.parallelProj([xP, yA, zP])
                                     self.drawDot([tmpP[0], tmpP[1]], res2)
-                                    
-                                    zP = zP + dZx
+
+                                    # zP = zP + dZx
                                     xP += 1
                             elif(xP >= xB):
                                 while(xP > xB):
                                     tmpI = ([0, 0, 0])
                                     for ls in self.LS:
+                                        zP = math.sqrt(
+                                            abs(10000 - (xP * xP) - (yA * yA)))
+                                        zP = round(zP)
                                         ls_x = int(ls[0])
                                         ls_y = int(ls[1])
                                         ls_z = int(ls[2])
                                         ls_V = ([ls_x, ls_y, ls_z])
                                         p_V = ([xP, yA, zP])
                                         L = np.subtract(ls_V, p_V)
-                                        viewer_V = ([viewer[0], viewer[1], viewer[2]])
+                                        viewer_V = (
+                                            [viewer[0], viewer[1], viewer[2]])
                                         V = np.subtract(viewer_V, p_V)
                                         N = np.subtract(p_V, c_V)
 
-                                        N_mag = math.sqrt(math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
+                                        N_mag = math.sqrt(
+                                            math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
                                         N_uv = np.divide(N, N_mag)
 
-                                        L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
+                                        L_mag = math.sqrt(
+                                            math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
                                         L_uv = np.divide(L, L_mag)
 
-                                        V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
+                                        V_mag = math.sqrt(
+                                            math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
                                         V_uv = np.divide(V, V_mag)
-                                        R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
+                                        R_uv = np.subtract(
+                                            np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
 
                                         # distance
-                                        L_magn = L_mag / (255 * 5) # multiplier bisa diubah2
+                                        # multiplier bisa diubah2
+                                        L_magn = L_mag / (255*12)
                                         ILn = IL - L_magn
                                         # semakin besar L_mag, semakin jauh light source dari vertex / point di surface sphere
                                         # semakin besar L_mag, semakin kecil intensity --> ILn = IL - L_magn
-                                        ILd = np.multiply(ILn, iLd) # diffuse light intensity 
-                                        ILs = np.dot(ILn, iLs) # specular light intensity
+                                        # diffuse light intensity
+                                        ILd = np.multiply(ILn, iLd)
+                                        # specular light intensity
+                                        ILs = np.dot(ILn, iLs)
 
                                         LN = np.dot(L_uv, N_uv)
                                         Idiff = None
                                         if(LN < 0):
                                             Idiff = ([0, 0, 0])
                                         else:
-                                            Idiff = np.dot(np.multiply(kd, ILd), LN)
+                                            Idiff = np.dot(
+                                                np.multiply(kd, ILd), LN)
 
                                         VR = np.dot(V_uv, R_uv)
                                         Ispec = None
-                                        if(VR < 0): 
+                                        if(VR < 0):
                                             Ispec = ([0, 0, 0])
                                         else:
-                                            Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
+                                            Ispec = np.dot(np.multiply(
+                                                ks, ILs), math.pow(VR, n))
 
                                         Idiff2 = []
                                         for k in Idiff:
@@ -1657,7 +1760,7 @@ class Ui_MainWindow(object):
                                                 Idiff2.append(0)
                                             else:
                                                 Idiff2.append(k)
-                                        
+
                                         Ispec2 = []
                                         for idx, k in enumerate(Idiff):
                                             if(k < 0):
@@ -1665,11 +1768,10 @@ class Ui_MainWindow(object):
                                             else:
                                                 Ispec2.append(Ispec[idx])
 
-                                        
                                         # Itot = np.add(Iamb, Idiff2)
                                         Itot = Idiff2
                                         Itot = np.add(Itot, Ispec2)
-                                        
+
                                         res = []
                                         for k in Itot:
                                             if(k < 0):
@@ -1678,9 +1780,9 @@ class Ui_MainWindow(object):
                                                 res.append(255)
                                             else:
                                                 res.append(k)
-                                        
+
                                         tmpI = np.add(tmpI, res)
-                                    
+
                                     res = np.add(Iamb, tmpI)
 
                                     res2 = []
@@ -1689,12 +1791,12 @@ class Ui_MainWindow(object):
                                             res2.append(255)
                                         else:
                                             res2.append(e)
-                                    
+
                                     tmpP = self.parallelProj([xP, yA, zP])
-                                    
+
                                     self.drawDot([tmpP[0], tmpP[1]], res2)
-                                    
-                                    zP = zP + dZx
+
+                                    # zP = zP + dZx
                                     xP -= 1
 
                             yA += 1
@@ -1716,72 +1818,86 @@ class Ui_MainWindow(object):
 
                             xA = round(xA)
                             xB = round(xB)
-                            
+
                             xP = xA
                             zP = zA
-                            
+
                             # k = 0
                             # if((zB-zA) == 0):
                             #     k = 0
                             # else:
                             #     k = ((zP-zA)/(zB-zA))
-                            
+
                             # zP = np.add(zA, np.dot(k, np.subtract(zB, zA)))
 
-                            dZx = ([0, 0, 0])
-                            if((xB-xA) == 0):
-                                dZx = ([0, 0, 0])
-                            elif((xB-xA) < 0):
-                                dZx = np.divide(np.subtract(zB, zA), abs(xB-xA))
-                            else:
-                                dZx = np.divide(np.subtract(zB, zA), (xB-xA))
+                            # dZx = ([0, 0, 0])
+                            # if((xB-xA) == 0):
+                            #     dZx = ([0, 0, 0])
+                            # elif((xB-xA) < 0):
+                            #     dZx = np.divide(
+                            #         np.subtract(zB, zA), abs(xB-xA))
+                            # else:
+                            #     dZx = np.divide(np.subtract(zB, zA), (xB-xA))
 
                             if(xP < xB):
                                 while(xP <= xB):
                                     tmpI = ([0, 0, 0])
                                     for ls in self.LS:
+                                        zP = math.sqrt(
+                                            abs(10000 - (xP * xP) - (yA * yA)))
+                                        zP = round(zP)
                                         ls_x = int(ls[0])
                                         ls_y = int(ls[1])
                                         ls_z = int(ls[2])
                                         ls_V = ([ls_x, ls_y, ls_z])
-                                            
+
                                         p_V = ([xP, yA, zP])
                                         L = np.subtract(ls_V, p_V)
-                                        viewer_V = ([viewer[0], viewer[1], viewer[2]])
+                                        viewer_V = (
+                                            [viewer[0], viewer[1], viewer[2]])
                                         V = np.subtract(viewer_V, p_V)
                                         N = np.subtract(p_V, c_V)
 
-                                        N_mag = math.sqrt(math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
+                                        N_mag = math.sqrt(
+                                            math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
                                         N_uv = np.divide(N, N_mag)
 
-                                        L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
+                                        L_mag = math.sqrt(
+                                            math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
                                         L_uv = np.divide(L, L_mag)
 
-                                        V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
+                                        V_mag = math.sqrt(
+                                            math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
                                         V_uv = np.divide(V, V_mag)
-                                        R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
+                                        R_uv = np.subtract(
+                                            np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
 
                                         # distance
-                                        L_magn = L_mag / (255 * 5) # multiplier bisa diubah2
+                                        # multiplier bisa diubah2
+                                        L_magn = L_mag / (255*12)
                                         ILn = IL - L_magn
                                         # semakin besar L_mag, semakin jauh light source dari vertex / point di surface sphere
                                         # semakin besar L_mag, semakin kecil intensity --> ILn = IL - L_magn
-                                        ILd = np.multiply(ILn, iLd) # diffuse light intensity 
-                                        ILs = np.dot(ILn, iLs) # specular light intensity
+                                        # diffuse light intensity
+                                        ILd = np.multiply(ILn, iLd)
+                                        # specular light intensity
+                                        ILs = np.dot(ILn, iLs)
 
                                         LN = np.dot(L_uv, N_uv)
                                         Idiff = None
                                         if(LN < 0):
                                             Idiff = ([0, 0, 0])
                                         else:
-                                            Idiff = np.dot(np.multiply(kd, ILd), LN)
+                                            Idiff = np.dot(
+                                                np.multiply(kd, ILd), LN)
 
                                         VR = np.dot(V_uv, R_uv)
                                         Ispec = None
-                                        if(VR < 0): 
+                                        if(VR < 0):
                                             Ispec = ([0, 0, 0])
                                         else:
-                                            Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
+                                            Ispec = np.dot(np.multiply(
+                                                ks, ILs), math.pow(VR, n))
 
                                         Idiff2 = []
                                         for k in Idiff:
@@ -1789,7 +1905,7 @@ class Ui_MainWindow(object):
                                                 Idiff2.append(0)
                                             else:
                                                 Idiff2.append(k)
-                                        
+
                                         Ispec2 = []
                                         for idx, k in enumerate(Idiff):
                                             if(k < 0):
@@ -1797,11 +1913,10 @@ class Ui_MainWindow(object):
                                             else:
                                                 Ispec2.append(Ispec[idx])
 
-                                        
                                         # Itot = np.add(Iamb, Idiff2)
                                         Itot = Idiff2
                                         Itot = np.add(Itot, Ispec2)
-                                        
+
                                         res = []
                                         for k in Itot:
                                             if(k < 0):
@@ -1812,7 +1927,7 @@ class Ui_MainWindow(object):
                                                 res.append(k)
 
                                         tmpI = np.add(tmpI, res)
-                                    
+
                                     res = np.add(Iamb, tmpI)
 
                                     res2 = []
@@ -1821,59 +1936,72 @@ class Ui_MainWindow(object):
                                             res2.append(255)
                                         else:
                                             res2.append(e)
-                                    
+
                                     tmpP = self.parallelProj([xP, yA, zP])
-                                    
+
                                     self.drawDot([tmpP[0], tmpP[1]], res2)
-                                    
-                                    zP = zP + dZx
+
+                                    # zP = zP + dZx
                                     xP += 1
                             elif(xP >= xB):
                                 while(xP > xB):
                                     tmpI = ([0, 0, 0])
                                     for ls in self.LS:
+                                        zP = math.sqrt(
+                                            abs(10000 - (xP * xP) - (yA * yA)))
+                                        zP = round(zP)
                                         ls_x = int(ls[0])
                                         ls_y = int(ls[1])
                                         ls_z = int(ls[2])
                                         ls_V = ([ls_x, ls_y, ls_z])
-                                            
+
                                         p_V = ([xP, yA, zP])
                                         L = np.subtract(ls_V, p_V)
-                                        viewer_V = ([viewer[0], viewer[1], viewer[2]])
+                                        viewer_V = (
+                                            [viewer[0], viewer[1], viewer[2]])
                                         V = np.subtract(viewer_V, p_V)
                                         N = np.subtract(p_V, c_V)
 
-                                        N_mag = math.sqrt(math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
+                                        N_mag = math.sqrt(
+                                            math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
                                         N_uv = np.divide(N, N_mag)
 
-                                        L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
+                                        L_mag = math.sqrt(
+                                            math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
                                         L_uv = np.divide(L, L_mag)
 
-                                        V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
+                                        V_mag = math.sqrt(
+                                            math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
                                         V_uv = np.divide(V, V_mag)
-                                        R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
+                                        R_uv = np.subtract(
+                                            np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
 
                                         # distance
-                                        L_magn = L_mag / (255 * 5) # multiplier bisa diubah2
+                                        # multiplier bisa diubah2
+                                        L_magn = L_mag / (255*12)
                                         ILn = IL - L_magn
                                         # semakin besar L_mag, semakin jauh light source dari vertex / point di surface sphere
                                         # semakin besar L_mag, semakin kecil intensity --> ILn = IL - L_magn
-                                        ILd = np.multiply(ILn, iLd) # diffuse light intensity 
-                                        ILs = np.dot(ILn, iLs) # specular light intensity
+                                        # diffuse light intensity
+                                        ILd = np.multiply(ILn, iLd)
+                                        # specular light intensity
+                                        ILs = np.dot(ILn, iLs)
 
                                         LN = np.dot(L_uv, N_uv)
                                         Idiff = None
                                         if(LN < 0):
                                             Idiff = ([0, 0, 0])
                                         else:
-                                            Idiff = np.dot(np.multiply(kd, ILd), LN)
+                                            Idiff = np.dot(
+                                                np.multiply(kd, ILd), LN)
 
                                         VR = np.dot(V_uv, R_uv)
                                         Ispec = None
-                                        if(VR < 0): 
+                                        if(VR < 0):
                                             Ispec = ([0, 0, 0])
                                         else:
-                                            Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
+                                            Ispec = np.dot(np.multiply(
+                                                ks, ILs), math.pow(VR, n))
 
                                         Idiff2 = []
                                         for k in Idiff:
@@ -1881,7 +2009,7 @@ class Ui_MainWindow(object):
                                                 Idiff2.append(0)
                                             else:
                                                 Idiff2.append(k)
-                                        
+
                                         Ispec2 = []
                                         for idx, k in enumerate(Idiff):
                                             if(k < 0):
@@ -1889,11 +2017,10 @@ class Ui_MainWindow(object):
                                             else:
                                                 Ispec2.append(Ispec[idx])
 
-                                        
                                         # Itot = np.add(Iamb, Idiff2)
                                         Itot = Idiff2
                                         Itot = np.add(Itot, Ispec2)
-                                        
+
                                         res = []
                                         for k in Itot:
                                             if(k < 0):
@@ -1904,7 +2031,7 @@ class Ui_MainWindow(object):
                                                 res.append(k)
 
                                         tmpI = np.add(tmpI, res)
-                                    
+
                                     res = np.add(Iamb, tmpI)
 
                                     res2 = []
@@ -1913,12 +2040,12 @@ class Ui_MainWindow(object):
                                             res2.append(255)
                                         else:
                                             res2.append(e)
-                                    
+
                                     tmpP = self.parallelProj([xP, yA, zP])
-                                     
+
                                     self.drawDot([tmpP[0], tmpP[1]], res2)
-                                    
-                                    zP = zP + dZx
+
+                                    # zP = zP + dZx
                                     xP -= 1
                             yA -= 1
                             yB -= 1
@@ -1941,7 +2068,7 @@ class Ui_MainWindow(object):
                         # add
                         yA = round(y3)
                         yB = round(y2)
-                        while(yA <= y1):                            
+                        while(yA <= y1):
                             tA = ((yA-y3)/(y1-y3))
                             tB = ((yA-y2)/(y1-y2))
 
@@ -1953,72 +2080,86 @@ class Ui_MainWindow(object):
 
                             xA = round(xA)
                             xB = round(xB)
-                            
+
                             xP = xA
                             zP = zA
-                            
+
                             # k = 0
                             # if((zB-zA) == 0):
                             #     k = 0
                             # else:
                             #     k = ((zP-zA)/(zB-zA))
-                            
+
                             # zP = np.add(zA, np.dot(k, np.subtract(zB, zA)))
 
-                            dZx = ([0, 0, 0])
-                            if((xB-xA) == 0):
-                                dZx = ([0, 0, 0])
-                            elif((xB-xA) < 0):
-                                dZx = np.divide(np.subtract(zB, zA), abs(xB-xA))
-                            else:
-                                dZx = np.divide(np.subtract(zB, zA), (xB-xA))
+                            # dZx = ([0, 0, 0])
+                            # if((xB-xA) == 0):
+                            #     dZx = ([0, 0, 0])
+                            # elif((xB-xA) < 0):
+                            #     dZx = np.divide(
+                            #         np.subtract(zB, zA), abs(xB-xA))
+                            # else:
+                            #     dZx = np.divide(np.subtract(zB, zA), (xB-xA))
 
                             if(xP < xB):
                                 while(xP <= xB):
                                     tmpI = ([0, 0, 0])
                                     for ls in self.LS:
+                                        zP = math.sqrt(
+                                            abs(10000 - (xP * xP) - (yA * yA)))
+                                        zP = round(zP)
                                         ls_x = int(ls[0])
                                         ls_y = int(ls[1])
                                         ls_z = int(ls[2])
                                         ls_V = ([ls_x, ls_y, ls_z])
-                                            
+
                                         p_V = ([xP, yA, zP])
                                         L = np.subtract(ls_V, p_V)
-                                        viewer_V = ([viewer[0], viewer[1], viewer[2]])
+                                        viewer_V = (
+                                            [viewer[0], viewer[1], viewer[2]])
                                         V = np.subtract(viewer_V, p_V)
                                         N = np.subtract(p_V, c_V)
 
-                                        N_mag = math.sqrt(math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
+                                        N_mag = math.sqrt(
+                                            math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
                                         N_uv = np.divide(N, N_mag)
 
-                                        L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
+                                        L_mag = math.sqrt(
+                                            math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
                                         L_uv = np.divide(L, L_mag)
 
-                                        V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
+                                        V_mag = math.sqrt(
+                                            math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
                                         V_uv = np.divide(V, V_mag)
-                                        R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
+                                        R_uv = np.subtract(
+                                            np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
 
                                         # distance
-                                        L_magn = L_mag / (255 * 5) # multiplier bisa diubah2
+                                        # multiplier bisa diubah2
+                                        L_magn = L_mag / (255*12)
                                         ILn = IL - L_magn
                                         # semakin besar L_mag, semakin jauh light source dari vertex / point di surface sphere
                                         # semakin besar L_mag, semakin kecil intensity --> ILn = IL - L_magn
-                                        ILd = np.multiply(ILn, iLd) # diffuse light intensity 
-                                        ILs = np.dot(ILn, iLs) # specular light intensity
+                                        # diffuse light intensity
+                                        ILd = np.multiply(ILn, iLd)
+                                        # specular light intensity
+                                        ILs = np.dot(ILn, iLs)
 
                                         LN = np.dot(L_uv, N_uv)
                                         Idiff = None
                                         if(LN < 0):
                                             Idiff = ([0, 0, 0])
                                         else:
-                                            Idiff = np.dot(np.multiply(kd, ILd), LN)
+                                            Idiff = np.dot(
+                                                np.multiply(kd, ILd), LN)
 
                                         VR = np.dot(V_uv, R_uv)
                                         Ispec = None
-                                        if(VR < 0): 
+                                        if(VR < 0):
                                             Ispec = ([0, 0, 0])
                                         else:
-                                            Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
+                                            Ispec = np.dot(np.multiply(
+                                                ks, ILs), math.pow(VR, n))
 
                                         Idiff2 = []
                                         for k in Idiff:
@@ -2026,7 +2167,7 @@ class Ui_MainWindow(object):
                                                 Idiff2.append(0)
                                             else:
                                                 Idiff2.append(k)
-                                        
+
                                         Ispec2 = []
                                         for idx, k in enumerate(Idiff):
                                             if(k < 0):
@@ -2034,11 +2175,10 @@ class Ui_MainWindow(object):
                                             else:
                                                 Ispec2.append(Ispec[idx])
 
-                                        
                                         # Itot = np.add(Iamb, Idiff2)
                                         Itot = Idiff2
                                         Itot = np.add(Itot, Ispec2)
-                                        
+
                                         res = []
                                         for k in Itot:
                                             if(k < 0):
@@ -2051,24 +2191,27 @@ class Ui_MainWindow(object):
                                         tmpI = np.add(tmpI, res)
 
                                     res = np.add(Iamb, tmpI)
-                                    
+
                                     res2 = []
                                     for e in res:
                                         if(e > 255):
                                             res2.append(255)
                                         else:
                                             res2.append(e)
-                                    
+
                                     tmpP = self.parallelProj([xP, yA, zP])
-                                    
+
                                     self.drawDot([tmpP[0], tmpP[1]], res2)
-                                    
-                                    zP = zP + dZx
+
+                                    # zP = zP + dZx
                                     xP += 1
                             elif(xP >= xB):
                                 while(xP > xB):
                                     tmpI = ([0, 0, 0])
                                     for ls in self.LS:
+                                        zP = math.sqrt(
+                                            abs(10000 - (xP * xP) - (yA * yA)))
+                                        zP = round(zP)
                                         ls_x = int(ls[0])
                                         ls_y = int(ls[1])
                                         ls_z = int(ls[2])
@@ -2076,41 +2219,51 @@ class Ui_MainWindow(object):
 
                                         p_V = ([xP, yA, zP])
                                         L = np.subtract(ls_V, p_V)
-                                        viewer_V = ([viewer[0], viewer[1], viewer[2]])
+                                        viewer_V = (
+                                            [viewer[0], viewer[1], viewer[2]])
                                         V = np.subtract(viewer_V, p_V)
                                         N = np.subtract(p_V, c_V)
 
-                                        N_mag = math.sqrt(math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
+                                        N_mag = math.sqrt(
+                                            math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
                                         N_uv = np.divide(N, N_mag)
 
-                                        L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
+                                        L_mag = math.sqrt(
+                                            math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
                                         L_uv = np.divide(L, L_mag)
 
-                                        V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
+                                        V_mag = math.sqrt(
+                                            math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
                                         V_uv = np.divide(V, V_mag)
-                                        R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
+                                        R_uv = np.subtract(
+                                            np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
 
                                         # distance
-                                        L_magn = L_mag / (255 * 5) # multiplier bisa diubah2
+                                        # multiplier bisa diubah2
+                                        L_magn = L_mag / (255*12)
                                         ILn = IL - L_magn
                                         # semakin besar L_mag, semakin jauh light source dari vertex / point di surface sphere
                                         # semakin besar L_mag, semakin kecil intensity --> ILn = IL - L_magn
-                                        ILd = np.multiply(ILn, iLd) # diffuse light intensity 
-                                        ILs = np.dot(ILn, iLs) # specular light intensity
+                                        # diffuse light intensity
+                                        ILd = np.multiply(ILn, iLd)
+                                        # specular light intensity
+                                        ILs = np.dot(ILn, iLs)
 
                                         LN = np.dot(L_uv, N_uv)
                                         Idiff = None
                                         if(LN < 0):
                                             Idiff = ([0, 0, 0])
                                         else:
-                                            Idiff = np.dot(np.multiply(kd, ILd), LN)
+                                            Idiff = np.dot(
+                                                np.multiply(kd, ILd), LN)
 
                                         VR = np.dot(V_uv, R_uv)
                                         Ispec = None
-                                        if(VR < 0): 
+                                        if(VR < 0):
                                             Ispec = ([0, 0, 0])
                                         else:
-                                            Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
+                                            Ispec = np.dot(np.multiply(
+                                                ks, ILs), math.pow(VR, n))
 
                                         Idiff2 = []
                                         for k in Idiff:
@@ -2118,7 +2271,7 @@ class Ui_MainWindow(object):
                                                 Idiff2.append(0)
                                             else:
                                                 Idiff2.append(k)
-                                        
+
                                         Ispec2 = []
                                         for idx, k in enumerate(Idiff):
                                             if(k < 0):
@@ -2126,11 +2279,10 @@ class Ui_MainWindow(object):
                                             else:
                                                 Ispec2.append(Ispec[idx])
 
-                                        
                                         # Itot = np.add(Iamb, Idiff2)
                                         Itot = Idiff2
                                         Itot = np.add(Itot, Ispec2)
-                                        
+
                                         res = []
                                         for k in Itot:
                                             if(k < 0):
@@ -2150,12 +2302,12 @@ class Ui_MainWindow(object):
                                             res2.append(255)
                                         else:
                                             res2.append(e)
-                                    
+
                                     tmpP = self.parallelProj([xP, yA, zP])
-                                    
+
                                     self.drawDot([tmpP[0], tmpP[1]], res2)
-                                    
-                                    zP = zP + dZx
+
+                                    # zP = zP + dZx
                                     xP -= 1
 
                             yA += 1
@@ -2177,72 +2329,86 @@ class Ui_MainWindow(object):
 
                             xA = round(xA)
                             xB = round(xB)
-                            
+
                             xP = xA
                             zP = zA
-                            
+
                             # k = 0
                             # if((zB-zA) == 0):
                             #     k = 0
                             # else:
                             #     k = ((zP-zA)/(zB-zA))
-                            
+
                             # zP = np.add(zA, np.dot(k, np.subtract(zB, zA)))
 
-                            dZx = ([0, 0, 0])
-                            if((xB-xA) == 0):
-                                dZx = ([0, 0, 0])
-                            elif((xB-xA) < 0):
-                                dZx = np.divide(np.subtract(zB, zA), abs(xB-xA))
-                            else:
-                                dZx = np.divide(np.subtract(zB, zA), (xB-xA))
+                            # dZx = ([0, 0, 0])
+                            # if((xB-xA) == 0):
+                            #     dZx = ([0, 0, 0])
+                            # elif((xB-xA) < 0):
+                            #     dZx = np.divide(
+                            #         np.subtract(zB, zA), abs(xB-xA))
+                            # else:
+                            #     dZx = np.divide(np.subtract(zB, zA), (xB-xA))
 
                             if(xP < xB):
                                 while(xP <= xB):
                                     tmpI = ([0, 0, 0])
                                     for ls in self.LS:
+                                        zP = math.sqrt(
+                                            abs(10000 - (xP * xP) - (yA * yA)))
+                                        zP = round(zP)
                                         ls_x = int(ls[0])
                                         ls_y = int(ls[1])
                                         ls_z = int(ls[2])
                                         ls_V = ([ls_x, ls_y, ls_z])
-                                            
+
                                         p_V = ([xP, yA, zP])
                                         L = np.subtract(ls_V, p_V)
-                                        viewer_V = ([viewer[0], viewer[1], viewer[2]])
+                                        viewer_V = (
+                                            [viewer[0], viewer[1], viewer[2]])
                                         V = np.subtract(viewer_V, p_V)
                                         N = np.subtract(p_V, c_V)
 
-                                        N_mag = math.sqrt(math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
+                                        N_mag = math.sqrt(
+                                            math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
                                         N_uv = np.divide(N, N_mag)
 
-                                        L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
+                                        L_mag = math.sqrt(
+                                            math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
                                         L_uv = np.divide(L, L_mag)
 
-                                        V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
+                                        V_mag = math.sqrt(
+                                            math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
                                         V_uv = np.divide(V, V_mag)
-                                        R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
+                                        R_uv = np.subtract(
+                                            np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
 
                                         # distance
-                                        L_magn = L_mag / (255 * 5) # multiplier bisa diubah2
+                                        # multiplier bisa diubah2
+                                        L_magn = L_mag / (255*12)
                                         ILn = IL - L_magn
                                         # semakin besar L_mag, semakin jauh light source dari vertex / point di surface sphere
                                         # semakin besar L_mag, semakin kecil intensity --> ILn = IL - L_magn
-                                        ILd = np.multiply(ILn, iLd) # diffuse light intensity 
-                                        ILs = np.dot(ILn, iLs) # specular light intensity
+                                        # diffuse light intensity
+                                        ILd = np.multiply(ILn, iLd)
+                                        # specular light intensity
+                                        ILs = np.dot(ILn, iLs)
 
                                         LN = np.dot(L_uv, N_uv)
                                         Idiff = None
                                         if(LN < 0):
                                             Idiff = ([0, 0, 0])
                                         else:
-                                            Idiff = np.dot(np.multiply(kd, ILd), LN)
+                                            Idiff = np.dot(
+                                                np.multiply(kd, ILd), LN)
 
                                         VR = np.dot(V_uv, R_uv)
                                         Ispec = None
-                                        if(VR < 0): 
+                                        if(VR < 0):
                                             Ispec = ([0, 0, 0])
                                         else:
-                                            Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
+                                            Ispec = np.dot(np.multiply(
+                                                ks, ILs), math.pow(VR, n))
 
                                         Idiff2 = []
                                         for k in Idiff:
@@ -2250,7 +2416,7 @@ class Ui_MainWindow(object):
                                                 Idiff2.append(0)
                                             else:
                                                 Idiff2.append(k)
-                                        
+
                                         Ispec2 = []
                                         for idx, k in enumerate(Idiff):
                                             if(k < 0):
@@ -2258,11 +2424,10 @@ class Ui_MainWindow(object):
                                             else:
                                                 Ispec2.append(Ispec[idx])
 
-                                        
                                         # Itot = np.add(Iamb, Idiff2)
                                         Itot = Idiff2
                                         Itot = np.add(Itot, Ispec2)
-                                        
+
                                         res = []
                                         for k in Itot:
                                             if(k < 0):
@@ -2282,59 +2447,72 @@ class Ui_MainWindow(object):
                                             res2.append(255)
                                         else:
                                             res2.append(e)
-                                    
+
                                     tmpP = self.parallelProj([xP, yA, zP])
-                                    
+
                                     self.drawDot([tmpP[0], tmpP[1]], res2)
-                                    
-                                    zP = zP + dZx
+
+                                    # zP = zP + dZx
                                     xP += 1
                             elif(xP >= xB):
                                 while(xP > xB):
                                     tmpI = ([0, 0, 0])
                                     for ls in self.LS:
+                                        zP = math.sqrt(
+                                            abs(10000 - (xP * xP) - (yA * yA)))
+                                        zP = round(zP)
                                         ls_x = int(ls[0])
                                         ls_y = int(ls[1])
                                         ls_z = int(ls[2])
                                         ls_V = ([ls_x, ls_y, ls_z])
-                                            
+
                                         p_V = ([xP, yA, zP])
                                         L = np.subtract(ls_V, p_V)
-                                        viewer_V = ([viewer[0], viewer[1], viewer[2]])
+                                        viewer_V = (
+                                            [viewer[0], viewer[1], viewer[2]])
                                         V = np.subtract(viewer_V, p_V)
                                         N = np.subtract(p_V, c_V)
 
-                                        N_mag = math.sqrt(math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
+                                        N_mag = math.sqrt(
+                                            math.pow(N[0], 2) + math.pow(N[1], 2) + math.pow(N[2], 2))
                                         N_uv = np.divide(N, N_mag)
 
-                                        L_mag = math.sqrt(math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
+                                        L_mag = math.sqrt(
+                                            math.pow(L[0], 2) + math.pow(L[1], 2) + math.pow(L[2], 2))
                                         L_uv = np.divide(L, L_mag)
 
-                                        V_mag = math.sqrt(math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
+                                        V_mag = math.sqrt(
+                                            math.pow(V[0], 2) + math.pow(V[1], 2) + math.pow(V[2], 2))
                                         V_uv = np.divide(V, V_mag)
-                                        R_uv = np.subtract(np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
+                                        R_uv = np.subtract(
+                                            np.dot(N_uv, np.dot(2, np.dot(L_uv, N_uv))), L_uv)
 
                                         # distance
-                                        L_magn = L_mag / (255 * 5) # multiplier bisa diubah2
+                                        # multiplier bisa diubah2
+                                        L_magn = L_mag / (255*12)
                                         ILn = IL - L_magn
                                         # semakin besar L_mag, semakin jauh light source dari vertex / point di surface sphere
                                         # semakin besar L_mag, semakin kecil intensity --> ILn = IL - L_magn
-                                        ILd = np.multiply(ILn, iLd) # diffuse light intensity 
-                                        ILs = np.dot(ILn, iLs) # specular light intensity
+                                        # diffuse light intensity
+                                        ILd = np.multiply(ILn, iLd)
+                                        # specular light intensity
+                                        ILs = np.dot(ILn, iLs)
 
                                         LN = np.dot(L_uv, N_uv)
                                         Idiff = None
                                         if(LN < 0):
                                             Idiff = ([0, 0, 0])
                                         else:
-                                            Idiff = np.dot(np.multiply(kd, ILd), LN)
+                                            Idiff = np.dot(
+                                                np.multiply(kd, ILd), LN)
 
                                         VR = np.dot(V_uv, R_uv)
                                         Ispec = None
-                                        if(VR < 0): 
+                                        if(VR < 0):
                                             Ispec = ([0, 0, 0])
                                         else:
-                                            Ispec = np.dot(np.multiply(ks, ILs), math.pow(VR, n))
+                                            Ispec = np.dot(np.multiply(
+                                                ks, ILs), math.pow(VR, n))
 
                                         Idiff2 = []
                                         for k in Idiff:
@@ -2342,7 +2520,7 @@ class Ui_MainWindow(object):
                                                 Idiff2.append(0)
                                             else:
                                                 Idiff2.append(k)
-                                        
+
                                         Ispec2 = []
                                         for idx, k in enumerate(Idiff):
                                             if(k < 0):
@@ -2350,11 +2528,10 @@ class Ui_MainWindow(object):
                                             else:
                                                 Ispec2.append(Ispec[idx])
 
-                                        
                                         # Itot = np.add(Iamb, Idiff2)
                                         Itot = Idiff2
                                         Itot = np.add(Itot, Ispec2)
-                                        
+
                                         res = []
                                         for k in Itot:
                                             if(k < 0):
@@ -2367,23 +2544,23 @@ class Ui_MainWindow(object):
                                         tmpI = np.add(tmpI, res)
 
                                     res = np.add(Iamb, tmpI)
-                                    
+
                                     res2 = []
                                     for e in res:
                                         if(e > 255):
                                             res2.append(255)
                                         else:
                                             res2.append(e)
-                                    
+
                                     tmpP = self.parallelProj([xP, yA, zP])
-                                    
+
                                     self.drawDot([tmpP[0], tmpP[1]], res2)
-                                    
-                                    zP = zP + dZx
+
+                                    # zP = zP + dZx
                                     xP -= 1
                             yA -= 1
                             yB -= 1
-        
+
 
 if __name__ == "__main__":
     import sys
