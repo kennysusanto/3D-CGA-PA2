@@ -532,7 +532,7 @@ class Ui_MainWindow(object):
         x = r * np.cos(np.deg2rad(e)) * np.sin(np.deg2rad(d)) + pos[0]
         y = r * np.sin(np.deg2rad(e)) + pos[1]
         z = r * np.cos(np.deg2rad(d)) * np.cos(np.deg2rad(d)) + \
-            pos[2]  # mungkin cos e inget2 oke? oke
+            pos[2]  # mungkin cos e inget2 oke? oke di extra 6 bro rumusnya
         P = [x, y, z]
         return P
 
